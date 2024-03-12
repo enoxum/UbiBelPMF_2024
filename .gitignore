@@ -1,0 +1,44 @@
+# gitignore for C++
+source/**/external/
+bin/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Visual Studio Files
+Debug
+Release
+*.suo
+*.csproj.user
+*.vbproj.user
+ipch
+*sdf
+.vs
+
+# imgui
+*imgui.ini
+
+# Directory structure ignore
+projects/
+
+# CoffeeCup
+tools/CoffeeCup/CoffeeCup.Scripts/bin
+tools/CoffeeCup/CoffeeCup.Scripts/obj
+
+# Meson
+builddir/
+build/
+
+# macOS files
+.DS_Store
