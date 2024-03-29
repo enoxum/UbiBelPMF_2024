@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (UNIX AND NOT APPLE)
     # Add TBB_INCLUDE_DIR and TBB_LIBRARY_DIR variables pointing to the TBB headers and libraries
     find_package(TBB REQUIRED)
+    find_package(ALSA REQUIRED)
 endif()
 
 
@@ -26,6 +27,7 @@ find_package(fmt)
 find_package(stb)
 find_package(tsl-sparse-map)
 find_package(simpleini)
+find_package(miniaudio REQUIRED)
 
 
 # Add all .cpp files in the current directory and its subdirectories to the project
@@ -57,15 +59,19 @@ add_executable(Dagger ${SOURCES} ${HEADERS} bindings/imgui_impl_glfw.cpp binding
 
 target_compile_definitions(Dagger PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_include_directories(Dagger PRIVATE source/dagger bindings)
-target_link_libraries(Dagger EnTT::EnTT glad::glad glfw glm::glm imgui::imgui nlohmann_json::nlohmann_json spdlog::spdlog fmt::fmt stb::stb tsl::sparse_map simpleini::simpleini)
+target_link_libraries(Dagger EnTT::EnTT miniaudio::miniaudio glad::glad glfw glm::glm imgui::imgui nlohmann_json::nlohmann_json spdlog::spdlog fmt::fmt stb::stb tsl::sparse_map simpleini::simpleini)
 
 if (UNIX AND NOT APPLE)
     if (TBB_FOUND)
         # TBB found, link it
         target_link_libraries(Dagger TBB::tbb)
-    else()
-        message(FATAL_ERROR "TBB not found, please install it or adjust the search paths.")
     endif()
+
+    if (ALSA_FOUND)
+        include_directories(${ALSA_INCLUDE_DIRS})
+        target_link_libraries(Dagger ${ALSA_LIBRARIES})
+    endif()
+
 endif()
 
 if(WIN32)

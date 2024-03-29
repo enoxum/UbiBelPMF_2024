@@ -25,6 +25,7 @@ class DaggerRecipe(ConanFile):
         self.requires("tsl-sparse-map/0.6.2")
         self.requires("simpleini/4.22")
         self.requires("entt/3.13.0")
+        self.requires("miniaudio/0.11.21")
 
     # def configure(self):
     #     self.options['glad'].shared = False
