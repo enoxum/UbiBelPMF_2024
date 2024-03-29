@@ -30,25 +30,25 @@ ECommonSaveArchetype EditorTestGame::Save(Entity entity_, JSON::json& saveTo_)
 
     ECommonSaveArchetype archetype = ECommonSaveArchetype::None;
 
-    if (registry.has<Sprite>(entity_))
+    if (registry.try_get<Sprite>(entity_))
     {
         saveTo_["sprite"] = SerializeComponent<Sprite>(registry.get<Sprite>(entity_));
         archetype = archetype | ECommonSaveArchetype::Sprite;
     }
     
-    if (registry.has<Transform>(entity_))
+    if (registry.try_get<Transform>(entity_))
     {
         saveTo_["transform"] = SerializeComponent<Transform>(registry.get<Transform>(entity_));
         archetype = archetype | ECommonSaveArchetype::Transform;
     }
         
-    if (registry.has<Animator>(entity_))
+    if (registry.try_get<Animator>(entity_))
     {
         saveTo_["animator"] = SerializeComponent<Animator>(registry.get<Animator>(entity_));
         archetype = archetype | ECommonSaveArchetype::Animator;
     }
 
-    if (registry.has<SimpleCollision>(entity_))
+    if (registry.try_get<SimpleCollision>(entity_))
     {
         saveTo_["simple_collision"] = SerializeComponent<SimpleCollision>(registry.get<SimpleCollision>(entity_));
         archetype = archetype | ECommonSaveArchetype::Physics;
@@ -195,7 +195,7 @@ void EditorToolSystem::GUIDrawSpriteEditor()
 
     auto& reg = Engine::Registry();
 
-    if (reg.has<Sprite>(m_Selected.entity) && ImGui::CollapsingHeader("Sprite"))
+    if (reg.try_get<Sprite>(m_Selected.entity) && ImGui::CollapsingHeader("Sprite"))
     {
         ImGui::InputText("Filter", filter.data(), 80);
 
@@ -264,7 +264,7 @@ void EditorToolSystem::GUIDrawSpriteEditor()
             compSprite.pivot.y = pivot[1];
         }
     }
-    else if (!reg.has<Sprite>(m_Selected.entity))
+    else if (!reg.try_get<Sprite>(m_Selected.entity))
     {
         if (ImGui::Button("Attach Sprite"))
         {
@@ -277,7 +277,7 @@ void EditorToolSystem::GUIDrawAnimationEditor()
 {
     auto& reg = Engine::Registry();
 
-    if (reg.has<Animator>(m_Selected.entity) && ImGui::CollapsingHeader("Animator"))
+    if (reg.try_get<Animator>(m_Selected.entity) && ImGui::CollapsingHeader("Animator"))
     {
         Animator& compAnim = reg.get<Animator>(m_Selected.entity);
         /* Animation */ {
@@ -309,7 +309,7 @@ void EditorToolSystem::GUIDrawAnimationEditor()
             ImGui::Checkbox("Is playing?", &compAnim.animationPlaying);
         }
     }
-    else if (!reg.has<Animator>(m_Selected.entity))
+    else if (!reg.try_get<Animator>(m_Selected.entity))
     {
         if (ImGui::Button("Attach Animator"))
         {
@@ -322,7 +322,7 @@ void EditorToolSystem::GUIDrawPhysicsEditor()
 {
     auto& reg = Engine::Registry();
 
-    if (reg.has<SimpleCollision>(m_Selected.entity) && ImGui::CollapsingHeader("Collision"))
+    if (reg.try_get<SimpleCollision>(m_Selected.entity) && ImGui::CollapsingHeader("Collision"))
     {
         SimpleCollision& compCol = reg.get<SimpleCollision>(m_Selected.entity);
 
@@ -340,7 +340,7 @@ void EditorToolSystem::GUIDrawPhysicsEditor()
             compCol.size.y = size[1];
         }
     }
-    else if (!reg.has<SimpleCollision>(m_Selected.entity))
+    else if (!reg.try_get<SimpleCollision>(m_Selected.entity))
     {
         if (ImGui::Button("Attach Collision"))
         {

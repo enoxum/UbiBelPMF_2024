@@ -8,11 +8,41 @@ A fully-featured, modern game engine made for educational purposes.
 - Dagger is extremely modular.
 - Dagger is clear and clearly educational.
 
-## Setting up the development environment
+## Installation
 
-- [Windows](docs/setting_up_windows.md)
-- [Linux](docs/setting_up_linux.md)
-- Mac (WIP)
+You can clone and fully set up this project by simply running:
+
+```git
+  git clone https://github.com/igorkandic/UbiBelPMF_2024.git
+```
+
+### Conan 
+Conan is used for dependecies
+```shell
+sudo pip3 install conan
+```
+### Conan simpleini
+Official conan repository doesn't have [simpleini](https://github.com/brofield/simpleini).
+##### Building simpleini
+```shell
+cd deps
+conan create .
+```
+
+### Build from cli
+```shell
+  mkdir build
+  cd build
+  conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+  cd ..
+  cmake --preset conan-release
+  cd build/Release
+  make
+```
+
+### Using CLion
+#### CLion conan extension:
+[Download extension](https://www.jetbrains.com/help/clion/conan-plugin.html)
 
 ## Resources
 

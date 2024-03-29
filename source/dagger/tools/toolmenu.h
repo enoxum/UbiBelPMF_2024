@@ -1,6 +1,6 @@
 #pragma once
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 #include "core/system.h"
 #include "core/core.h"

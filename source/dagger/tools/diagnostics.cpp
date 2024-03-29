@@ -5,7 +5,7 @@
 #include "core/input/inputs.h"
 #include "core/graphics/window.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include <spdlog/spdlog.h>
 
 void DiagnosticSystem::Tick()

@@ -106,7 +106,11 @@ void ToolRenderSystem::OnRender()
     if (registry != nullptr)
     {
         const auto& view = registry->view<Sprite>();
-        Sequence<Sprite> sprites{ view.raw(), view.raw() + view.size() };
+        Sequence<Sprite> sprites;
+        for(auto entity : view){
+            sprites.push_back(view.get<Sprite>(entity));
+        }
+        // Sequence<Sprite> sprites(view.begin(), view.end());
         std::sort(sprites.begin(), sprites.end(), SortSprites);
         UInt64 dataSize = sizeof(SpriteData) * sprites.size();
         Sequence<SpriteData> currentRender{};

@@ -111,7 +111,7 @@ void ParticleSystem::OnEndOfFrame()
         auto& p = particles.get<Particle>(entity);
         if (p.timeOfLiving <= 0)
         {
-            Engine::Registry().remove_all(entity);
+            Engine::Registry().destroy(entity);
         }
     }
 }

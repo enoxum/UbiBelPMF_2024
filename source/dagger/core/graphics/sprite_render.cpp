@@ -190,7 +190,10 @@ void SpriteRenderSystem::OnRender()
     ViewPtr<Shader> prevShader{ nullptr };
 
     const auto& view = Engine::Registry().view<Sprite>();
-    Sequence<Sprite> sprites{ view.raw(), view.raw() + view.size() };
+    Sequence<Sprite> sprites;
+    for(auto entity : view){
+        sprites.push_back(view.get<Sprite>(entity));
+    }
     std::sort(sprites.begin(), sprites.end(), SortSprites);
     UInt64 dataSize = sizeof(SpriteData) * sprites.size();
     Sequence<SpriteData> currentRender{};

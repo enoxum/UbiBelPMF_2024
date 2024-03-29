@@ -42,3 +42,9 @@ build/
 
 # macOS files
 .DS_Store
+
+# Cmake
+cmake-build-debug
+bindings
+CMakeUserPresets.json
+conan_provider.cmake
