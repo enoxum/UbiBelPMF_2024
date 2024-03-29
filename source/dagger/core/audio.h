@@ -3,6 +3,7 @@
 #include "core/core.h" 
 #include "core/system.h"
 #include <string>
+#include "miniaudio.h"
 
 struct Sound
 {
@@ -17,6 +18,7 @@ struct Audio
 	void Play(String name_);
 	void PlayLoop(String name_);
 	void Stop();
+    void Stop(String name_);
 	void Uninitialize();
 };
 

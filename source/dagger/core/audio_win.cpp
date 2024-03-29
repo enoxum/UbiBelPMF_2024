@@ -4,14 +4,25 @@
 
 #include <core/core.h>
 #include <core/engine.h>
+#include <set>
+#include <string>
 
-#include <windows.h>
-#include <mmsystem.h>
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
 
 using namespace dagger;
 
+static ma_engine engine;
+static std::unordered_map<std::string, std::set<ma_sound*>> active_sounds;
+
 // on Windows, this does nothing
-void Audio::Initialize() {}
+void Audio::Initialize() {
+    ma_result result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        Logger::critical("Failed to initialize sound engine");
+    }
+    Logger::info("Initialized sound engine");
+}
 
 void Audio::Load(AssetLoadRequest<Sound> request_) 
 {
@@ -41,23 +52,82 @@ void Audio::Load(AssetLoadRequest<Sound> request_)
     sound->path = request_.path;
 }
 
+// Callback function called by MiniAudio when the sound playback ends
+//void onSoundEnded(void* pUserData, ma_sound* sound) {
+//
+//}
+
+void gc(){
+    for(auto [name, sound_type] : active_sounds){
+        for(ma_sound* sound : sound_type){
+            if(!ma_sound_is_playing(sound)){
+                ma_sound_stop(sound);
+                ma_sound_uninit(sound);
+                sound_type.erase(sound);
+                delete sound;
+            }
+        }
+    }
+}
 void Audio::Play(String name_) 
 {
+    gc();
     auto& sounds = Engine::Res<Sound>();
     assert(sounds.contains(name_));
-    PlaySound(sounds[name_]->path.c_str(), NULL, SND_FILENAME | SND_ASYNC);
+
+    ma_result result;
+    ma_sound* masound = new ma_sound;
+    result = ma_sound_init_from_file(&engine, sounds[name_]->path.c_str(), MA_SOUND_FLAG_ASYNC, NULL, NULL, masound);
+    if(result != MA_SUCCESS){
+        Logger::critical("Failed to load {} {}", name_, sounds[name_]->path.c_str());
+    }
+    Logger::info("Loaded {} {}", name_, sounds[name_]->path.c_str());
+    active_sounds[name_].insert(masound);
+    ma_sound_start(masound);
+//    ma_sound_set_end_callback(masound, &onSoundEnded, NULL);
 }
 
 void Audio::PlayLoop(String name_) 
 {
+    gc();
     auto& sounds = Engine::Res<Sound>();
     assert(sounds.contains(name_));
-    PlaySound(sounds[name_]->path.c_str(), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
+    ma_result result;
+    ma_sound* masound = new ma_sound;
+    result = ma_sound_init_from_file(&engine, sounds[name_]->path.c_str(), MA_SOUND_FLAG_ASYNC, NULL, NULL, masound);
+    if(result != MA_SUCCESS){
+        Logger::critical("Failed to load {} {}", name_, sounds[name_]->path.c_str());
+    }
+    Logger::info("Loaded {} {}", name_, sounds[name_]->path.c_str());
+    active_sounds[name_].insert(masound);
+    ma_sound_set_looping(masound, true);
+    ma_sound_start(masound);
+//    ma_sound_set_end_callback(masound, &onSoundEnded, NULL);
+
+
 }
 
 void Audio::Stop() 
 {
-    PlaySound(NULL, NULL, NULL);
+    for(auto [name, sound_type] : active_sounds){
+        for(ma_sound* sound : sound_type){
+            ma_sound_stop(sound);
+            ma_sound_uninit(sound);
+        }
+    }
+
+    for(auto [name, sound_type] : active_sounds){
+        sound_type.clear();
+    }
+}
+void Audio::Stop(String name_)
+{
+    for(ma_sound* sound : active_sounds[name_]){
+        ma_sound_stop(sound);
+        ma_sound_uninit(sound);
+    }
+    active_sounds[name_].clear();
 }
 
 void Audio::Uninitialize() {
@@ -65,8 +135,9 @@ void Audio::Uninitialize() {
     {
         delete sound.second;
     }
-
     Engine::Res<Sound>().clear();
+
+    ma_engine_uninit(&engine);
 }
 
 
@@ -98,5 +169,7 @@ void AudioSystem::WindDown()
     auto* audio = Engine::GetDefaultResource<Audio>();
     delete Engine::GetDefaultResource<Audio>();
 }
+
+
 
 #endif //defined(_WIN32)

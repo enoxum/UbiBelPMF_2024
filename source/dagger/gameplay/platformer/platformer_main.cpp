@@ -148,6 +148,10 @@ void Platformer::WorldSetup()
 {
     Engine::GetDefaultResource<Audio>()->PlayLoop("music");
 
+    Engine::GetDefaultResource<Audio>()->PlayLoop("schala");
+    Engine::GetDefaultResource<Audio>()->Stop("music");
+
+
     SetCamera();
     CreateBackdrop();
 
