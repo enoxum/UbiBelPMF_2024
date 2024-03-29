@@ -1,7 +1,5 @@
 #include "audio.h"
 
-#if defined(_WIN32)
-
 #include <core/core.h>
 #include <core/engine.h>
 #include <set>
@@ -15,7 +13,6 @@ using namespace dagger;
 static ma_engine engine;
 static std::unordered_map<std::string, std::set<ma_sound*>> active_sounds;
 
-// on Windows, this does nothing
 void Audio::Initialize() {
     ma_result result = ma_engine_init(NULL, &engine);
     if (result != MA_SUCCESS) {
@@ -24,7 +21,7 @@ void Audio::Initialize() {
     Logger::info("Initialized sound engine");
 }
 
-void Audio::Load(AssetLoadRequest<Sound> request_) 
+void Audio::Load(AssetLoadRequest<Sound> request_)
 {
     FilePath path{ request_.path };
     String name = path.stem().string();
@@ -69,7 +66,7 @@ void gc(){
         }
     }
 }
-void Audio::Play(String name_) 
+void Audio::Play(String name_)
 {
     gc();
     auto& sounds = Engine::Res<Sound>();
@@ -87,7 +84,7 @@ void Audio::Play(String name_)
 //    ma_sound_set_end_callback(masound, &onSoundEnded, NULL);
 }
 
-void Audio::PlayLoop(String name_) 
+void Audio::PlayLoop(String name_)
 {
     gc();
     auto& sounds = Engine::Res<Sound>();
@@ -108,7 +105,7 @@ void Audio::PlayLoop(String name_)
 
 }
 
-void Audio::Stop() 
+void Audio::Stop()
 {
     for(auto [name, sound_type] : active_sounds){
         for(ma_sound* sound : sound_type){
@@ -169,7 +166,3 @@ void AudioSystem::WindDown()
     auto* audio = Engine::GetDefaultResource<Audio>();
     delete Engine::GetDefaultResource<Audio>();
 }
-
-
-
-#endif //defined(_WIN32)
