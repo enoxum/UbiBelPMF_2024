@@ -48,3 +48,6 @@ cmake-build-debug
 bindings
 CMakeUserPresets.json
 conan_provider.cmake
+
+# Idea
+.idea

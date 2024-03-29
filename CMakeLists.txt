@@ -67,3 +67,7 @@ if (UNIX AND NOT APPLE)
         message(FATAL_ERROR "TBB not found, please install it or adjust the search paths.")
     endif()
 endif()
+
+if(WIN32)
+    target_link_libraries(Dagger Winmm)
+endif()

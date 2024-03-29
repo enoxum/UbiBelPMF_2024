@@ -1,5 +1,23 @@
 #pragma once
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
+#ifdef MAX
+#undef MAX
+#endif
+#define MAX max
+
+#ifdef MIN
+#undef MIN
+#endif
+#define MIN min
+
 #include "core/core.h"
 #include "core/system.h"
 

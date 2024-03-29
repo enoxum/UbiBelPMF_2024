@@ -62,8 +62,8 @@ Vector2 SimpleCollision::GetCollisionSides(const Vector3& pos_, const SimpleColl
     Vector2 p(pos_.x + pivot.x * size.x, pos_.y + pivot.y * size.y);
     Vector2 p2(posOther_.x + other_.pivot.x * other_.size.x, posOther_.y + other_.pivot.y * other_.size.y);
 
-    Float32 xDif = std::min(std::abs(p.x + size.x - p2.x), std::abs(p2.x + other_.size.x - p.x));
-    Float32 yDif = std::min(std::abs(p.y + size.y - p2.y), std::abs(p2.y + other_.size.y - p.y));
+    Float32 xDif = std::min<Float32>(std::abs(p.x + size.x - p2.x), std::abs(p2.x + other_.size.x - p.x));
+    Float32 yDif = std::min<Float32>(std::abs(p.y + size.y - p2.y), std::abs(p2.y + other_.size.y - p.y));
 
     if (xDif < yDif)
     {
