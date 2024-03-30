@@ -18,9 +18,12 @@ You can clone and fully set up this project by simply running:
 
 ### Conan 
 Conan is used for dependecies
+#### For Ubuntu
 ```shell
-sudo pip3 install conan
+pip install conan
 ```
+#### Or
+[Download](https://conan.io/downloads) conan from site.
 ### Conan simpleini
 Official conan repository doesn't have [simpleini](https://github.com/brofield/simpleini).
 ##### Building simpleini
