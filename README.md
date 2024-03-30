@@ -29,7 +29,7 @@ cd deps
 conan create .
 ```
 
-### Build from cli
+### Build from terminal
 ```shell
   mkdir build
   cd build
