@@ -28,13 +28,15 @@ class DaggerRecipe(ConanFile):
         self.requires("miniaudio/0.11.21")
 
     def configure(self):
+        self.options['glad'].shared = False
+        self.options['glad'].fPIC = True
         self.options['glad'].no_loader = False
         self.options['glad'].spec = 'gl'
         self.options['glad'].gl_profile = 'compatibility'
         self.options['glad'].gl_version = '3.3'
 
-    # def imports(self):
-    #     self.copy('*.so*', src='lib', dst='bin')
+    def imports(self):
+        self.copy('*.so*', src='lib', dst='bin')
 
     def build_requirements(self):
         self.tool_requires("cmake/3.28.1")

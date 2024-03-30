@@ -11,7 +11,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (UNIX AND NOT APPLE)
     # Add TBB_INCLUDE_DIR and TBB_LIBRARY_DIR variables pointing to the TBB headers and libraries
     find_package(TBB REQUIRED)
-    find_package(ALSA REQUIRED)
 endif()
 
 
@@ -66,14 +65,5 @@ if (UNIX AND NOT APPLE)
         # TBB found, link it
         target_link_libraries(Dagger TBB::tbb)
     endif()
-
-    if (ALSA_FOUND)
-        include_directories(${ALSA_INCLUDE_DIRS})
-        target_link_libraries(Dagger ${ALSA_LIBRARIES})
-    endif()
-
 endif()
 
-if(WIN32)
-    target_link_libraries(Dagger Winmm)
-endif()
