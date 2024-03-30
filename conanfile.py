@@ -27,13 +27,11 @@ class DaggerRecipe(ConanFile):
         self.requires("entt/3.13.0")
         self.requires("miniaudio/0.11.21")
 
-    # def configure(self):
-    #     self.options['glad'].shared = False
-    #     self.options['glad'].fPIC = True
-    #     self.options['glad'].no_loader = False
-    #     self.options['glad'].spec = 'gl'
-    #     self.options['glad'].gl_profile = 'core'
-    #     self.options['glad'].gl_version = '4.6'
+    def configure(self):
+        self.options['glad'].no_loader = False
+        self.options['glad'].spec = 'gl'
+        self.options['glad'].gl_profile = 'compatibility'
+        self.options['glad'].gl_version = '3.3'
 
     # def imports(self):
     #     self.copy('*.so*', src='lib', dst='bin')
