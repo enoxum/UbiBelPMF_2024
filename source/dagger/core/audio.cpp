@@ -54,18 +54,22 @@ void Audio::Load(AssetLoadRequest<Sound> request_)
 //
 //}
 
-void gc(){
-    for(auto [name, sound_type] : active_sounds){
-        for(ma_sound* sound : sound_type){
-            if(!ma_sound_is_playing(sound)){
+void gc() {
+    for (auto& [name, sound_list] : active_sounds) {
+        for (auto it = sound_list.begin(); it != sound_list.end();) {
+            ma_sound* sound = *it;
+            if (!ma_sound_is_playing(sound)) {
                 ma_sound_stop(sound);
                 ma_sound_uninit(sound);
-                sound_type.erase(sound);
+                it = sound_list.erase(it);
                 delete sound;
+            } else {
+                ++it;
             }
         }
     }
 }
+
 void Audio::Play(String name_)
 {
     gc();
