@@ -5,7 +5,7 @@
 
 using namespace dagger;
 
-namespace bober_kuvar
+namespace bober_game
 {
 	struct ControllerMapping
 	{
@@ -17,7 +17,7 @@ namespace bober_kuvar
 		Vector2 input = { 0.f, 0.f };
 	};
 
-	class RoguelikeControllerSystem
+	class PlayerController
 		: public System
 	{
 

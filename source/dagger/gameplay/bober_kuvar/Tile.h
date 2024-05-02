@@ -1,7 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "OurEntity.h"
+
 class Tile :
-    public Entity
+    public OurEntity
 {
 private:
     bool collidable;

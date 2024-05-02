@@ -7,9 +7,9 @@
 
 using namespace dagger;
 
-namespace bober_kuvar
+namespace bober_game
 {
-    class BoberKuvar : public Game
+    class BoberGame : public Game
     {
         inline String GetIniFile() override
         {

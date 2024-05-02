@@ -1,7 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "OurEntity.h"
+
 class Weapon :
-    public Entity
+    public OurEntity
 {
 private:
     double damage;

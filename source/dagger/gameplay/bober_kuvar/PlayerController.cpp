@@ -1,23 +1,23 @@
-#include "bober_kuvar_controller.h"
+#include "PlayerController.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
 
-using namespace bober_kuvar;
+using namespace bober_game;
 
-Float32 RoguelikeControllerSystem::player_speed = 100.0f;
+Float32 PlayerController::player_speed = 100.0f;
 
-void RoguelikeControllerSystem::SpinUp()
+void PlayerController::SpinUp()
 {
-    Engine::Dispatcher().sink<KeyboardEvent>().connect<&RoguelikeControllerSystem::OnKeyboardEvent>(this);
+    Engine::Dispatcher().sink<KeyboardEvent>().connect<&PlayerController::OnKeyboardEvent>(this);
 }
 
-void RoguelikeControllerSystem::WindDown()
+void PlayerController::WindDown()
 {
-    Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&RoguelikeControllerSystem::OnKeyboardEvent>(this);
+    Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PlayerController::OnKeyboardEvent>(this);
 }
 
-void RoguelikeControllerSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
+void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
 {
     Engine::Registry().view<ControllerMapping>().each([&](ControllerMapping& ctrl_)
     {
@@ -41,7 +41,7 @@ void RoguelikeControllerSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
     });
 }
 
-void RoguelikeControllerSystem::Run()
+void PlayerController::Run()
 {
     auto view = Engine::Registry().view<Transform, ControllerMapping>();
     for (auto entity : view)
@@ -51,7 +51,5 @@ void RoguelikeControllerSystem::Run()
 
         t.position.x += ctrl.input.x * player_speed * Engine::DeltaTime();
         t.position.y += ctrl.input.y * player_speed * Engine::DeltaTime();
-
-        Logger::info("New position: ({}, {})", t.position.x, t.position.y);
     }
 }
