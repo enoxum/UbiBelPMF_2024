@@ -27,16 +27,19 @@ void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
                 ctrl_.input.y = 1;
             if (kEvent_.key == ctrl_.down_key)
                 ctrl_.input.y = -1;
+
             if (kEvent_.key == ctrl_.left_key)
                 ctrl_.input.x = -1;
             if (kEvent_.key == ctrl_.right_key)
                 ctrl_.input.x = 1;
         }
-
-        if (ctrl_.input != Vector2{0, 0})
+        else if (kEvent_.action == EDaggerInputState::Released)
         {
-            ctrl_.input *= 1.0f / sqrt(ctrl_.input.x * ctrl_.input.x +
-                                      ctrl_.input.y * ctrl_.input.y);
+            if(kEvent_.key == ctrl_.up_key || kEvent_.key == ctrl_.down_key)
+                ctrl_.input.y = 0;
+
+            if (kEvent_.key == ctrl_.left_key || kEvent_.key == ctrl_.right_key)
+                ctrl_.input.x = 0;
         }
     });
 }
@@ -49,7 +52,11 @@ void PlayerController::Run()
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
 
-        t.position.x += ctrl.input.x * player_speed * Engine::DeltaTime();
-        t.position.y += ctrl.input.y * player_speed * Engine::DeltaTime();
+        if (ctrl.input == Vector2{0.0f, 0.0f})
+            break;
+        double normalized = 1 / sqrt(ctrl.input.x * ctrl.input.x + ctrl.input.y * ctrl.input.y);
+
+        t.position.x += normalized * ctrl.input.x * player_speed * Engine::DeltaTime();
+        t.position.y += normalized * ctrl.input.y * player_speed * Engine::DeltaTime();
     }
 }
