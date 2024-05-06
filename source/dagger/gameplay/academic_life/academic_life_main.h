@@ -11,14 +11,13 @@ namespace academic_life
 {
     void SetupWorld();
 
-    class AcademicLifeGame : public Game
+    class AcademicLife : public Game
     {
         inline String GetIniFile() override
         {
-            return "academiclife.ini";
+            return "academic_life.ini";
         };
 
-        void CoreSystemsSetup() override;
         void GameplaySystemsSetup() override;
         void WorldSetup() override;
     };
