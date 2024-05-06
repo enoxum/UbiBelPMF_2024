@@ -1,0 +1,21 @@
+{
+	"animation-name": "bullet_hell:eye:IDLE",
+	"animation-length-ms": 600,
+	"animation-frames": 
+	[
+		{ "texture-name": "bullet_hell:eye:IDLE:idle1" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle2" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle3" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle4" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle5" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle6" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle7" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle8" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle9" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle10" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle11" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle12" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle13" },
+		{ "texture-name": "bullet_hell:eye:IDLE:idle14" }
+	]
+}

@@ -7,6 +7,7 @@ using namespace dagger;
 
 namespace ping_pong
 {
+
     struct PingPongBall
     {
         Vector3 speed{ 0, 0, 0 };

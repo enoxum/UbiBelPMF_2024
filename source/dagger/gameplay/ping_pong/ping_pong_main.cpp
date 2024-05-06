@@ -19,6 +19,10 @@
 #include "gameplay/ping_pong/player_scores.h"
 #include "gameplay/ping_pong/pingpong_playerinput.h"
 #include "gameplay/ping_pong/pingpong_tools.h"
+#include "gameplay/ping_pong/bullethell_eye.h"
+#include "gameplay/ping_pong/bullethell_bullet.h"
+#include "gameplay/ping_pong/bullethell_bar.h"
+#include "gameplay/ping_pong/bullethell_dash.h"
 
 
 using namespace dagger;
@@ -43,6 +47,7 @@ void ping_pong::CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 sp
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = tileSize_;
     col.size.y = tileSize_;
+
 }
 
 void PingPongGame::CoreSystemsSetup()
@@ -56,6 +61,10 @@ void PingPongGame::CoreSystemsSetup()
     engine.AddSystem<SpriteRenderSystem>();
     engine.AddPausableSystem<TransformSystem>();
     engine.AddPausableSystem<AnimationSystem>();
+    engine.AddSystem<DamageSystem>();
+    engine.AddSystem<BulletSystem>();
+    engine.AddSystem<BarSystem>();
+    engine.AddSystem<DashSystem>();
 #if !defined(NDEBUG)
     engine.AddSystem<DiagnosticSystem>();
     engine.AddSystem<GUISystem>();
@@ -71,6 +80,8 @@ void PingPongGame::GameplaySystemsSetup()
     engine.AddPausableSystem<PingPongBallSystem>();
     engine.AddPausableSystem<PingPongPlayerInputSystem>();
     engine.AddPausableSystem<PlayerScoresSystem>();
+    engine.AddPausableSystem<EyeSystem>();
+
 #if defined(DAGGER_DEBUG)
     engine.AddPausableSystem<PingPongTools>();
 #endif //defined(DAGGER_DEBUG)
@@ -103,167 +114,92 @@ void ping_pong::SetupWorld()
     constexpr int width = 26;
     constexpr float tileSize = 20.f;// / static_cast<float>(Width);
 
-    float zPos = 1.f;
+//    float zPos = 1.f;
 
     constexpr float Space = 0.1f;
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            AssignSprite(sprite, "EmptyWhitePixel");
-            sprite.size = scale * tileSize;
 
-            if (i % 2 != j % 2)
-            {
-                sprite.color.r = 0.4f;
-                sprite.color.g = 0.4f;
-                sprite.color.b = 0.4f;
-            }
-            else
-            {
-                sprite.color.r = 0.6f;
-                sprite.color.g = 0.6f;
-                sprite.color.b = 0.6f;
-            }
+    float zPos = 0.f;
 
-            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
-            {
-                sprite.color.r = 0.0f;
-                sprite.color.g = 0.0f;
-                sprite.color.b = 0.0f;
 
-                //auto& col = reg.emplace<SimpleCollision>(entity);
-                //col.size.x = TileSize;
-                //col.size.y = TileSize;
-            }
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
-    }
-
-    zPos -= 1.f;
-
-    // collisions
-    {
-        // up
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize * (width - 2)* (1 + Space);
-            col.size.y = tileSize;
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = 0;
-            transform.position.y = (0.5f + (height - 1) + (height - 1) * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
-
-        // down
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize * (width - 2) * (1 + Space);
-            col.size.y = tileSize;
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = 0;
-            transform.position.y = (0.5f - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
-
-        // left
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize;
-            col.size.y = tileSize * (height - 2) * (1 + Space);
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = 0;
-            transform.position.z = zPos;
-
-            auto& wall = reg.emplace<PingPongWall>(entity);
-            wall.isLeft = true;
-        }
-
-        // right
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize;
-            col.size.y = tileSize * (height - 2) * (1 + Space);
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f + (width - 1) + (width - 1) * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = 0;
-            transform.position.z = zPos;
-
-            auto& wall = reg.emplace<PingPongWall>(entity);
-            wall.isLeft = false;
-        }
-    }
-
-    // ball
-    CreatePingPongBall(tileSize, ColorRGBA(1, 1, 1, 1), { 7,-7,0 }, { -1,5,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 1, 1, 1), { -14,14,0 },   { 1,3,zPos });
-    CreatePingPongBall(tileSize, ColorRGBA(1, 0.5f, 1, 1), { -6,4,0 }, { -1,1,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(1, 1, 0.5f, 1), {- 7,-7,0 },    { 1,-1,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 0.5f, 1, 1), { 20,14,0 }, { -1,-3,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 0.5f, 0.5f, 1), { -14,-20,0 }, { 1,-5,zPos });
-    CreatePingPongBall(tileSize, ColorRGBA(0.5f, 1, 0.5f, 1), { 8,8,0 }, { -1,-7,zPos });
 
     // player controller setup
     const Float32 playerSize = tileSize * ((height - 2) * (1 + Space) * 0.33f);
     PingPongPlayerInputSystem::SetupPlayerBoarders(playerSize, -playerSize);
-    PingPongPlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;
+//    PingPongPlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;
     //1st player
     {
         auto entity = reg.create();
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size.x = tileSize;
-        col.size.y = playerSize;
+        col.size.y = tileSize;
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position.x = (2.5f - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+        transform.position.x = 0;
         transform.position.y = 0;
         transform.position.z = zPos;
 
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "EmptyWhitePixel");
         sprite.size.x = tileSize;
-        sprite.size.y = playerSize;
+        sprite.size.y = tileSize;
+//        sprite.scale = {10, 1};
+        reg.emplace<EyeTarget>(entity);
 
         auto& controller = reg.emplace<ControllerMapping>(entity);
+
+        auto& mov = reg.emplace<MovementData>(entity);
+
+        auto& dash = reg.emplace<DashData>(entity);
+        dash.dashCooldown = 3.f;
+        dash.dashTimer = 3.f;
+        dash.canDash = true;
+
+        createBar(&dash.dashTimer, {-250, -180, 0}, 200, 50, {0,0,1,1}, dash.dashCooldown);
+
+        auto& stats = reg.emplace<StatsData>(entity);
+
+        createBar(&stats.hp, {-250, -250, 0}, 200, 50, {1,0,0,1}, stats.hp);
+
+        reg.emplace<Damageable>(entity);
+
         PingPongPlayerInputSystem::SetupPlayerOneInput(controller);
     }
-
-    //2nd player
+    //Eye
     {
         auto entity = reg.create();
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size.x = tileSize;
-        col.size.y = playerSize;
+        col.size.y = tileSize;
+
+        reg.emplace<Eye>(entity);
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position.x = (0.5f + (width - 3) + (width - 1) * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+        transform.position.x = 0;
         transform.position.y = 0;
         transform.position.z = zPos;
 
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "EmptyWhitePixel");
-        sprite.size.x = tileSize;
-        sprite.size.y = playerSize;
+        auto& stats = reg.emplace<StatsData>(entity);
+        stats.hp = 1e2;
 
-        auto& controller = reg.emplace<ControllerMapping>(entity);
-        PingPongPlayerInputSystem::SetupPlayerTwoInput(controller);
+        createBar(&stats.hp, {0, 250, 0},400, 50, {1,0,0,1},stats.hp);
+
+        auto& dmg = reg.emplace<Damageable>(entity);
+        dmg.hurtDuration = .2f;
+
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "bullet_hell:eye:IDLE:idle1");
+        sprite.size.x = tileSize;
+        sprite.size.y = tileSize;
+        sprite.scale = {5, 5};
+
+        auto &anim = reg.emplace<Animator>(entity);
+        AnimatorPlay(anim, "bullet_hell:eye:IDLE");
+
     }
+
 
     // add score system to count scores for left and right collisions
     PlayerScoresSystem::SetFieldSize(width, height, tileSize * (1 + Space));
 }
+
+
