@@ -17,9 +17,9 @@
 #include "gameplay/common/simple_collisions.h"
 
 
-#include "esccape/esccape_main.h"
-#include "esccape/esccape_playerinput.h"
-#include "esccape/esccape_player.h"
+#include "esccape_main.h"
+#include "esccape_playerinput.h"
+#include "esccape_player.h"
 
 using namespace dagger;
 using namespace esccape;
