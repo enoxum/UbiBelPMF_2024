@@ -1,4 +1,4 @@
-#include "academic_life_logic.h"
+﻿#include "academic_life_logic.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
