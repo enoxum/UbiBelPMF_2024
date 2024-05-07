@@ -64,19 +64,13 @@ void EsccapeGame::CoreSystemsSetup()
 #endif //!defined(NDEBUG)
 }
 
-/*
-void PingPongGame::GameplaySystemsSetup()
+
+void EsccapeGame::GameplaySystemsSetup()
 {
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
-    engine.AddPausableSystem<PingPongBallSystem>();
-    engine.AddPausableSystem<PingPongPlayerInputSystem>();
-    engine.AddPausableSystem<PlayerScoresSystem>();
-#if defined(DAGGER_DEBUG)
-    engine.AddPausableSystem<PingPongTools>();
-#endif //defined(DAGGER_DEBUG)
-}*/
+}
 
 void EsccapeGame::WorldSetup()
 {
@@ -211,8 +205,8 @@ void esccape::SetupWorld()
     // player controller setup
     const Float32 playerSize = tileSize * ((height - 2) * (1 + Space) * 0.33f);
 
-    EsccapePlayerInputSystem::SetupPlayerBoarders(playerSize);
-    EsccapePlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;
+   /* EsccapePlayerInputSystem::SetupPlayerBoarders(playerSize);
+    EsccapePlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;*/
 
     {
      auto entity = reg.create();
@@ -230,8 +224,8 @@ void esccape::SetupWorld()
      sprite.size.x = tileSize;
      sprite.size.y = playerSize;
 
-     auto& controller = reg.emplace<ControllerMapping>(entity);
-     EsccapePlayerInputSystem::SetupPlayerInput(controller);
+     //auto& controller = reg.emplace<ControllerMapping>(entity);
+     //EsccapePlayerInputSystem::SetupPlayerInput(controller);
     }
 
     // add score system to count scores for left and right collisions
