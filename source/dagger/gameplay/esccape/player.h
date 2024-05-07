@@ -11,13 +11,15 @@ namespace esccape
     {
         EDaggerKeyboard leftKey = EDaggerKeyboard::KeyA;
         EDaggerKeyboard rightKey = EDaggerKeyboard::KeyD;
+        EDaggerKeyboard upKey = EDaggerKeyboard::KeyW;
+        EDaggerKeyboard downKey = EDaggerKeyboard::KeyS;
 
         Vector2 input{ 0, 0 };
     };
 
-    struct RacingPlayerCar
+    struct PlayerEntity
     {
-        Float32 horzSpeed;
+        Float32 speed;
     };
 
     class Player
@@ -35,4 +37,5 @@ namespace esccape
         void OnKeyboardEvent(KeyboardEvent kEvent_);
     };
 }
+
 

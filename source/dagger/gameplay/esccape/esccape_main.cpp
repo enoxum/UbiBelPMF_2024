@@ -16,35 +16,11 @@
 
 #include "gameplay/common/simple_collisions.h"
 
-
 #include "esccape_main.h"
-#include "esccape_playerinput.h"
-#include "esccape_player.h"
+#include "player.h"
 
 using namespace dagger;
 using namespace esccape;
-
-
-/*void esccape::CreatePlayer(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_)
-{
-    auto& reg = Engine::Registry();
-    auto entity = reg.create();
-    auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "PingPong:ball");
-    sprite.size = Vector2(1, 1) * tileSize_;
-
-    sprite.color = color_;
-
-    auto& transform = reg.emplace<Transform>(entity);
-    transform.position = pos_ * tileSize_;
-    transform.position.z = pos_.z;
-    auto& ball = reg.emplace<PingPongBall>(entity);
-    ball.speed = speed_ * tileSize_;
-
-    auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size.x = tileSize_;
-    col.size.y = tileSize_;
-}*/
 
 void EsccapeGame::CoreSystemsSetup()
 {
@@ -70,6 +46,7 @@ void EsccapeGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
+    engine.AddSystem<Player>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -101,133 +78,25 @@ void esccape::SetupWorld()
 
     float zPos = 1.f;
 
-    constexpr float Space = 0.1f;
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            AssignSprite(sprite, "EmptyWhitePixel");
-            sprite.size = scale * tileSize;
-
-            if (i % 2 != j % 2)
-            {
-                sprite.color.r = 0.4f;
-                sprite.color.g = 0.4f;
-                sprite.color.b = 0.4f;
-            }
-            else
-            {
-                sprite.color.r = 0.6f;
-                sprite.color.g = 0.6f;
-                sprite.color.b = 0.6f;
-            }
-
-            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
-            {
-                sprite.color.r = 0.0f;
-                sprite.color.g = 0.0f;
-                sprite.color.b = 0.0f;
-
-                //auto& col = reg.emplace<SimpleCollision>(entity);
-                //col.size.x = TileSize;
-                //col.size.y = TileSize;
-            }
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
-    }
-
     zPos -= 1.f;
 
-    // collisions
+    // player
     {
-        // up
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize * (width - 2) * (1 + Space);
-            col.size.y = tileSize;
+        auto entity = reg.create();
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "Esccape:djura");
+        float ratio = sprite.size.y / sprite.size.x;
+        sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
 
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = 0;
-            transform.position.y = (0.5f + (height - 1) + (height - 1) * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
+        auto& transform = reg.emplace<Transform>(entity);
+        transform.position = { -tileSize * 4, -tileSize * 4, zPos };
 
-        // down
-        {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize * (width - 2) * (1 + Space);
-            col.size.y = tileSize;
+        auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+        racingPlayer.speed = tileSize * 6;
 
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = 0;
-            transform.position.y = (0.5f - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
+        reg.emplace<ControllerMapping>(entity);
 
-        // left
-        /* {
-            auto entity = reg.create();
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize;
-            col.size.y = tileSize * (height - 2) * (1 + Space);
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = 0;
-            transform.position.z = zPos;
-
-            auto& wall = reg.emplace<PingPongWall>(entity);
-            wall.isLeft = true;
-        }*/
-
+        auto& col = reg.emplace<SimpleCollision>(entity);
+        col.size = sprite.size;
     }
-
-    //CreatePlayer(tileSize, ColorRGBA(1, 1, 1, 1), { 7,-7,0 }, { -1,5,zPos });
-
-
-    // ball
-    //CreatePingPongBall(tileSize, ColorRGBA(1, 1, 1, 1), { 7,-7,0 }, { -1,5,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 1, 1, 1), { -14,14,0 },   { 1,3,zPos });
-    //CreatePingPongBall(tileSize, ColorRGBA(1, 0.5f, 1, 1), { -6,4,0 }, { -1,1,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(1, 1, 0.5f, 1), {- 7,-7,0 },    { 1,-1,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 0.5f, 1, 1), { 20,14,0 }, { -1,-3,zPos });
-    //CreatePingPongBall(reg, TileSize, Color(0.5f, 0.5f, 0.5f, 1), { -14,-20,0 }, { 1,-5,zPos });
-    //CreatePingPongBall(tileSize, ColorRGBA(0.5f, 1, 0.5f, 1), { 8,8,0 }, { -1,-7,zPos });
-
-    // player controller setup
-    const Float32 playerSize = tileSize * ((height - 2) * (1 + Space) * 0.33f);
-
-   /* EsccapePlayerInputSystem::SetupPlayerBoarders(playerSize);
-    EsccapePlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;*/
-
-    {
-     auto entity = reg.create();
-     auto& col = reg.emplace<SimpleCollision>(entity);
-     col.size.x = tileSize;
-     col.size.y = playerSize;
-
-     auto& transform = reg.emplace<Transform>(entity);
-     transform.position.x = (2.5f - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-     transform.position.y = 0;
-     transform.position.z = zPos;
-
-     auto& sprite = reg.emplace<Sprite>(entity);
-     AssignSprite(sprite, "EmptyWhitePixel");
-     sprite.size.x = tileSize;
-     sprite.size.y = playerSize;
-
-     //auto& controller = reg.emplace<ControllerMapping>(entity);
-     //EsccapePlayerInputSystem::SetupPlayerInput(controller);
-    }
-
-    // add score system to count scores for left and right collisions
-   // PlayerScoresSystem::SetFieldSize(width, height, tileSize* (1 + Space));
 }
