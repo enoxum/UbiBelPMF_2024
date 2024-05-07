@@ -6,6 +6,7 @@
 #include "gameplay/common/simple_collisions.h"
 #include "gameplay/academic_life/academic_player.h"
 #include "gameplay/academic_life/academic_life_main.h"
+#include "falling_entity.h"
 
 using namespace dagger;
 using namespace academic_life;
@@ -39,7 +40,27 @@ void AcademicLifeCollisionsLogicSystem::Run()
 
             if (col.colided)
             {
-                m_Restart = true;
+                // TO DO score logic
+                int score = 11;
+                if (score < 0) {
+                    m_Restart = true;
+                }
+
+                
+                // TO DO generate new falling entity
+                auto viewEntities = Engine::Registry().view<FallingEntity>();
+                for (auto entityEntity : viewEntities)
+                {
+                    if (entityEntity == col.colidedWith)
+                    {
+                        Engine::Registry().destroy(entityEntity);
+                        break;
+                    }
+                }
+
+
+
+
             }
         }
     }
