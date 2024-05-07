@@ -6,8 +6,8 @@ class Enemy :
 public:
     Enemy();
 private:
-    double xp_drop;
-    double loot_amount;
+    double xpDrop;
+    double lootAmount;
 
     void spawn() override;
     void die() override;

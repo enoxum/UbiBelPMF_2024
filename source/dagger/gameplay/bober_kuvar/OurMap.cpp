@@ -1,5 +1,5 @@
 #include "OurMap.h"
 
-void OurMap::generate_map()
+void OurMap::generateMap()
 {
 }

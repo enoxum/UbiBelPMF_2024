@@ -9,10 +9,10 @@ namespace bober_game
 {
 	struct ControllerMapping
 	{
-		EDaggerKeyboard up_key;
-		EDaggerKeyboard left_key;
-		EDaggerKeyboard down_key;
-		EDaggerKeyboard right_key;
+		EDaggerKeyboard upKey;
+		EDaggerKeyboard leftKey;
+		EDaggerKeyboard downKey;
+		EDaggerKeyboard rightKey;
 
 		Vector2 input = { 0.f, 0.f };
 	};
@@ -22,7 +22,7 @@ namespace bober_game
 	{
 
 	public:
-		static Float32 player_speed;
+		static double playerSpeed;
 
 		String SystemName() override {
 			return "Character Controller System";
@@ -34,13 +34,12 @@ namespace bober_game
 
 		static void SetupPlayerInput(ControllerMapping& controllerMapping_)
 		{
-			controllerMapping_.up_key = EDaggerKeyboard::KeyW;
-			controllerMapping_.left_key = EDaggerKeyboard::KeyA;
-			controllerMapping_.down_key = EDaggerKeyboard::KeyS;
-			controllerMapping_.right_key = EDaggerKeyboard::KeyD;
+			controllerMapping_.upKey = EDaggerKeyboard::KeyW;
+			controllerMapping_.leftKey = EDaggerKeyboard::KeyA;
+			controllerMapping_.downKey = EDaggerKeyboard::KeyS;
+			controllerMapping_.rightKey = EDaggerKeyboard::KeyD;
 		}
 	private:
-
 		void OnKeyboardEvent(KeyboardEvent kEvent_);
 	};
 }

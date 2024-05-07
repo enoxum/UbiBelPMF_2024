@@ -11,6 +11,9 @@ namespace bober_game
 {
     class BoberGame : public Game
     {
+    private:
+        int totalEnemyCount;
+
         inline String GetIniFile() override
         {
             return "bober_kuvar.ini";

@@ -5,9 +5,9 @@ class Ranged :
     public Weapon
 {
 private:
-    double current_ammo;
-    int mag_size;
-    double reload_speed;
+    int currentAmmo;
+    int magSize;
+    double reloadSpeed;
 
     void reload();
 };

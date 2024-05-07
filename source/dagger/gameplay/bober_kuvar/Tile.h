@@ -5,6 +5,6 @@ class Tile :
     public OurEntity
 {
 private:
-    bool collidable;
+    bool collidable_;
 };
 

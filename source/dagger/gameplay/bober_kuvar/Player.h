@@ -10,14 +10,15 @@ class Player :
 public:
     Player();
 
-    void level_up();
-    int get_level();
+    void levelUp();
+    int getLevel();
 private:
     void spawn() override;
     void die() override;
     void collision() override;
+    void shoot();
 
-    double xp;
-    int level;
-    ControllerMapping* controller;
+    double xp_;
+    int level_;
+    ControllerMapping* controller_;
 };

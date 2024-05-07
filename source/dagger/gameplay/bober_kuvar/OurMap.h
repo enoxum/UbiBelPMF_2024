@@ -4,8 +4,8 @@
 class OurMap
 {
 private:
-	std::list<Room> rooms;
+	std::list<Room> rooms_;
 
-	void generate_map();
+	void generateMap();
 };
 

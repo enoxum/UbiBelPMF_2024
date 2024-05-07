@@ -5,8 +5,8 @@ using namespace bober_game;
 
 Player::Player() : Character()
 {
-	controller = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
-	PlayerController::SetupPlayerInput(*controller);
+	controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
+	PlayerController::SetupPlayerInput(*controller_);
 
 	Engine::Registry().emplace<common::CameraFollowFocus>(instance);
 }
@@ -26,12 +26,16 @@ void Player::collision()
 
 }
 
-void Player::level_up()
+void Player::shoot()
 {
-	level++;
 }
 
-int Player::get_level()
+void Player::levelUp()
 {
-	return level;
+	level_++;
+}
+
+int Player::getLevel()
+{
+	return level_;
 }

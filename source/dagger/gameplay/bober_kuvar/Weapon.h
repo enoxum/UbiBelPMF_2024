@@ -5,6 +5,6 @@ class Weapon :
     public OurEntity
 {
 private:
-    double damage;
+    double damage_;
 };
 
