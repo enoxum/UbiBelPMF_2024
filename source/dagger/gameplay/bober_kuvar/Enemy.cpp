@@ -2,8 +2,8 @@
 
 Enemy::Enemy() : Character()
 {
-	loot_amount = 100.0f;
-	xp_drop = 100.0f;
+	lootAmount = 100.0f;
+	xpDrop = 100.0f;
 }
 
 void Enemy::spawn()
