@@ -38,7 +38,7 @@ void AcademicLife::WorldSetup()
 
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
-    camera->size = { 600, 600 };
+    camera->size = { 700, 600 };
     camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
@@ -54,8 +54,14 @@ void academic_life::SetupWorld()
     constexpr Vector2 scale(1, 1);
 
     constexpr int Heigh = 30;
-    constexpr int Width = 21;
+    constexpr int Width = 30;
     constexpr float TileSize = 20.f;
+
+    unsigned int ESPB = 0;
+
+    //TO DO care about boundaries for health [-100,100]
+    int health = -100;
+
 
     {
         auto entity = reg.create();
@@ -78,17 +84,17 @@ void academic_life::SetupWorld()
             AssignSprite(sprite, "EmptyWhitePixel");
             sprite.size = scale * TileSize;
 
-            sprite.color = { 0.4f, 0.4f, 0.4f, 1 };
-
-            if ((j == Width / 2) || (Width % 2 == 0 && (j == Width / 2 - 1)))
-            {
-                sprite.color = { 1,1,1,1 };
+            if (ESPB < 80) {
+                sprite.color = { 0.8f, 0.8f, 0.4f, 1 };
+            }
+            else if (ESPB < 160) {
+                sprite.color = { 0.8f, 0.8f, 0.8f, 1 };
+            }
+            else{
+                sprite.color = { 0.8f, 0.4f, 0.4f, 1 };
             }
 
-            if (j == 0 || j == Width - 1)
-            {
-                sprite.color = { 0,0,0,1 };
-            }
+
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = (0.5f + j - static_cast<float>(Width) / 2.f) * TileSize;
@@ -111,7 +117,24 @@ void academic_life::SetupWorld()
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
 
         auto& player = reg.emplace<AcademicPlayer>(entity);
-        player.horzSpeed = TileSize * 6;
+        if (health < -60) {
+            player.horzSpeed = TileSize * 6;
+        }
+        else if (health < -20) {
+            player.horzSpeed = TileSize * 8;
+        }
+        else if (health < 20) {
+            player.horzSpeed = TileSize * 10;
+        }
+        else if (health < 60) {
+            player.horzSpeed = TileSize * 12;
+        }
+        else if (health < 100) {
+            player.horzSpeed = TileSize * 14;
+        }
+        else {
+            player.horzSpeed = TileSize * 20;
+        }
 
         reg.emplace<ControllerMapping>(entity);
 
@@ -146,6 +169,8 @@ void academic_life::SetupWorld()
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size = sprite.size;
 
+        //TO DO ako je entity cigara - moze da ostavlja dim, 
+        // a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
         common_res::ParticleSpawnerSettings settings;
         settings.Setup(0.1f, {4.f, 4.f}, {-0.2f, 0.4f}, {0.2f, 1.2f}, 
                         {0.6f,0.6f,0.6f,1}, {1,1,1,1}, "EmptyWhitePixel");
