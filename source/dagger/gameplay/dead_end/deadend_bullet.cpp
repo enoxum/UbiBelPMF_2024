@@ -22,10 +22,8 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
 	auto& sprite = reg.emplace<Sprite>(entity);
     // assign a sprite for bullets when found.
 
-    sprite.size.x = tileSize;
-    sprite.size.y = tileSize;
-
     float tileSize;
+
 
     if (weaponType_ == 1)
     {
@@ -37,6 +35,9 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
         tileSize = 20.f;
         bullet.damage = 20;
     }
+
+    sprite.size.x = tileSize;
+    sprite.size.y = tileSize;
 
     auto& collision = reg.emplace<SimpleCollision>(entity);
     collision.size.x = tileSize;
@@ -82,4 +83,5 @@ void dead_end::ShootingSystem::Run()
                 // colliding stuff here
             }
         }
+    }
 }
