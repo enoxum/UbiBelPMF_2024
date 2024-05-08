@@ -60,7 +60,7 @@ void academic_life::SetupWorld()
     unsigned int ESPB = 0;
 
     //TO DO care about boundaries for health [-100,100]
-    int health = -100;
+    int health = 40;
 
 
     {
@@ -142,8 +142,31 @@ void academic_life::SetupWorld()
         col.size = sprite.size;
 
         common_res::ParticleSpawnerSettings settings;
-        settings.Setup(0.05f, {4.f, 4.f}, {-0.2f, -1.4f}, {0.2f, -0.6f}, 
-                        {0.6f,0.6f,0.6f,1}, {1,1,1,1}, "EmptyWhitePixel");
+        // kad implementiram levele health-a i ESPB-a resicu se svih ifova
+        if (health < -60) {
+            settings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0,0,1 }, { 0.2,0.2,0.2,1 }, "EmptyWhitePixel");
+        }
+        else if (health < -20) {
+            settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+        }
+        else if (health < 20) {
+            settings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
+                { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
+        }
+        else if (health < 60) {
+            settings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0.6f,0.2f,1 }, { 0,0.8,0.2f,1 }, "EmptyWhitePixel");
+        }
+        else if (health < 100) {
+            settings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
+                { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
+        }
+        else {
+            settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0.5,1,1 }, { 0,0.6,1,1 }, "EmptyWhitePixel");
+        }
         common_res::ParticleSystem::SetupParticleSystem(entity, settings);
     }
 
