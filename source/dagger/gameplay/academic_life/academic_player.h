@@ -18,7 +18,10 @@ namespace academic_life
     struct AcademicPlayer
     {
         Float32 horzSpeed;
+        void SetSpeedBasedOnHealth(int health, float TileSize);
     };
+
+
 
     class AcademicPlayerInputSystem
         : public System

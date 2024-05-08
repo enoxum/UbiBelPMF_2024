@@ -50,6 +50,34 @@ void AcademicLife::WorldSetup()
     academic_life::SetupWorld();
 }
 
+void SetupParticleSettingsBasedOnHealth(common_res::ParticleSpawnerSettings& settings, int health)
+{
+    if (health < -60) {
+        settings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+            { 0,0,0,1 }, { 0.2,0.2,0.2,1 }, "EmptyWhitePixel");
+    }
+    else if (health < -20) {
+        settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+            { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+    }
+    else if (health < 20) {
+        settings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
+            { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
+    }
+    else if (health < 60) {
+        settings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+            { 0,0.6f,0.2f,1 }, { 0,0.8,0.2f,1 }, "EmptyWhitePixel");
+    }
+    else if (health < 100) {
+        settings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
+            { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
+    }
+    else {
+        settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+            { 0,0.5,1,1 }, { 0,0.6,1,1 }, "EmptyWhitePixel");
+    }
+}
+
 void academic_life::SetupWorld()
 {
     auto& engine = Engine::Instance();
@@ -122,57 +150,17 @@ void academic_life::SetupWorld()
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
 
-        auto& player = reg.emplace<AcademicPlayer>(entity);
-        if (Health.GetValue() < -60) {
-            player.horzSpeed = TileSize * 6;
-        }
-        else if (Health.GetValue() < -20) {
-            player.horzSpeed = TileSize * 8;
-        }
-        else if (Health.GetValue() < 20) {
-            player.horzSpeed = TileSize * 10;
-        }
-        else if (Health.GetValue() < 60) {
-            player.horzSpeed = TileSize * 12;
-        }
-        else if (Health.GetValue() < 100) {
-            player.horzSpeed = TileSize * 14;
-        }
-        else {
-            player.horzSpeed = TileSize * 20;
-        }
+        auto& player = reg.emplace<AcademicPlayer>(entity); 
+        player.SetSpeedBasedOnHealth(Health.GetValue(), TileSize);
+
 
         reg.emplace<ControllerMapping>(entity);
 
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size = sprite.size;
 
-        common_res::ParticleSpawnerSettings settings;
-        // kad implementiram levele health-a i ESPB-a resicu se svih ifova
-        if (Health.GetValue() < -60) {
-            settings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-                { 0,0,0,1 }, { 0.2,0.2,0.2,1 }, "EmptyWhitePixel");
-        }
-        else if (Health.GetValue() < -20) {
-            settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-                { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
-        }
-        else if (Health.GetValue() < 20) {
-            settings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
-                { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
-        }
-        else if (Health.GetValue() < 60) {
-            settings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-                { 0,0.6f,0.2f,1 }, { 0,0.8,0.2f,1 }, "EmptyWhitePixel");
-        }
-        else if (Health.GetValue() < 100) {
-            settings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
-                { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
-        }
-        else {
-            settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-                { 0,0.5,1,1 }, { 0,0.6,1,1 }, "EmptyWhitePixel");
-        }
+        common_res::ParticleSpawnerSettings settings;        
+        SetupParticleSettingsBasedOnHealth(settings, Health.GetValue());
         common_res::ParticleSystem::SetupParticleSystem(entity, settings);
     }
 
