@@ -16,6 +16,10 @@
 #include "gameplay/academic_life/academic_player.h"
 #include "gameplay/academic_life/falling_entity.h"
 
+#include "gameplay/academic_life/health.h"
+#include "gameplay/academic_life/espb.h"
+
+
 using namespace dagger;
 using namespace academic_life;
 
@@ -57,10 +61,12 @@ void academic_life::SetupWorld()
     constexpr int Width = 30;
     constexpr float TileSize = 20.f;
 
-    unsigned int ESPB = 0;
+    //unsigned int ESPB = 0;
 
     //TO DO care about boundaries for health [-100,100]
-    int health = 40;
+    //int health = 40;
+    Health& Health = Health::Instance();
+    ESPB& ESPB = ESPB::Instance();
 
 
     {
@@ -84,10 +90,10 @@ void academic_life::SetupWorld()
             AssignSprite(sprite, "EmptyWhitePixel");
             sprite.size = scale * TileSize;
 
-            if (ESPB < 80) {
+            if (ESPB.GetValue() < 80) {
                 sprite.color = { 0.8f, 0.8f, 0.4f, 1 };
             }
-            else if (ESPB < 160) {
+            else if (ESPB.GetValue() < 160) {
                 sprite.color = { 0.8f, 0.8f, 0.8f, 1 };
             }
             else{
@@ -117,19 +123,19 @@ void academic_life::SetupWorld()
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
 
         auto& player = reg.emplace<AcademicPlayer>(entity);
-        if (health < -60) {
+        if (Health.GetValue() < -60) {
             player.horzSpeed = TileSize * 6;
         }
-        else if (health < -20) {
+        else if (Health.GetValue() < -20) {
             player.horzSpeed = TileSize * 8;
         }
-        else if (health < 20) {
+        else if (Health.GetValue() < 20) {
             player.horzSpeed = TileSize * 10;
         }
-        else if (health < 60) {
+        else if (Health.GetValue() < 60) {
             player.horzSpeed = TileSize * 12;
         }
-        else if (health < 100) {
+        else if (Health.GetValue() < 100) {
             player.horzSpeed = TileSize * 14;
         }
         else {
@@ -143,23 +149,23 @@ void academic_life::SetupWorld()
 
         common_res::ParticleSpawnerSettings settings;
         // kad implementiram levele health-a i ESPB-a resicu se svih ifova
-        if (health < -60) {
+        if (Health.GetValue() < -60) {
             settings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
                 { 0,0,0,1 }, { 0.2,0.2,0.2,1 }, "EmptyWhitePixel");
         }
-        else if (health < -20) {
+        else if (Health.GetValue() < -20) {
             settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
                 { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
         }
-        else if (health < 20) {
+        else if (Health.GetValue() < 20) {
             settings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
                 { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
         }
-        else if (health < 60) {
+        else if (Health.GetValue() < 60) {
             settings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
                 { 0,0.6f,0.2f,1 }, { 0,0.8,0.2f,1 }, "EmptyWhitePixel");
         }
-        else if (health < 100) {
+        else if (Health.GetValue() < 100) {
             settings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
                 { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
         }
