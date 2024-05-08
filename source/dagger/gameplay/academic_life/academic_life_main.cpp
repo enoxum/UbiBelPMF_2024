@@ -109,9 +109,9 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "Racing:police-car-bmw-z4");       // data/textures/AcademicLife
+        AssignSprite(sprite, "AcademicLife:student");
         float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+        sprite.size = { 3 * TileSize, 3 * TileSize * ratio };
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
@@ -155,7 +155,7 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "Racing:police-car-bmw-z4");         // data/textures/AcademicLife
+        AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
         float ratio = sprite.size.y / sprite.size.x;
         sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
         sprite.scale.y = -1;
@@ -176,4 +176,5 @@ void academic_life::SetupWorld()
                         {0.6f,0.6f,0.6f,1}, {1,1,1,1}, "EmptyWhitePixel");
         common_res::ParticleSystem::SetupParticleSystem(entity, settings);
     }
+
 }
