@@ -1,8 +1,14 @@
 #include "deadend_playerinput.h"
+#include "deadend_player.h"
+#include "deadend_crosshair.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "core/graphics/sprite.h"
+#include "core/input/inputs.h"
 
+#include "gameplay/common/simple_collisions.h"
+#include "deadend_bullet.h"
 using namespace dagger;
 using namespace dead_end;
 
@@ -71,14 +77,41 @@ void dead_end::DeadEndPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 void dead_end::DeadEndPlayerInputSystem::Run()
 {
 
-    auto view = Engine::Registry().view<Transform, ControllerMapping>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, Player, SimpleCollision, Sprite>();
+    auto viewAim = Engine::Registry().view<Aim>();
+
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
+        auto& player = view.get<Player>(entity);
+        auto& col = view.get<SimpleCollision>(entity);
+        auto& s = view.get<Sprite>(entity);
 
-        t.position.y += ctrl.input.y * Engine::DeltaTime(); // * player.speed.x
-        t.position.x += ctrl.input.x * Engine::DeltaTime(); // * player.speed.y
+
+        t.position.y += ctrl.input.y * Engine::DeltaTime() * player.speed;
+        t.position.x += ctrl.input.x * Engine::DeltaTime() * player.speed;
+
+        if (player.weaponType == 1)
+        {
+            // assign a sprite for a pistol.
+        }
+        else {
+            // assign a sprite for a gun.
+        }
+
+
+        if (ctrl.shooting && player.weaponType != 0)
+        {
+
+            auto cursor = dagger::Input::CursorPositionInWorld();
+            Vector2 position = { t.position.x, t.position.y };
+            Vector2 target = { cursor.x, cursor.y };
+
+            dead_end::CreateBullet(position, target, player.weaponType);
+            
+            ctrl.shooting = false;
+        }
     }
 }
 
