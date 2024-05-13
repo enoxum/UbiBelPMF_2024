@@ -50,6 +50,8 @@ float angleBetweenVectors(const Vector2& a, const Vector2& b) {
 }
 
 Vector2 fixed_vector(100.f, 0.f);
+int radius = 100;
+Vector2 rotated_vector = Vector2(radius,0);
 
 float elapsed_time = 0.f;
 int counter = 0;
@@ -122,11 +124,9 @@ void EyeSystem::Run() {
 
             float shoot_timer=0.2f;
             float rotate_speed = 100;
-            int spawn_point_count = 4;
-            int radius = 100;
+            int spawn_point_count = 24;
+//            int radius = 100;
 
-            if(counter == 4)
-                counter=0;
 
 //            float step = 2 * M_PI / spawn_point_count;
 //            auto spawn_point = rotateVector(Vector2(radius, 0), step * counter);
@@ -146,35 +146,40 @@ void EyeSystem::Run() {
 //                elapsed_time = 0;
 
 //            bullet_sprite.rotation =
+            //            std::cout << rotated_vector.x << std::endl;
+//            for(int i=0; i<1; i++) {
+            if(elapsed_time >= 0.3) {
+                for (int i = 0; i < 24; i++) {
+                    auto bullet3 = reg.create();
+                    auto &bulletData3 = reg.emplace<Bullet>(bullet3);
+                    auto &transform3 = reg.emplace<Transform>(bullet3);
+                    auto &sprite3 = reg.emplace<Sprite>(bullet3);
+                    reg.emplace<SimpleCollision>(bullet3);
 
-            for(int i=0; i<4; i++) {
-                if(elapsed_time < 0.3)
-                    break;
-                auto bullet3 = reg.create();
-                auto &bulletData3 = reg.emplace<Bullet>(bullet3);
-                auto &transform3 = reg.emplace<Transform>(bullet3);
-                auto &sprite3 = reg.emplace<Sprite>(bullet3);
-                reg.emplace<SimpleCollision>(bullet3);
+                    float step = 2 * M_PI / spawn_point_count;
+                    float ugao = sqrt(2) / 2;;
+                    auto spawn_point = rotateVector(rotated_vector, step * i);
+                    auto spawn_point_3D = Vector3(spawn_point, 0);
+                    auto direction = spawn_point_3D;
+                    float angle = angleBetweenVectors(spawn_point, fixed_vector);
 
-                float step = 2 * M_PI / spawn_point_count;
-                auto spawn_point = rotateVector(Vector2(radius, 0), step * i);
-                auto spawn_point_3D = Vector3(spawn_point, 0);
-                auto direction = spawn_point_3D;
-                float angle = angleBetweenVectors(spawn_point, fixed_vector);
-
-                transform3.position = spawn_point_3D;
+                    transform3.position = spawn_point_3D;
 //                transform3.position.y = 10 * bulletData3.boss_radius * glm::sin(glfwGetTime()) + 3 * glfwGetTime();
 
-                auto dir3 = direction;
-                bulletData3.velocity = glm::normalize(dir3);
-                bulletData3.velocity *= 200;
-                bulletData3.owner = playerView.front();
-                AssignSprite(sprite3, "EmptyWhitePixel");
-                sprite3.size = {3, 3};
-                sprite3.scale = {5, 5};
-                if (i==3)
-                    elapsed_time=0;
+                    auto dir3 = direction;
+                    bulletData3.velocity = glm::normalize(dir3);
+                    bulletData3.velocity *= 200;
+                    bulletData3.owner = playerView.front();
+                    AssignSprite(sprite3, "EmptyWhitePixel");
+                    sprite3.size = {3, 3};
+                    sprite3.scale = {5, 5};
+                    if(i==14)
+                        elapsed_time=0;
+                }
             }
+//                if (i==3)
+//                    elapsed_time=0;
+//            }
 
                 // TILL HERE
 
