@@ -85,6 +85,8 @@ void Player::Run()
         t.position.x += ctrl.input.x * player.speed * Engine::DeltaTime();
         t.position.y += ctrl.input.y * player.speed * Engine::DeltaTime();
 
+        Logger::trace(t.position.x);
+
         if (col.colided)
         {
             if (Engine::Registry().valid(col.colidedWith))
@@ -94,21 +96,22 @@ void Player::Run()
 
                 Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
 
-                do
+                Logger::trace(collisionSides.y);
+
+               // if (col.IsCollided(t.position, collision, transform.position))
+                while(col.IsCollided(t.position, collision, transform.position))
                 {
                     // get back for 1 frame 
-                    Float32 dt = Engine::DeltaTime();
+                   
                     if (std::abs(collisionSides.x) > 0)
                     {
-                        t.position.x = 0;
+                        t.position.x -= t.position.x < 0 ? -1 : 1;
                     }
-
-                  /*  if (std::abs(collisionSides.y) > 0)
+                    if (std::abs(collisionSides.y) > 0 && col.IsCollided(t.position, collision, transform.position))
                     {
-                        t.position.y = 0;
-                    }*/
-
-                } while (col.IsCollided(t.position, collision, transform.position));
+                        t.position.y -= t.position.y < 0 ? -1 : 1;
+                    }
+                }
             }
         }
 

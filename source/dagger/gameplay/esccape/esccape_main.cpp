@@ -107,7 +107,6 @@ void esccape::SetupWorld()
 
     float zPos = 1.f;
 
-    
     {
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
@@ -117,7 +116,6 @@ void esccape::SetupWorld()
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { 0, 0, zPos };
     }
-
 
     zPos -= 1.f;
 
@@ -132,7 +130,7 @@ void esccape::SetupWorld()
             auto entity = reg.create();
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size.x = screenWidth;
-            col.size.y = playerSize;
+            col.size.y = 0;
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = 0;
@@ -145,7 +143,7 @@ void esccape::SetupWorld()
             auto entity = reg.create();
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size.x = screenWidth;
-            col.size.y = playerSize;
+            col.size.y = 0;
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = 0;
@@ -153,11 +151,31 @@ void esccape::SetupWorld()
             transform.position.z = zPos;
         }
 
-        // TODO - left & right
+        //left
+        {
+            auto entity = reg.create();
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size.x = 0;
+            col.size.y = screenHeight;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = - screenWidth / 2;
+            transform.position.y = 0;
+            transform.position.z = zPos;
+        }
+        //right
+        {
+            auto entity = reg.create();
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size.x = 0;
+            col.size.y = screenHeight;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = screenWidth / 2;
+            transform.position.y = 0;
+            transform.position.z = zPos;
+        }
     }
-
-
-
 
     // player
     {
