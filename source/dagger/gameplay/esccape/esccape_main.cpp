@@ -72,13 +72,57 @@ void esccape::SetupWorld()
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 600;
 
-    constexpr int height = 20;
-    constexpr int width = 26;
-    constexpr float tileSize = 20.f;// / static_cast<float>(Width);
+    constexpr float playerSize = 80.f;// / static_cast<float>(Width);
 
     float zPos = 1.f;
 
+    
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "Esccape:pesak");
+        sprite.size = { screenWidth, screenHeight};
+
+        auto& transform = reg.emplace<Transform>(entity);
+        transform.position = { 0, 0, zPos };
+    }
+
+
     zPos -= 1.f;
+
+    // collisions
+    {
+        // up
+        {
+            auto entity = reg.create();
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size.x = screenWidth;
+            col.size.y = playerSize;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = 0;
+            transform.position.y = screenHeight / 2;
+            transform.position.z = zPos;
+        }
+
+        // down
+        {
+            auto entity = reg.create();
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size.x = screenWidth;
+            col.size.y = playerSize;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = 0;
+            transform.position.y = -screenHeight / 2;
+            transform.position.z = zPos;
+        }
+
+        // TODO - left & right
+    }
+
+
+
 
     // player
     {
@@ -86,17 +130,19 @@ void esccape::SetupWorld()
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "Esccape:djura");
         float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
+        sprite.size = { playerSize, playerSize * ratio };
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { -tileSize * 4, -tileSize * 4, zPos };
+        transform.position = { 0, 0, zPos };
 
         auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-        racingPlayer.speed = tileSize * 6;
+        racingPlayer.speed = playerSize * 3;  
+
 
         reg.emplace<ControllerMapping>(entity);
 
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size = sprite.size;
     }
+
 }
