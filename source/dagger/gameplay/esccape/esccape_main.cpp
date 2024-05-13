@@ -19,6 +19,9 @@
 #include "esccape_main.h"
 #include "player.h"
 
+#include <random>
+#include <cstdlib>
+
 using namespace dagger;
 using namespace esccape;
 
@@ -61,6 +64,34 @@ void EsccapeGame::WorldSetup()
     SetupWorld();
 }
 
+void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale)
+{
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "Esccape:masina2");
+    float ratio = sprite.size.y / sprite.size.x;    
+    float machineSize = playerSize * machineScale;
+    printf("%f",machineSize);
+    sprite.size = { machineSize, machineSize * ratio };
+
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position.x = rand() % (screenWidth - (int)machineSize) - screenWidth/2;
+    transform.position.y = rand() % (screenHeight - (int)machineSize) - screenHeight/2;
+    transform.position.z = zPos;
+
+    if (transform.position.x <= playerSize && transform.position.x >= -playerSize)
+        transform.position.x += 3 * playerSize;
+    if (transform.position.y <= playerSize && transform.position.y >= -playerSize)
+        transform.position.y += 3 * playerSize;
+    
+
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size.x = machineSize;
+    col.size.y = machineSize;
+}
+
+
 void esccape::SetupWorld()
 {
     Vector2 scale(1, 1);
@@ -89,6 +120,10 @@ void esccape::SetupWorld()
 
 
     zPos -= 1.f;
+
+    // create machine
+    CreateMachineRandom(playerSize, screenWidth, screenHeight, zPos, 3);
+
 
     // collisions
     {
@@ -133,7 +168,7 @@ void esccape::SetupWorld()
         sprite.size = { playerSize, playerSize * ratio };
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { 0, 0, zPos };
+        transform.position = {0, 0, zPos };
 
         auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
         racingPlayer.speed = playerSize * 3;  
@@ -146,3 +181,4 @@ void esccape::SetupWorld()
     }
 
 }
+
