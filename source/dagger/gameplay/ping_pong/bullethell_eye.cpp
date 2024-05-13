@@ -52,8 +52,10 @@ float angleBetweenVectors(const Vector2& a, const Vector2& b) {
 Vector2 fixed_vector(100.f, 0.f);
 int radius = 100;
 Vector2 rotated_vector = Vector2(radius,0);
+Vector2 rotated_vector2 = Vector2(radius,0);
 
 float elapsed_time = 0.f;
+float elapsed_time2 = 0.f;
 int counter = 0;
 void EyeSystem::Run() {
     auto view = Engine::Registry().view<SimpleCollision,Transform, ControllerMapping, MovementData, Sprite, EyeTarget>();
@@ -91,6 +93,7 @@ void EyeSystem::Run() {
             auto &movData = playerView.get<MovementData>(playerView.front());
 
             elapsed_time += Engine::DeltaTime();
+            elapsed_time2 += Engine::DeltaTime();
 
 //                auto bullet4 = reg.create();
 //                auto &bulletData4 = reg.emplace<Bullet>(bullet4);
@@ -148,8 +151,13 @@ void EyeSystem::Run() {
 //            bullet_sprite.rotation =
             //            std::cout << rotated_vector.x << std::endl;
 //            for(int i=0; i<1; i++) {
+
+
             if(elapsed_time >= 0.3) {
-                for (int i = 0; i < 24; i++) {
+                rotated_vector = rotateVector(rotated_vector2, 0.26179); // angle = 15 deg
+                rotated_vector2 = rotated_vector;
+//                for (int i = 0; i < 24; i++) {
+                for(int i=0; i<4; i++) {
                     auto bullet3 = reg.create();
                     auto &bulletData3 = reg.emplace<Bullet>(bullet3);
                     auto &transform3 = reg.emplace<Transform>(bullet3);
@@ -157,8 +165,9 @@ void EyeSystem::Run() {
                     reg.emplace<SimpleCollision>(bullet3);
 
                     float step = 2 * M_PI / spawn_point_count;
-                    float ugao = sqrt(2) / 2;;
-                    auto spawn_point = rotateVector(rotated_vector, step * i);
+//                    float ugao = sqrt(2) / 2;;
+//                    auto spawn_point = rotateVector(rotated_vector, step * i);
+                    auto spawn_point = rotateVector(rotated_vector2, i*1.5707);
                     auto spawn_point_3D = Vector3(spawn_point, 0);
                     auto direction = spawn_point_3D;
                     float angle = angleBetweenVectors(spawn_point, fixed_vector);
@@ -173,9 +182,11 @@ void EyeSystem::Run() {
                     AssignSprite(sprite3, "EmptyWhitePixel");
                     sprite3.size = {3, 3};
                     sprite3.scale = {5, 5};
-                    if(i==14)
-                        elapsed_time=0;
                 }
+                elapsed_time=0;
+//                    if(i==14)
+//                        elapsed_time=0;
+//                }
             }
 //                if (i==3)
 //                    elapsed_time=0;
