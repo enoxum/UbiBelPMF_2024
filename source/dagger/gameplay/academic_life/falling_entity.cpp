@@ -16,33 +16,57 @@ void FallingEntitySystem::Run()
     {
         fieldSettings = *ptr;
     }
-    static int fallingEntityCounter = 0;
+
+    Float32 boarderY = fieldSettings.GetYBoarder();
     static float mul = 4;
+    static int fallingEntityCounter = 0;
     float entitySpeed = fieldSettings.fieldTileSize * mul;
 
     auto view = Engine::Registry().view<Transform, FallingEntity>();
     for (auto entity : view)
     {
-        auto& t = view.get<Transform>(entity);
+        auto& transform = view.get<Transform>(entity);
         auto& falling_entity = view.get<FallingEntity>(entity);
         falling_entity.speed = entitySpeed;
 
-        t.position.y -= falling_entity.speed * Engine::DeltaTime();
-        
+        transform.position.y -= falling_entity.speed * Engine::DeltaTime();
 
-        Float32 boarderY = fieldSettings.GetYBoarder();
-        if (t.position.y < -boarderY)
+        // Umesto da se vrati gore kada padne na zemlju, bolje je da se kreira novi objekat (drugog tipa)
+        if (transform.position.y < -boarderY)
         {
-            t.position.y = boarderY;
+            transform.position.y = boarderY;
             fallingEntityCounter += 1;
             if (fallingEntityCounter % 3 == 0) {
                 mul += 0.4;
                 entitySpeed = fieldSettings.fieldTileSize * mul;
             }
-
-
-            
-
         }
+    }
+
+    mul = 4;
+    fallingEntityCounter = 0;
+    entitySpeed = fieldSettings.fieldTileSize * mul;
+    auto view2 = Engine::Registry().view<Transform, FallingText>();
+    for (auto entity : view2)
+    {
+        auto& transform = view2.get<Transform>(entity);
+        auto& falling_entity = view2.get<FallingText>(entity);
+        falling_entity.speed = entitySpeed;
+        auto& text = falling_entity.text;
+
+        transform.position.y -= falling_entity.speed * Engine::DeltaTime();
+
+        // Umesto da se vrati gore kada padne na zemlju, bolje je da se kreira novi objekat (drugog tipa)
+        if (transform.position.y < -boarderY)
+        {
+            transform.position.y = boarderY;
+            fallingEntityCounter += 1;
+            if (fallingEntityCounter % 3 == 0) {
+                mul += 0.4;
+                entitySpeed = fieldSettings.fieldTileSize * mul;
+            }
+        }
+
+        text.Set("pixel-font", "jednacina", transform.position);
     }
 }

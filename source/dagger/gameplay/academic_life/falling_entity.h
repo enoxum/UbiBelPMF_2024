@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/graphics/text.h"
 #include "core/system.h"
 #include "core/core.h"
 
@@ -12,8 +13,13 @@ namespace academic_life
         Float32 speed;
     };
 
-    class FallingEntitySystem
-        : public System
+    struct FallingText
+    {
+        Float32 speed;
+        Text text;
+    };
+
+    class FallingEntitySystem : public System
     {
     public:
         inline String SystemName() { return "Falling Entity's System"; }

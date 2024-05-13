@@ -49,19 +49,20 @@ void AcademicPlayerInputSystem::Run()
         fieldSettings = *ptr;
     }
 
+    Float32 bottomBoarderY = -fieldSettings.GetYBoarder();
+    Float32 boarderX = fieldSettings.GetXBoarder();
+
     auto view = Engine::Registry().view<Transform, ControllerMapping, AcademicPlayer>();
     for (auto entity : view)
     {
         auto &t = view.get<Transform>(entity);
         auto &ctrl = view.get<ControllerMapping>(entity);
         auto &academic_player = view.get<AcademicPlayer>(entity);
-
-        Float32 bottomBoarderY = -fieldSettings.GetYBoarder();
+        
         t.position.y = bottomBoarderY + 65.0f; 
                                 //npr -235.0f;
         t.position.x += ctrl.input.x * academic_player.horzSpeed * Engine::DeltaTime();
 
-        Float32 boarderX = fieldSettings.GetXBoarder();
         if (t.position.x > boarderX)
         {
             t.position.x = boarderX;

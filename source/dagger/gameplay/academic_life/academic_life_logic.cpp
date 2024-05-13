@@ -2,6 +2,7 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "core/graphics/text.h"
 
 #include "gameplay/common/simple_collisions.h"
 #include "gameplay/academic_life/academic_player.h"
@@ -40,14 +41,13 @@ void AcademicLifeCollisionsLogicSystem::Run()
 
             if (col.colided)
             {
-                // TO DO score logic
+                // TO DO: score logic
                 int score = 11;
                 if (score < 0) {
                     m_Restart = true;
                 }
 
-                
-                // TO DO generate new falling entity
+                // TO DO: create random entity
                 auto viewEntities = Engine::Registry().view<FallingEntity>();
                 for (auto entityEntity : viewEntities)
                 {
@@ -58,9 +58,18 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     }
                 }
 
-
-
-
+                // TO DO: create random entity
+                auto viewEntities2 = Engine::Registry().view<FallingText>();
+                for (auto entityEntity : viewEntities2)
+                {
+                    if (entityEntity == col.colidedWith)
+                    {
+                        auto& falling_text = viewEntities2.get<FallingText>(entityEntity);
+                        falling_text.text.Set("pixel-font", "", falling_text.text.position);
+                        Engine::Registry().destroy(entityEntity);
+                        break;
+                    }
+                }
             }
         }
     }

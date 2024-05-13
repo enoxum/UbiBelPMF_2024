@@ -7,6 +7,8 @@
 #include "core/graphics/animation.h"
 #include "core/graphics/shaders.h"
 #include "core/graphics/window.h"
+#include "core/graphics/gui.h"
+#include "core/graphics/text.h"
 #include "core/game/transforms.h"
 
 #include "gameplay/common/simple_collisions.h"
@@ -68,7 +70,6 @@ void academic_life::SetupWorld()
     Health& Health = Health::Instance();
     ESPB& ESPB = ESPB::Instance();
 
-
     {
         auto entity = reg.create();
         auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
@@ -99,8 +100,6 @@ void academic_life::SetupWorld()
             else{
                 sprite.color = { 0.8f, 0.4f, 0.4f, 1 };
             }
-
-
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = (0.5f + j - static_cast<float>(Width) / 2.f) * TileSize;
@@ -176,34 +175,62 @@ void academic_life::SetupWorld()
         common_res::ParticleSystem::SetupParticleSystem(entity, settings);
     }
 
-    // collisions for road bounds
-
     // falling entities
     int numFallingEntities = rand() % 3 + 3;
     for (int i = 0; i < numFallingEntities; i++)
     {
-        auto entity = reg.create();
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
-        float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
-        sprite.scale.y = -1;
+        int entity_prob = rand() % 2;
 
-        auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { TileSize * (3 * (i+1) - Width/2), TileSize * (-i * 2 + Heigh/2), zPos };
+        // jednacine
+        if (entity_prob == 0) {
+            auto entity = reg.create();
 
-        auto& falling_entity = reg.emplace<FallingEntity>(entity);
-        falling_entity.speed = TileSize * (rand() % 5 + 3);
+            // genetsko programiranje za generisanje jednacine
 
-        auto& col = reg.emplace<SimpleCollision>(entity);
-        col.size = sprite.size;
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
 
-        //TO DO ako je entity cigara - moze da ostavlja dim, 
-        // a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
-        common_res::ParticleSpawnerSettings settings;
-        settings.Setup(0.1f, {4.f, 4.f}, {-0.2f, 0.4f}, {0.2f, 1.2f}, 
-                        {0.6f,0.6f,0.6f,1}, {1,1,1,1}, "EmptyWhitePixel");
-        common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+            auto& falling_text = reg.emplace<FallingText>(entity);
+            falling_text.speed = TileSize * (rand() % 5 + 3);
+            auto& text = falling_text.text;
+
+            std::string equation_string = "jednacina";
+            text.position = transform.position;
+            text.spacing = 0.6f;
+            text.Set("pixel-font", equation_string, text.position);
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size = { TileSize * 2, TileSize * 2 };
+        }
+
+        // pozitivni lifestyle objekti
+        //else if (entity_prob == 1) {
+        //}
+
+        // negativni lifestyle objekti
+        else {
+            auto entity = reg.create();
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
+            float ratio = sprite.size.y / sprite.size.x;
+            sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+            sprite.scale.y = -1;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
+
+            auto& falling_entity = reg.emplace<FallingEntity>(entity);
+            falling_entity.speed = TileSize * (rand() % 5 + 3);
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size = sprite.size;
+
+            //TO DO ako je entity cigara - moze da ostavlja dim, 
+            //a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
+            common_res::ParticleSpawnerSettings settings;
+            settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
+                { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+            common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+        }
     }
-
 }

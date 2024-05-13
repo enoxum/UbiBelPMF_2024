@@ -29,13 +29,12 @@ namespace academic_life
         int scores = 0;
     };
 
-    class AcademicLifeCollisionsLogicSystem
-        : public System
+    class AcademicLifeCollisionsLogicSystem : public System
     {
         bool m_Restart = false;
 
     public:
-        inline String SystemName() { return "AcademicLife Collision Car System"; }
+        inline String SystemName() { return "AcademicLife Collisions Logic System"; }
 
         void SpinUp() override;
         void WindDown() override;
