@@ -88,7 +88,7 @@ void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenH
 
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = machineSize;
-    col.size.y = machineSize;
+    col.size.y = machineSize * ratio;
 }
 
 

@@ -87,6 +87,7 @@ void Player::Run()
 
         Logger::trace(t.position.x);
 
+        // How to have collisions be the same as sprite
         if (col.colided)
         {
             if (Engine::Registry().valid(col.colidedWith))
@@ -96,14 +97,9 @@ void Player::Run()
 
                 Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
 
-                Logger::trace(collisionSides.y);
-
-               // if (col.IsCollided(t.position, collision, transform.position))
                 while(col.IsCollided(t.position, collision, transform.position))
-                {
-                    // get back for 1 frame 
-                   
-                    if (std::abs(collisionSides.x) > 0)
+                {                   
+                    if (std::abs(collisionSides.x) > 0 && col.IsCollided(t.position, collision, transform.position))
                     {
                         t.position.x -= t.position.x < 0 ? -1 : 1;
                     }
@@ -114,7 +110,6 @@ void Player::Run()
                 }
             }
         }
-
 
         /*Float32 boarderX = fieldSettings.GetXBoarder();
         if (t.position.x > boarderX)
