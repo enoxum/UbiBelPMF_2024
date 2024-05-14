@@ -106,47 +106,42 @@ void academic_life::SetupWorld()
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
     }
 
-    // ESPB text
-    // ESPB text
+    float zPos = 0.5f;
+    // ESPB
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f); // Postavlja "ESPB" iznad broja ESPB
+        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos); // Postavlja "ESPB" iznad broja ESPB
         
         auto& transform = reg.emplace<Transform>(entity);
     }
-
-    // ESPB value text
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f); // Postavlja broj ESPB ispod "ESPB"
+        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos); // Postavlja broj ESPB ispod "ESPB"
        
         auto& transform = reg.emplace<Transform>(entity);
     }
 
 
-    //Health
-    // Health text
+    // Health
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "Health", glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f); 
+        text.Set("pixel-font", "Health", glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos); 
+        
+        auto& transform = reg.emplace<Transform>(entity);
+    }
+    {
+        auto entity = reg.create();
+        auto& text = reg.emplace<Text>(entity);
+        text.Set("pixel-font", std::to_string(Health.GetValue()), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos); 
         
         auto& transform = reg.emplace<Transform>(entity);
     }
 
-    // Health value text
-    {
-        auto entity = reg.create();
-        auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", std::to_string(Health.GetValue()), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f); 
-        
-        auto& transform = reg.emplace<Transform>(entity);
-    }
 
-
-    float zPos = 1.f;
+    zPos = 1.f;
 
     for (int i = 0; i < Heigh; i++)
     {
@@ -187,7 +182,7 @@ void academic_life::SetupWorld()
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
 
-        auto& player = reg.emplace<AcademicPlayer>(entity); 
+        auto& player = reg.emplace<AcademicPlayer>(entity);
         player.SetSpeedBasedOnHealth(Health.GetValue(), TileSize);
 
 
