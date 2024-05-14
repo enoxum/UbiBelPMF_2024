@@ -66,6 +66,7 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     {
                         auto& falling_text = viewEntities2.get<FallingText>(entityEntity);
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
+
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }
