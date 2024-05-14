@@ -75,3 +75,27 @@ void AcademicPlayerInputSystem::Run()
     }
 }
 
+namespace academic_life
+{
+    void AcademicPlayer::SetSpeedBasedOnHealth(int health, float TileSize)
+    {
+        if (health < -60) {
+            horzSpeed = TileSize * 6;
+        }
+        else if (health < -20) {
+            horzSpeed = TileSize * 8;
+        }
+        else if (health < 20) {
+            horzSpeed = TileSize * 10;
+        }
+        else if (health < 60) {
+            horzSpeed = TileSize * 12;
+        }
+        else if (health < 100) {
+            horzSpeed = TileSize * 14;
+        }
+        else {
+            horzSpeed = TileSize * 20;
+        }
+    }
+}
