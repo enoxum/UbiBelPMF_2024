@@ -81,5 +81,7 @@ namespace academic_life
     {
         const float horz_speed_coef = (health + 60) / static_cast<float>(40);
         horzSpeed = TileSize * (6 + 2 * horz_speed_coef);
+        if (health == -100)
+            horzSpeed = TileSize * 6;
     }
 }
