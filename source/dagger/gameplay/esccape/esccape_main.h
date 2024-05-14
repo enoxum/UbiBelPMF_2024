@@ -13,6 +13,13 @@ namespace esccape
     void CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale);
     void SetupWorld();
 
+
+    struct EsccapeCharacter
+    {
+        int speed{ 1 };
+    };
+
+
     class EsccapeGame : public Game
     {
         inline String GetIniFile() override
