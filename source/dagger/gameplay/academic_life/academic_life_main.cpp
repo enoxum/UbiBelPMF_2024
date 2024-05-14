@@ -1,4 +1,4 @@
-#include "academic_life_main.h"
+﻿#include "academic_life_main.h"
 
 #include "core/core.h"
 #include "core/engine.h"
@@ -44,7 +44,7 @@ void AcademicLife::WorldSetup()
 
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
-    camera->size = { 700, 600 };
+    camera->size = { 850, 600 };
     camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
@@ -91,10 +91,8 @@ void academic_life::SetupWorld()
     constexpr int Width = 30;
     constexpr float TileSize = 20.f;
 
-    //unsigned int ESPB = 0;
 
     //TO DO care about boundaries for health [-100,100]
-    //int health = 40;
     Health& Health = Health::Instance();
     ESPB& ESPB = ESPB::Instance();
 
@@ -106,6 +104,22 @@ void academic_life::SetupWorld()
         fieldSettings.fieldTileSize = TileSize;
 
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
+    }
+
+    //ESPB
+    {
+        auto entity = reg.create();
+        auto& text = reg.emplace<Text>(entity);
+        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f);
+
+        auto& transform = reg.emplace<Transform>(entity);
+    }
+    {
+        auto entity = reg.create();
+        auto& text = reg.emplace<Text>(entity);
+        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f);
+
+        auto& transform = reg.emplace<Transform>(entity);
     }
 
     float zPos = 1.f;
