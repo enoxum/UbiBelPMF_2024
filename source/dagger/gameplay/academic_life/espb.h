@@ -16,7 +16,7 @@ public:
     int GetValue() const override;
 
 private:
-    ESPB() : value(0) {}
+    ESPB() : value(190) {}
     int value;
 };
 
