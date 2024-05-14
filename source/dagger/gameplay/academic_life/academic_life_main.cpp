@@ -122,24 +122,8 @@ void academic_life::SetupWorld()
         transform.position = { -TileSize * 4, -TileSize * 4, zPos };
 
         auto& player = reg.emplace<AcademicPlayer>(entity);
-        if (Health.GetValue() < -60) {
-            player.horzSpeed = TileSize * 6;
-        }
-        else if (Health.GetValue() < -20) {
-            player.horzSpeed = TileSize * 8;
-        }
-        else if (Health.GetValue() < 20) {
-            player.horzSpeed = TileSize * 10;
-        }
-        else if (Health.GetValue() < 60) {
-            player.horzSpeed = TileSize * 12;
-        }
-        else if (Health.GetValue() < 100) {
-            player.horzSpeed = TileSize * 14;
-        }
-        else {
-            player.horzSpeed = TileSize * 20;
-        }
+        const float horz_speed_coef = (Health.GetValue() + 60) / static_cast<float>(40);
+        player.horzSpeed = TileSize * (6 + 2 * horz_speed_coef);
 
         reg.emplace<ControllerMapping>(entity);
 
