@@ -12,6 +12,13 @@ namespace esccape
     //void CreatePlayer(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
     void SetupWorld();
 
+
+    struct EsccapeCharacter
+    {
+        int speed{ 1 };
+    };
+
+
     class EsccapeGame : public Game
     {
         inline String GetIniFile() override

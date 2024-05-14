@@ -15,7 +15,7 @@
 #include "tools/diagnostics.h"
 
 #include "gameplay/common/simple_collisions.h"
-
+#include "character_controller_fsm.h"
 #include "esccape_main.h"
 #include "player.h"
 
@@ -61,6 +61,51 @@ void EsccapeGame::WorldSetup()
     SetupWorld();
 }
 
+//Creating player
+struct Character
+{
+    Entity entity;
+    Sprite& sprite;
+    Animator& animator;
+    InputReceiver& input;
+    EsccapeCharacter& character;
+
+    static Character Get(Entity entity)
+    {
+        auto& reg = Engine::Registry();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+        auto& anim = reg.get_or_emplace<Animator>(entity);
+        auto& input = reg.get_or_emplace<InputReceiver>(entity);
+        auto& character = reg.get_or_emplace<EsccapeCharacter>(entity);
+
+        return Character{ entity, sprite, anim, input, character };
+    }
+
+    static Character Create(
+        ColorRGB color_ = { 1, 1, 1 },
+        Vector2 position_ = { 0, 0 })
+    {
+        auto& reg = Engine::Registry();
+        auto entity = reg.create();
+
+        ATTACH_TO_FSM(CharacterControllerFSM, entity);
+
+        auto chr = Character::Get(entity);
+
+        chr.sprite.scale = { 2.5, 2.5 };
+        chr.sprite.position = { position_, 0.0f };
+        chr.sprite.color = { color_, 1.0f };
+
+        AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
+        AnimatorPlay(chr.animator, "player:player_idle_front");
+
+        chr.character.speed = 50;
+
+        return chr;
+    }
+};
+
+
 void esccape::SetupWorld()
 {
     Vector2 scale(1, 1);
@@ -80,47 +125,28 @@ void esccape::SetupWorld()
 
     zPos -= 1.f;
 
-    /*   for (int i = 1; i < 7; i++)
-       {
+    auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
 
-               auto entity = reg.create();
-               auto& sprite = reg.emplace<Sprite>(entity);
-               AssignSprite(sprite, fmt::format("spritesheets:player:player_idle_front_{}", i));
-               sprite.position = { i * 48,48, 99 };
+            /*auto player = reg.create();
 
-       }*/
-
-
-        for (int i = 0; i < 10; i++)
-        {       
-            auto player = reg.create();
             auto& sprite = reg.emplace<Sprite>(player);
-            AssignSprite(sprite, "spritesheets:player_anim:player_idle_front:1");
-            sprite.position = { rand() % 300 - 150, rand() % 300 - 150, 0 };
+            AssignSprite(sprite, "spritesheets:player_anim:player_attack_right:1");
+            sprite.position = { 0, 0 , 0};
             sprite.position.z = (150.0f + sprite.position.y) / 10.0f;
             sprite.scale = { 3, 3 };
 
             auto& anim = reg.emplace<Animator>(player);
-            AnimatorPlay(anim, "dungeon:player_idle_front");
-        }
-
-       // player
-       /*{
-           auto entity = reg.create();
-           auto& sprite = reg.emplace<Sprite>(entity);
-           AssignSprite(sprite, "Esccape:djura");
+            AnimatorPlay(anim, "player:player_attack_right");
+           
            float ratio = sprite.size.y / sprite.size.x;
            sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
 
-           auto& transform = reg.emplace<Transform>(entity);
+           auto& transform = reg.emplace<Transform>(player);
            transform.position = { -tileSize * 4, -tileSize * 4, zPos };
 
-           auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+           auto& racingPlayer = reg.emplace<PlayerEntity>(player);
            racingPlayer.speed = tileSize * 6;
 
-           reg.emplace<ControllerMapping>(entity);
-
-           auto& col = reg.emplace<SimpleCollision>(entity);
-           col.size = sprite.size;
-       }*/
+           reg.emplace<ControllerMapping>(player);
+       */
 }
