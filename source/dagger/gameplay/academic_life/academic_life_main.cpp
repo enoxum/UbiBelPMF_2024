@@ -106,21 +106,45 @@ void academic_life::SetupWorld()
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
     }
 
-    //ESPB
+    // ESPB text
+    // ESPB text
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f);
-
+        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f); // Postavlja "ESPB" iznad broja ESPB
+        
         auto& transform = reg.emplace<Transform>(entity);
     }
+
+    // ESPB value text
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f);
-
+        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f); // Postavlja broj ESPB ispod "ESPB"
+       
         auto& transform = reg.emplace<Transform>(entity);
     }
+
+
+    //Health
+    // Health text
+    {
+        auto entity = reg.create();
+        auto& text = reg.emplace<Text>(entity);
+        text.Set("pixel-font", "Health", glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), 0.5f); 
+        
+        auto& transform = reg.emplace<Transform>(entity);
+    }
+
+    // Health value text
+    {
+        auto entity = reg.create();
+        auto& text = reg.emplace<Text>(entity);
+        text.Set("pixel-font", std::to_string(Health.GetValue()), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), 0.5f); 
+        
+        auto& transform = reg.emplace<Transform>(entity);
+    }
+
 
     float zPos = 1.f;
 
