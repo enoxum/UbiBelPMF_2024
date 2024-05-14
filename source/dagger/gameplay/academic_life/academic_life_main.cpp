@@ -21,6 +21,7 @@
 #include "gameplay/academic_life/health.h"
 #include "gameplay/academic_life/espb.h"
 
+#include <cmath>
 
 using namespace dagger;
 using namespace academic_life;
@@ -230,28 +231,51 @@ void academic_life::SetupWorld()
 
         // negativni lifestyle objekti
         else {
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
-            float ratio = sprite.size.y / sprite.size.x;
-            sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
-            sprite.scale.y = -1;
+            int lifestyle_prob = rand() % 2; //da li ce da deluje pozitivno ili negativno
 
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
+            if (lifestyle_prob == 0) {
+                auto entity = reg.create();
+                auto& sprite = reg.emplace<Sprite>(entity);
+                AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
+                float ratio = sprite.size.y / sprite.size.x;
+                sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+                sprite.scale.y = -1;
 
-            auto& falling_entity = reg.emplace<FallingEntity>(entity);
-            falling_entity.speed = TileSize * (rand() % 5 + 3);
+                auto& transform = reg.emplace<Transform>(entity);
+                transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
 
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size = sprite.size;
+                auto& falling_entity = reg.emplace<FallingEntity>(entity);
+                falling_entity.speed = TileSize * (rand() % 5 + 3);
 
-            //TO DO ako je entity cigara - moze da ostavlja dim, 
-            //a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
-            common_res::ParticleSpawnerSettings settings;
-            settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
-                { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
-            common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+                auto& col = reg.emplace<SimpleCollision>(entity);
+                col.size = sprite.size;
+
+                //TO DO ako je entity cigara - moze da ostavlja dim, 
+                //a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
+                common_res::ParticleSpawnerSettings settings;
+                settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
+                    { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+                common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+            }
+            else {
+                auto entity = reg.create();
+                auto& sprite = reg.emplace<Sprite>(entity);
+                AssignSprite(sprite, "AcademicLife:apple");         // data/textures/AcademicLife
+                float ratio = sprite.size.y / sprite.size.x;
+                sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+                sprite.scale.y = -1;
+
+                auto& transform = reg.emplace<Transform>(entity);
+                transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
+                //TO DO rotacija teksture jabuke za 180 stepeni
+
+
+                auto& falling_entity = reg.emplace<FallingEntity>(entity);
+                falling_entity.speed = TileSize * (rand() % 5 + 3);
+
+                auto& col = reg.emplace<SimpleCollision>(entity);
+                col.size = sprite.size;            
+            }
         }
     }
 }
