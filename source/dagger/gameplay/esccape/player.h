@@ -19,7 +19,7 @@ namespace esccape
 
     struct PlayerEntity
     {
-        Float32 speed;
+        float speed;
     };
 
     class Player

@@ -10,6 +10,7 @@ using namespace dagger;
 namespace esccape
 {
     //void CreatePlayer(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
+    void CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale);
     void SetupWorld();
 
 

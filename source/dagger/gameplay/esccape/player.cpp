@@ -2,8 +2,12 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "core/graphics/sprite.h"
 
-#include "gameplay/racing/racing_game_logic.h"
+#include "gameplay/common/simple_collisions.h"
+
+#include <algorithm>
+#include <execution>
 
 using namespace dagger;
 using namespace esccape;
@@ -66,26 +70,57 @@ void Player::Run()
     //    fieldSettings = *ptr;
     //}
 
+    auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, ControllerMapping, PlayerEntity>();
+    auto view2 = Engine::Registry().view<PlayerEntity, Transform, SimpleCollision>();
+
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
         auto& player = view.get<PlayerEntity>(entity);
 
+        auto& col = view2.get<SimpleCollision>(entity);
+
         t.position.x += ctrl.input.x * player.speed * Engine::DeltaTime();
         t.position.y += ctrl.input.y * player.speed * Engine::DeltaTime();
 
-        //Float32 boarderX = fieldSettings.GetXBoarder();
-        //if (t.position.x > boarderX)
-        //{
-        //    t.position.x = boarderX;
-        //}
+        Logger::trace(t.position.x);
 
-        //if (t.position.x < -boarderX)
-        //{
-        //    t.position.x = -boarderX;
-        //}
+        // How to have collisions be the same as sprite
+        if (col.colided)
+        {
+            if (Engine::Registry().valid(col.colidedWith))
+            {
+                SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
+                Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
+
+                Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
+
+                while(col.IsCollided(t.position, collision, transform.position))
+                {                   
+                    if (std::abs(collisionSides.x) > 0 && col.IsCollided(t.position, collision, transform.position))
+                    {
+                        t.position.x -= t.position.x < 0 ? -1 : 1;
+                    }
+                    if (std::abs(collisionSides.y) > 0 && col.IsCollided(t.position, collision, transform.position))
+                    {
+                        t.position.y -= t.position.y < 0 ? -1 : 1;
+                    }
+                }
+            }
+        }
+
+        /*Float32 boarderX = fieldSettings.GetXBoarder();
+        if (t.position.x > boarderX)
+        {
+            t.position.x = boarderX;
+        }
+
+        if (t.position.x < -boarderX)
+        {
+            t.position.x = -boarderX;
+        }*/
     }
 }
 
