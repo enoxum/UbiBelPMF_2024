@@ -94,8 +94,8 @@ void AcademicLife::GameplaySystemsSetup()
 
 struct minus2 {};
 struct plus2 {};
-constexpr int HEALTH_TEXT_MARKER = 1;
-
+constexpr int HEALTH_MARKER = 1;
+constexpr int ESPB_MARKER = 2;
 
 void AcademicLife::WorldSetup()
 {
@@ -211,14 +211,16 @@ void academic_life::SetupWorld()
     }
     {
         auto entity = reg.create();
+        auto& scoreText = reg.emplace<ScoreEntityBase>(entity);
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos);
+
+        scoreText.value = ESPB.GetValue();
+        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f));
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
+        reg.emplace<int>(entity, ESPB_MARKER);
     }
-
-
 
     // Health
     {
@@ -239,7 +241,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, HEALTH_TEXT_MARKER);
+        reg.emplace<int>(entity, HEALTH_MARKER);
     }
 
 
