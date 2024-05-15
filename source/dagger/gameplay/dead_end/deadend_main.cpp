@@ -4,6 +4,7 @@
 #include "deadend_crosshair.h"
 #include "deadend_player.h"
 #include "deadend_playerinput.h"
+#include "deadend_map.h"
 
 #include "core/core.h"
 #include "core/engine.h"
@@ -79,6 +80,11 @@ void dead_end::setupWorld()
     constexpr float playerSize = 40.f;
 
     float zPos = 2.f;
+
+    // generate map
+    loadTiles(float zPos);
+    loadObstacles(float zPos);
+    loadEnemies(float zPos, float size);
 
 
     // player
