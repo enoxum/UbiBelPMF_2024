@@ -204,17 +204,20 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos); // Postavlja "ESPB" iznad broja ESPB
-        
+        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos); 
+
         auto& transform = reg.emplace<Transform>(entity);
+        transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f);
     }
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos); // Postavlja broj ESPB ispod "ESPB"
-       
+        text.Set("pixel-font", std::to_string(ESPB.GetValue()), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos);
+
         auto& transform = reg.emplace<Transform>(entity);
+        transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
     }
+
 
 
     // Health
