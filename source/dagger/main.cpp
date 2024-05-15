@@ -6,6 +6,7 @@
 #include "gameplay/team_game/team_game_main.h"
 #include "gameplay/tiles_example/tiles_example_main.h"
 #include "gameplay/editor/editor_main.h"
+//Test test
 
 int main(int argc_, char** argv_)
 {
@@ -14,6 +15,6 @@ int main(int argc_, char** argv_)
 //	return engine.Run<team_game::TeamGame>();
 //	return engine.Run<ping_pong::PingPongGame>();
 //	return engine.Run<racing_game::RacingGame>();
-//	return engine.Run<platformer::Platformer>();
-	return engine.Run<editor::EditorTestGame>();
+	return engine.Run<platformer::Platformer>();
+//	return engine.Run<editor::EditorTestGame>();
 }
