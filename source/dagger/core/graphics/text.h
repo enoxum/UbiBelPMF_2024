@@ -12,6 +12,7 @@ enum struct TextAlignment
 struct Text
 {
 	String font;
+	String message;
 	TextAlignment alignment{ TextAlignment::CENTER };
 	Float32 spacing{ 1.0f };
 	Sequence<Entity> entities;

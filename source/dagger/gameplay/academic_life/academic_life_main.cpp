@@ -27,6 +27,60 @@
 using namespace dagger;
 using namespace academic_life;
 
+std::string generate_equation_simple(ESPB& espb, Equation& eq)
+{
+    std::string expression = eq.to_string(eq.get_code_simple());
+    return eq.to_equation(expression);
+}
+
+std::string generate_equation_medium(ESPB& espb, Equation& eq)
+{
+    std::string expression = eq.to_string(eq.get_code_medium());
+    return eq.to_equation(expression);
+}
+
+std::string generate_equation_hard(ESPB& espb, Equation& eq)
+{
+    std::string expression = eq.to_string(eq.get_code_hard());
+    return eq.to_equation(expression);
+}
+
+std::string generate_equation(ESPB& espb)
+{
+    int espb_value = espb.GetValue();
+    Equation eq = Equation::Equation(3, 4, -5, 5);
+
+    std::string equation;
+    if (espb_value < 60) equation = generate_equation_simple(espb, eq);
+    else if (espb_value < 120) equation = generate_equation_hard(espb, eq);
+    else equation = generate_equation_hard(espb, eq);
+
+    return equation;
+}
+
+void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileSize, const unsigned Width,
+    const unsigned Height, const float zPos, int iteration)
+{
+    auto entity = reg.create();
+
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position = { TileSize * (3 * (iteration + 1) - Width / 2), TileSize * (-iteration * 2 + Height / 2), zPos };
+
+    auto& falling_text = reg.emplace<FallingText>(entity);
+    falling_text.speed = TileSize * (rand() % 5 + 3);
+    auto& text = falling_text.text;
+
+    //std::string equation = "jednacina";
+    std::string equation = generate_equation(espb);
+    text.position = transform.position;
+    text.spacing = 0.6f;
+    text.message = equation;
+    //text.Set("pixel-font", equation, text.position);
+
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size = { TileSize * 2, TileSize * 2 };
+}
+
 void AcademicLife::GameplaySystemsSetup()
 {
     auto& engine = Engine::Instance();
@@ -126,7 +180,7 @@ void academic_life::SetupWorld()
 
     constexpr Vector2 scale(1, 1);
 
-    constexpr int Heigh = 30;
+    constexpr int Height = 30;
     constexpr int Width = 30;
     constexpr float TileSize = 20.f;
 
@@ -139,7 +193,7 @@ void academic_life::SetupWorld()
         auto entity = reg.create();
         auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
         fieldSettings.fieldWidth = Width;
-        fieldSettings.fieldHeight = Heigh;
+        fieldSettings.fieldHeight = Height;
         fieldSettings.fieldTileSize = TileSize;
 
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
@@ -191,7 +245,7 @@ void academic_life::SetupWorld()
 
     zPos = 1.f;
 
-    for (int i = 0; i < Heigh; i++)
+    for (int i = 0; i < Height; i++)
     {
         for (int j = 0; j < Width; j++)
         {
@@ -212,7 +266,7 @@ void academic_life::SetupWorld()
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = (0.5f + j - static_cast<float>(Width) / 2.f) * TileSize;
-            transform.position.y = (0.5f + i - static_cast<float>(Heigh) / 2.f) * TileSize;
+            transform.position.y = (0.5f + i - static_cast<float>(Height) / 2.f) * TileSize;
             transform.position.z = zPos;
         }
     }
@@ -251,28 +305,7 @@ void academic_life::SetupWorld()
         int entity_prob = rand() % 2;
 
         // jednacine
-        if (entity_prob == 0) {
-            auto entity = reg.create();
-
-            // genetsko programiranje za generisanje jednacine
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
-
-            auto& falling_text = reg.emplace<FallingText>(entity);
-            falling_text.speed = TileSize * (rand() % 5 + 3);
-            auto& text = falling_text.text;
-
-            std::string equation_string = "jednacina";
-            text.position = transform.position;
-            text.spacing = 0.6f;
-            text.Set("pixel-font", equation_string, text.position);
-
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size = { TileSize * 2, TileSize * 2 };
-        }
-
-        
+        if (entity_prob == 0) generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
 
         // lifestyle objekti
         else {
@@ -286,14 +319,13 @@ void academic_life::SetupWorld()
             sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
+            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Height / 2), zPos };
 
             auto& falling_entity = reg.emplace<FallingEntity>(entity);
             falling_entity.speed = TileSize * (rand() % 5 + 3);
 
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size = sprite.size;
-
         }
     }
 }
