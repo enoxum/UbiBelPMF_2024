@@ -76,6 +76,7 @@ void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenH
     sprite.size = { machineSize, machineSize * ratio };
 
     auto& transform = reg.emplace<Transform>(entity);
+    // fix random
     transform.position.x = rand() % (screenWidth - (int)machineSize) - screenWidth/2;
     transform.position.y = rand() % (screenHeight - (int)machineSize) - screenHeight/2;
     transform.position.z = zPos;
