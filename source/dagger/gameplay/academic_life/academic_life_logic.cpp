@@ -9,6 +9,9 @@
 #include "gameplay/academic_life/academic_life_main.h"
 #include "falling_entity.h"
 
+#include "gameplay/academic_life/health.h"
+
+
 using namespace dagger;
 using namespace academic_life;
 
@@ -22,6 +25,8 @@ void AcademicLifeCollisionsLogicSystem::WindDown()
     Engine::Dispatcher().sink<NextFrame>().disconnect<&AcademicLifeCollisionsLogicSystem::OnEndOfFrame>(this);
 }
 
+
+
 void AcademicLifeCollisionsLogicSystem::Run()
 {
     AcademicLifeFieldSettings fieldSettings;
@@ -31,6 +36,8 @@ void AcademicLifeCollisionsLogicSystem::Run()
         {
             fieldSettings = *ptr;
         }
+     
+
 
         auto view = Engine::Registry().view<AcademicPlayer, Transform, SimpleCollision>();
         for (auto entity : view)
@@ -47,12 +54,16 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     m_Restart = true;
                 }
 
+                Health& health = Health::Instance();
+                health.Decrease(2);
+
                 // TO DO: create random entity
                 auto viewEntities = Engine::Registry().view<FallingEntity>();
                 for (auto entityEntity : viewEntities)
                 {
                     if (entityEntity == col.colidedWith)
                     {
+
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }

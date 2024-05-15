@@ -37,6 +37,11 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<common_res::ParticleSystem>();
 }
 
+struct minus2 {};
+struct plus2 {};
+constexpr int HEALTH_TEXT_MARKER = 1;
+
+
 void AcademicLife::WorldSetup()
 {
     auto& engine = Engine::Instance();
@@ -80,6 +85,7 @@ void SetupParticleSettingsBasedOnHealth(common_res::ParticleSpawnerSettings& set
             { 0,0.5,1,1 }, { 0,0.6,1,1 }, "EmptyWhitePixel");
     }
 }
+
 
 void academic_life::SetupWorld()
 {
@@ -139,6 +145,7 @@ void academic_life::SetupWorld()
         text.Set("pixel-font", std::to_string(Health.GetValue()), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f), zPos); 
         
         auto& transform = reg.emplace<Transform>(entity);
+        reg.emplace<int>(entity, HEALTH_TEXT_MARKER);
     }
 
 
@@ -225,57 +232,52 @@ void academic_life::SetupWorld()
             col.size = { TileSize * 2, TileSize * 2 };
         }
 
-        // pozitivni lifestyle objekti
-        //else if (entity_prob == 1) {
-        //}
+        
 
-        // negativni lifestyle objekti
+        // lifestyle objekti
         else {
-            int lifestyle_prob = rand() % 2; //da li ce da deluje pozitivno ili negativno
-
+            int lifestyle_prob = rand() % 5; //da li ce da deluje pozitivno ili negativno
+            auto entity = reg.create();
+            auto& sprite = reg.emplace<Sprite>(entity);
             if (lifestyle_prob == 0) {
-                auto entity = reg.create();
-                auto& sprite = reg.emplace<Sprite>(entity);
-                AssignSprite(sprite, "AcademicLife:cigarette");         // data/textures/AcademicLife
-                float ratio = sprite.size.y / sprite.size.x;
-                sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
-                sprite.scale.y = -1;
+                AssignSprite(sprite, "AcademicLife:cigarette");
+               
+                reg.emplace<minus2>(entity);
 
-                auto& transform = reg.emplace<Transform>(entity);
-                transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
-
-                auto& falling_entity = reg.emplace<FallingEntity>(entity);
-                falling_entity.speed = TileSize * (rand() % 5 + 3);
-
-                auto& col = reg.emplace<SimpleCollision>(entity);
-                col.size = sprite.size;
-
-                //TO DO ako je entity cigara - moze da ostavlja dim, 
-                //a ako je jednacina - nema potrebe da ostavlja ove cestice ili moze da ostavlja neku vatru ili tako nesto
+                //ako je entity cigara - moze da ostavlja dim 
                 common_res::ParticleSpawnerSettings settings;
                 settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
                     { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
                 common_res::ParticleSystem::SetupParticleSystem(entity, settings);
             }
-            else {
-                auto entity = reg.create();
-                auto& sprite = reg.emplace<Sprite>(entity);
-                AssignSprite(sprite, "AcademicLife:apple");         // data/textures/AcademicLife
-                float ratio = sprite.size.y / sprite.size.x;
-                sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
-                sprite.scale.y = -1;
-
-                auto& transform = reg.emplace<Transform>(entity);
-                transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
-                //TO DO rotacija teksture jabuke za 180 stepeni
-
-
-                auto& falling_entity = reg.emplace<FallingEntity>(entity);
-                falling_entity.speed = TileSize * (rand() % 5 + 3);
-
-                auto& col = reg.emplace<SimpleCollision>(entity);
-                col.size = sprite.size;            
+            else if (lifestyle_prob == 1) {
+                AssignSprite(sprite, "AcademicLife:beer");
+                reg.emplace<minus2>(entity);
             }
+            else if (lifestyle_prob == 2) {
+                AssignSprite(sprite, "AcademicLife:whey-protein");
+                reg.emplace<plus2>(entity);
+            }
+            else if (lifestyle_prob == 3) {
+                AssignSprite(sprite, "AcademicLife:fishMeal");
+                reg.emplace<plus2>(entity);
+            }
+            else {
+                AssignSprite(sprite, "AcademicLife:apple");
+                reg.emplace<plus2>(entity);
+            }   
+            float ratio = sprite.size.y / sprite.size.x;
+            sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Heigh / 2), zPos };
+
+            auto& falling_entity = reg.emplace<FallingEntity>(entity);
+            falling_entity.speed = TileSize * (rand() % 5 + 3);
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size = sprite.size;
+
         }
     }
 }
