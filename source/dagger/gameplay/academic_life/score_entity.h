@@ -15,14 +15,12 @@ namespace academic_life
     struct ScoreEntityBase
     {
         int value;
-        //Text text;
-        //void SetText(const String& font, const String& text, const Vector3& position);
+        Text text;
+        void SetText(const String& font, const String& text, const Vector3& position) {
+            this->text.Set(font, text, position);
+        }
     };
 
-    //void ScoreEntityBase::SetText(const String& font, const String& text, const Vector3& position)
-    //{
-    //    this->text.Set(font, text, position);
-    //}
     
     class ScoreEntitySystem : public System
     {
@@ -33,7 +31,8 @@ namespace academic_life
 
         //void SetTextFromValue(int value)
         //{
-        //    auto view = Engine::Registry().view<ScoreEntityBase>(); // pogled na entitete sa ScoreEntityBase komponentom
+        
+            //auto view = Engine::Registry().view<ScoreEntityBase>(); // pogled na entitete sa ScoreEntityBase komponentom
         //    for (auto entity : view)
         //    {
         //        auto& scoreEntityBase = view.get<ScoreEntityBase>(entity); // referenca na ScoreEntityBase komponentu

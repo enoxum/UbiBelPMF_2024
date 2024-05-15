@@ -11,6 +11,8 @@
 
 #include "gameplay/academic_life/health.h"
 
+#include <iostream>
+#include "score_entity.h"
 
 using namespace dagger;
 using namespace academic_life;
@@ -54,14 +56,15 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     m_Restart = true;
                 }
 
-
                 // TO DO: create random entity
                 auto viewEntities = Engine::Registry().view<FallingEntity>();
                 for (auto entityEntity : viewEntities)
                 {
                     if (entityEntity == col.colidedWith)
                     {
-
+                        Health& health = Health::Instance();
+                        health.Decrease(2);             //TO DO za podvrste, za sad svaki deluje negativno na health 
+                        std::cerr << health.GetValue() << std::endl;
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }
@@ -80,6 +83,10 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         break;
                     }
                 }
+
+                //svaki put kada se detektuje kolizija pokrenuce se nas sistem za skor
+                ScoreEntitySystem scoreSystem;
+                scoreSystem.Run();
             }
         }
     }
