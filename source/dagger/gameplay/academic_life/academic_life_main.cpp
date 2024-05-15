@@ -17,6 +17,7 @@
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "gameplay/academic_life/academic_player.h"
 #include "gameplay/academic_life/falling_entity.h"
+#include "gameplay/academic_life/score_entity.h"
 
 #include "gameplay/academic_life/health.h"
 #include "gameplay/academic_life/espb.h"
@@ -178,6 +179,19 @@ void academic_life::SetupWorld()
         auto& transform = reg.emplace<Transform>(entity);
         reg.emplace<int>(entity, HEALTH_TEXT_MARKER);
     }
+    /*{
+        auto entity = reg.create();
+        auto& scoreText = reg.emplace<ScoreEntityBase>(entity);
+        auto& text = reg.emplace<Text>(entity);
+
+        scoreText.value = Health.GetValue();
+        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f));
+
+        auto& transform = reg.emplace<Transform>(entity);
+        reg.emplace<int>(entity, HEALTH_TEXT_MARKER);
+    }*/
+
+
 
 
     zPos = 1.f;
