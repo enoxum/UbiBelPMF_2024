@@ -92,8 +92,8 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<common_res::ParticleSystem>();
 }
 
-struct minus2 {};
-struct plus2 {};
+struct negativan { int value; };
+struct pozitivan { int value; };
 constexpr int HEALTH_MARKER = 1;
 constexpr int ESPB_MARKER = 2;
 
@@ -145,7 +145,7 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
     if (lifestyle_prob == 0) {
         AssignSprite(sprite, "AcademicLife:cigarette");
 
-        reg.emplace<minus2>(entity);
+        reg.emplace<negativan>(entity);
 
         //ako je entity cigara - moze da ostavlja dim 
         common_res::ParticleSpawnerSettings settings;
@@ -155,19 +155,19 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
     }
     else if (lifestyle_prob == 1) {
         AssignSprite(sprite, "AcademicLife:beer");
-        reg.emplace<minus2>(entity);
+        reg.emplace<negativan>(entity);
     }
     else if (lifestyle_prob == 2) {
         AssignSprite(sprite, "AcademicLife:whey-protein");
-        reg.emplace<plus2>(entity);
+        reg.emplace<pozitivan>(entity);
     }
     else if (lifestyle_prob == 3) {
         AssignSprite(sprite, "AcademicLife:fishMeal");
-        reg.emplace<plus2>(entity);
+        reg.emplace<pozitivan>(entity);
     }
     else {
             AssignSprite(sprite, "AcademicLife:apple");
-            reg.emplace<plus2>(entity);
+            reg.emplace<pozitivan>(entity);
     }
 }
 
