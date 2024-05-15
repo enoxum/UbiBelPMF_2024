@@ -54,8 +54,6 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     m_Restart = true;
                 }
 
-                Health& health = Health::Instance();
-                health.Decrease(2);
 
                 // TO DO: create random entity
                 auto viewEntities = Engine::Registry().view<FallingEntity>();

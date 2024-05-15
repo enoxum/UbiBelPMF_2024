@@ -86,6 +86,37 @@ void SetupParticleSettingsBasedOnHealth(common_res::ParticleSpawnerSettings& set
     }
 }
 
+void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite) {
+    if (lifestyle_prob == 0) {
+        AssignSprite(sprite, "AcademicLife:cigarette");
+
+        reg.emplace<minus2>(entity);
+
+        //ako je entity cigara - moze da ostavlja dim 
+        common_res::ParticleSpawnerSettings settings;
+        settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
+            { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+        common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+    }
+    else if (lifestyle_prob == 1) {
+        AssignSprite(sprite, "AcademicLife:beer");
+        reg.emplace<minus2>(entity);
+    }
+    else if (lifestyle_prob == 2) {
+        AssignSprite(sprite, "AcademicLife:whey-protein");
+        reg.emplace<plus2>(entity);
+    }
+    else if (lifestyle_prob == 3) {
+        AssignSprite(sprite, "AcademicLife:fishMeal");
+        reg.emplace<plus2>(entity);
+    }
+    else {
+            AssignSprite(sprite, "AcademicLife:apple");
+            reg.emplace<plus2>(entity);
+    }
+}
+
+
 
 void academic_life::SetupWorld()
 {
@@ -239,33 +270,9 @@ void academic_life::SetupWorld()
             int lifestyle_prob = rand() % 5; //da li ce da deluje pozitivno ili negativno
             auto entity = reg.create();
             auto& sprite = reg.emplace<Sprite>(entity);
-            if (lifestyle_prob == 0) {
-                AssignSprite(sprite, "AcademicLife:cigarette");
-               
-                reg.emplace<minus2>(entity);
+            
+            setLifestyleEntity(lifestyle_prob, reg, entity, sprite);
 
-                //ako je entity cigara - moze da ostavlja dim 
-                common_res::ParticleSpawnerSettings settings;
-                settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
-                    { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
-                common_res::ParticleSystem::SetupParticleSystem(entity, settings);
-            }
-            else if (lifestyle_prob == 1) {
-                AssignSprite(sprite, "AcademicLife:beer");
-                reg.emplace<minus2>(entity);
-            }
-            else if (lifestyle_prob == 2) {
-                AssignSprite(sprite, "AcademicLife:whey-protein");
-                reg.emplace<plus2>(entity);
-            }
-            else if (lifestyle_prob == 3) {
-                AssignSprite(sprite, "AcademicLife:fishMeal");
-                reg.emplace<plus2>(entity);
-            }
-            else {
-                AssignSprite(sprite, "AcademicLife:apple");
-                reg.emplace<plus2>(entity);
-            }   
             float ratio = sprite.size.y / sprite.size.x;
             sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
 

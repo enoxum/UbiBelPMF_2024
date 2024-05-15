@@ -4,6 +4,7 @@
 #include "core/system.h"
 #include "core/game.h"
 #include "core/engine.h"
+#include <core/graphics/sprite.h>
 
 using namespace dagger;
 
