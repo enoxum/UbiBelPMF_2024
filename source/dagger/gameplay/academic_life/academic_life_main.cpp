@@ -284,7 +284,6 @@ void academic_life::SetupWorld()
 
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size = sprite.size;
-
         }
     }
 }
