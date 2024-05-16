@@ -10,7 +10,9 @@
 #include "core/graphics/window.h"
 
 #include "gameplay/common/simple_collisions.h"
-#include "../../../../projects/dagger/deadend_transform.h"
+#include "deadend_camera.h"
+#include <iostream>
+
 using namespace dagger;
 using namespace dead_end;
 
@@ -79,7 +81,7 @@ void dead_end::DeadEndPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 void dead_end::DeadEndPlayerInputSystem::Run()
 {
 
-    auto view = Engine::Registry().view<Transform, ControllerMapping, Player, SimpleCollision, Sprite>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, Player, SimpleCollision, Sprite, DeadEndCamera>();
     auto viewAim = Engine::Registry().view<Aim>();
 
     for (auto entity : view)
@@ -89,6 +91,7 @@ void dead_end::DeadEndPlayerInputSystem::Run()
         auto& player = view.get<Player>(entity);
         auto& col = view.get<SimpleCollision>(entity);
         auto& s = view.get<Sprite>(entity);
+        auto& camera = view.get<DeadEndCamera>(entity);
 
 
         t.position.x += ctrl.input.x * Engine::DeltaTime() * player.speed;
@@ -106,10 +109,23 @@ void dead_end::DeadEndPlayerInputSystem::Run()
         if (ctrl.shooting && player.weaponType != 0)
         {
             auto* config = Engine::GetDefaultResource<RenderConfig>();
+            auto* c = Engine::GetDefaultResource<Camera>();
             
-            auto cursor = dagger::Input::CursorPositionInWorld();
+            auto cursor = dagger::Input::CursorPositionInWindow();
+
+            //Vector2 screenCenter{400, 300}; // width / 2, height / 2
+            Vector2 screenCenter{camera.size.x / 2, camera.size.y / 2}; // width / 2, height / 2
+
+            Vector2 relativePosition = cursor - screenCenter; 
+
+
+            Vector2 windowCoord{ 0,0 }; 
+            windowCoord.x += camera.position.x + relativePosition.x;
+            windowCoord.y += camera.position.y - relativePosition.y;
+
             Vector2 position = { t.position.x, t.position.y };
-            Vector2 target = { cursor.x, cursor.y };
+            Vector2 target = windowCoord;
+
 
             dead_end::CreateBullet(position, target, player.weaponType);
             
