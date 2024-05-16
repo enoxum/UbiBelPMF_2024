@@ -9,7 +9,10 @@ using namespace dagger;
 
 namespace esccape
 {
+    //auto& healthBarReg = Engine::Registry();
     //void CreatePlayer(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
+    void onHealthChanged(int newHealth);
+    void CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health);
     void CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale);
     void SetupWorld();
 
@@ -26,6 +29,7 @@ namespace esccape
         {
             return "pingpong.ini";
         };
+
 
         void CoreSystemsSetup() override;
         void GameplaySystemsSetup() override;
