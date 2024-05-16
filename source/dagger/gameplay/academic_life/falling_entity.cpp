@@ -2,6 +2,7 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "gameplay/academic_life/exprtk.hpp"
 
 using namespace dagger;
 using namespace academic_life;
@@ -41,7 +42,7 @@ std::string Equation::to_equation(const std::string& expression) const
 }
 
 double Equation::calculate(const std::string& expression) {
-    /*exprtk::symbol_table<double> symbol_table;
+    exprtk::symbol_table<double> symbol_table;
     symbol_table.add_constants();
 
     exprtk::expression<double> expr;
@@ -54,9 +55,6 @@ double Equation::calculate(const std::string& expression) {
     else {
         throw std::runtime_error("Failed to parse equation");
     }
-    */
-    return 0.f;
-
 }
 
 const std::vector<std::string>& Equation::get_code_simple() const

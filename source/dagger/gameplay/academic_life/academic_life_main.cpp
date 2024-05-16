@@ -29,21 +29,10 @@
 using namespace dagger;
 using namespace academic_life;
 
-std::string generate_equation_simple(ESPB& espb, Equation& eq)
+template<typename T>
+std::string generate_equation(ESPB& espb, Equation& eq, T& (Equation::* get_code)() const)
 {
-    std::string expression = eq.to_string(eq.get_code_simple());
-    return eq.to_equation(expression);
-}
-
-std::string generate_equation_medium(ESPB& espb, Equation& eq)
-{
-    std::string expression = eq.to_string(eq.get_code_medium());
-    return eq.to_equation(expression);
-}
-
-std::string generate_equation_hard(ESPB& espb, Equation& eq)
-{
-    std::string expression = eq.to_string(eq.get_code_hard());
+    std::string expression = eq.to_string((eq.*get_code)());
     return eq.to_equation(expression);
 }
 
@@ -53,9 +42,9 @@ std::string generate_equation(ESPB& espb)
     Equation eq = Equation::Equation(3, 4, -5, 5);
 
     std::string equation;
-    if (espb_value < 60) equation = generate_equation_simple(espb, eq);
-    else if (espb_value < 120) equation = generate_equation_hard(espb, eq);
-    else equation = generate_equation_hard(espb, eq);
+    if (espb_value < 60) equation = generate_equation(espb, eq, &Equation::get_code_simple);
+    else if (espb_value < 120) equation = generate_equation(espb, eq, &Equation::get_code_medium);
+    else equation = generate_equation(espb, eq, &Equation::get_code_hard);
 
     return equation;
 }
@@ -72,12 +61,10 @@ void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileS
     falling_text.speed = TileSize * (rand() % 5 + 3);
     auto& text = falling_text.text;
 
-    //std::string equation = "jednacina";
     std::string equation = generate_equation(espb);
     text.position = transform.position;
     text.spacing = 0.6f;
     text.message = equation;
-    //text.Set("pixel-font", equation, text.position);
 
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size = { TileSize * 2, TileSize * 2 };

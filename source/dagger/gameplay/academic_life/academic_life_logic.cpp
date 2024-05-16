@@ -41,8 +41,6 @@ void AcademicLifeCollisionsLogicSystem::Run()
             fieldSettings = *ptr;
         }
      
-
-
         auto view = Engine::Registry().view<AcademicPlayer, Transform, SimpleCollision>();
         for (auto entity : view)
         {
@@ -59,7 +57,7 @@ void AcademicLifeCollisionsLogicSystem::Run()
                 }
 
                 // TO DO: create random entity
-                auto viewEntities = Engine::Registry().view<FallingEntity,LifestyleChange>();
+                auto viewEntities = Engine::Registry().view<FallingEntity, LifestyleChange>();
                 for (auto entityEntity : viewEntities)
                 {
                     auto lifestyleChange = static_cast<int>(Engine::Registry().get<LifestyleChange>(entityEntity));
