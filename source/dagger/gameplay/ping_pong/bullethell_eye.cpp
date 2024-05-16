@@ -49,20 +49,17 @@ float angleBetweenVectors(const Vector2& a, const Vector2& b) {
     return angleDeg;
 }
 
-Vector2 fixed_vector(100.f, 0.f);
 int radius = 100;
-Vector2 rotated_vector = Vector2(radius,0);
+Vector2 fixed_vector(radius, 0.f);
+Vector2 rotated_vector = Vector2(radius,0.f);
 
 float elapsed_time = 0.f;
-float elapsed_time2 = 0.f;
-int counter = 0;
 void EyeSystem::Run() {
     auto view = Engine::Registry().view<SimpleCollision,Transform, ControllerMapping, MovementData, Sprite, EyeTarget>();
     auto enemy = Engine::Registry().view<Eye, Sprite>();
     for (auto entity: view) {
         for (auto eye: enemy) {
             auto &mov = view.get<MovementData>(entity);
-            counter++;
 
             auto &spr = enemy.get<Sprite>(eye);
             auto eyeAngle = spr.rotation;
@@ -87,81 +84,99 @@ void EyeSystem::Run() {
             auto &movData = playerView.get<MovementData>(playerView.front());
             auto EyeStats = Engine::Registry().try_get<StatsData>(eye);
 
-
-            elapsed_time += Engine::DeltaTime();
-            elapsed_time2 += Engine::DeltaTime();
-
-
-            auto bullet = reg.create();
-            auto &bulletData = reg.emplace<Bullet>(bullet);
-            auto &bullet_transform = reg.emplace<Transform>(bullet);
-            auto &bullet_sprite = reg.emplace<Sprite>(bullet);
-            AssignSprite(bullet_sprite, "EmptyWhitePixel");
-            bullet_sprite.size = {3, 3};
-            bullet_sprite.scale = {5, 5};
-
             int spawn_point_count;
+            elapsed_time += Engine::DeltaTime();
 
             if (EyeStats->hp > 80.f) {
                 if (elapsed_time >= 0.3) {
                     spawn_point_count= 24;
-                    rotated_vector = rotateVector(rotated_vector, M_PI_2 / 6.f); // angle = 15 deg
+                    rotated_vector = rotateVector(rotated_vector, M_PI_2 / 6.f);
                     for (int i = 0; i < 4; i++) {
-                        auto bullet3 = reg.create();
-                        auto &bulletData3 = reg.emplace<Bullet>(bullet3);
-                        auto &transform3 = reg.emplace<Transform>(bullet3);
-                        auto &sprite3 = reg.emplace<Sprite>(bullet3);
-                        reg.emplace<SimpleCollision>(bullet3);
+                        auto bullet = reg.create();
+                        auto &bulletData = reg.emplace<Bullet>(bullet);
+                        auto &transform = reg.emplace<Transform>(bullet);
+                        auto &sprite = reg.emplace<Sprite>(bullet);
+                        reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
                         auto spawn_point = rotateVector(rotated_vector, i * M_PI_2);
                         auto direction = Vector3(spawn_point, 0);
                         float angle = angleBetweenVectors(spawn_point, fixed_vector);
 
-                        transform3.position = direction;
+                        transform.position = direction;
 
-                        auto dir3 = direction;
-                        bulletData3.velocity = glm::normalize(dir3);
-                        bulletData3.velocity *= 200;
-                        bulletData3.owner = playerView.front();
-                        AssignSprite(sprite3, "EmptyWhitePixel");
-                        sprite3.size = {3, 3};
-                        sprite3.scale = {5, 5};
+                        auto dir = direction;
+                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity *= 200;
+                        bulletData.owner = playerView.front();
+                        AssignSprite(sprite, "EmptyWhitePixel");
+                        sprite.size = {3, 3};
+                        sprite.scale = {5, 5};
                     }
                     elapsed_time = 0;
                 }
             }
             if (EyeStats->hp >= 40 && EyeStats->hp <=80){
-                for(int i=0; i<8; i++) {
-                    spawn_point_count = 8;
-                    if(elapsed_time < 0.3)
-                        break;
-                    auto bullet3 = reg.create();
-                    auto &bulletData3 = reg.emplace<Bullet>(bullet3);
-                    auto &transform3 = reg.emplace<Transform>(bullet3);
-                    auto &sprite3 = reg.emplace<Sprite>(bullet3);
-                    reg.emplace<SimpleCollision>(bullet3);
+                if(elapsed_time >= 0.3){
+                    for(int i=0; i<8; i++) {
+                        spawn_point_count = 8;
+                        auto bullet = reg.create();
+                        auto &bulletData = reg.emplace<Bullet>(bullet);
+                        auto &transform = reg.emplace<Transform>(bullet);
+                        auto &sprite = reg.emplace<Sprite>(bullet);
+                        reg.emplace<SimpleCollision>(bullet);
 
-                    float step = 2 * M_PI / spawn_point_count;
-                    auto spawn_point = rotateVector(Vector2(radius, 0), step * i);
-                    auto spawn_point_3D = Vector3(spawn_point, 0);
-                    auto direction = spawn_point_3D;
-                    float angle = angleBetweenVectors(spawn_point, fixed_vector);
+                        float step = 2 * M_PI / spawn_point_count;
+                        auto spawn_point = rotateVector(Vector2(radius, 0), step * i);
+                        auto spawn_point_3D = Vector3(spawn_point, 0);
+                        auto direction = spawn_point_3D;
+                        float angle = angleBetweenVectors(spawn_point, fixed_vector);
 
-                    transform3.position = spawn_point_3D;
+                        transform.position = spawn_point_3D;
 
-                    auto dir3 = direction;
-                    bulletData3.velocity = glm::normalize(dir3);
-                    bulletData3.velocity *= 200;
-                    bulletData3.owner = playerView.front();
-                    AssignSprite(sprite3, "EmptyWhitePixel");
-                    sprite3.size = {3, 3};
-                    sprite3.scale = {5, 5};
-                    if (i==7)
-                        elapsed_time=0;
+                        auto dir = direction;
+                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity *= 200;
+                        bulletData.owner = playerView.front();
+                        AssignSprite(sprite, "EmptyWhitePixel");
+                        sprite.size = {3, 3};
+                        sprite.scale = {5, 5};
+                        if (i==7)
+                            elapsed_time=0;
+                    }
+                }
+            }
+            if(EyeStats->hp < 40 && EyeStats->hp > 0){
+                if(elapsed_time >= 0.3) {
+                    for (int i = 0; i < 24; i++) {
+                        spawn_point_count = 24;
+                        auto bullet = reg.create();
+                        auto &bulletData = reg.emplace<Bullet>(bullet);
+                        auto &transform = reg.emplace<Transform>(bullet);
+                        auto &sprite = reg.emplace<Sprite>(bullet);
+                        reg.emplace<SimpleCollision>(bullet);
+
+                        float step = 2 * M_PI / spawn_point_count;
+                        float ugao = sqrt(2) / 2;;
+                        auto spawn_point = rotateVector(rotated_vector, step * i);
+                        auto spawn_point_3D = Vector3(spawn_point, 0);
+                        auto direction = spawn_point_3D;
+                        float angle = angleBetweenVectors(spawn_point, fixed_vector);
+
+                        transform.position = spawn_point_3D;
+
+                        auto dir = direction;
+                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity *= 200;
+                        bulletData.owner = playerView.front();
+                        AssignSprite(sprite, "EmptyWhitePixel");
+                        sprite.size = {3, 3};
+                        sprite.scale = {5, 5};
+                        if(i==14)
+                            elapsed_time=0;
+                    }
                 }
             }
         }
     }
-
 }
