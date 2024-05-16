@@ -58,8 +58,8 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
     bullet.direction.y = distanceY / norm;
 
 
-    transform.position.x = position_.x;
-    transform.position.y = position_.y;
+    transform.position.x = position_.x ;
+    transform.position.y = position_.y ;
     transform.position.z = 0.0f;
 
     

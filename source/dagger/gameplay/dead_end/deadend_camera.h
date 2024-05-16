@@ -11,6 +11,8 @@ namespace dead_end
 	struct DeadEndCamera
 	{
 		int weight{ 1 };
+		Vector3 position{ 0,0,0 };
+		Vector2 size{ 800, 600 };
 	};
 
 	class DeadEndCameraFollowSystem
