@@ -100,10 +100,11 @@ void EyeSystem::Run() {
             bullet_sprite.size = {3, 3};
             bullet_sprite.scale = {5, 5};
 
-            int spawn_point_count = 24;
+            int spawn_point_count;
 
             if (EyeStats->hp > 80.f) {
                 if (elapsed_time >= 0.3) {
+                    spawn_point_count= 24;
                     rotated_vector = rotateVector(rotated_vector, M_PI_2 / 6.f); // angle = 15 deg
                     for (int i = 0; i < 4; i++) {
                         auto bullet3 = reg.create();
@@ -128,6 +129,36 @@ void EyeSystem::Run() {
                         sprite3.scale = {5, 5};
                     }
                     elapsed_time = 0;
+                }
+            }
+            if (EyeStats->hp >= 40 && EyeStats->hp <=80){
+                for(int i=0; i<8; i++) {
+                    spawn_point_count = 8;
+                    if(elapsed_time < 0.3)
+                        break;
+                    auto bullet3 = reg.create();
+                    auto &bulletData3 = reg.emplace<Bullet>(bullet3);
+                    auto &transform3 = reg.emplace<Transform>(bullet3);
+                    auto &sprite3 = reg.emplace<Sprite>(bullet3);
+                    reg.emplace<SimpleCollision>(bullet3);
+
+                    float step = 2 * M_PI / spawn_point_count;
+                    auto spawn_point = rotateVector(Vector2(radius, 0), step * i);
+                    auto spawn_point_3D = Vector3(spawn_point, 0);
+                    auto direction = spawn_point_3D;
+                    float angle = angleBetweenVectors(spawn_point, fixed_vector);
+
+                    transform3.position = spawn_point_3D;
+
+                    auto dir3 = direction;
+                    bulletData3.velocity = glm::normalize(dir3);
+                    bulletData3.velocity *= 200;
+                    bulletData3.owner = playerView.front();
+                    AssignSprite(sprite3, "EmptyWhitePixel");
+                    sprite3.size = {3, 3};
+                    sprite3.scale = {5, 5};
+                    if (i==7)
+                        elapsed_time=0;
                 }
             }
         }
