@@ -13,6 +13,7 @@ struct Text
 {
 	String font;
 	String message;
+	double evaluation;
 	TextAlignment alignment{ TextAlignment::CENTER };
 	Float32 spacing{ 1.0f };
 	Sequence<Entity> entities;

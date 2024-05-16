@@ -30,23 +30,21 @@ using namespace dagger;
 using namespace academic_life;
 
 template<typename T>
-std::string generate_equation(ESPB& espb, Equation& eq, T& (Equation::* get_code)() const)
+std::string generate_expression(Equation& eq, T& (Equation::* get_code)() const)
 {
-    std::string expression = eq.to_string((eq.*get_code)());
-    return eq.to_equation(expression);
+    return eq.to_string((eq.*get_code)());
 }
 
-std::string generate_equation(ESPB& espb)
+std::string generate_expression(ESPB& espb, Equation& eq)
 {
     int espb_value = espb.GetValue();
-    Equation eq = Equation::Equation(3, 4, -5, 5);
 
-    std::string equation;
-    if (espb_value < 60) equation = generate_equation(espb, eq, &Equation::get_code_simple);
-    else if (espb_value < 120) equation = generate_equation(espb, eq, &Equation::get_code_medium);
-    else equation = generate_equation(espb, eq, &Equation::get_code_hard);
-
-    return equation;
+    if (espb_value < 60) 
+        return generate_expression(eq, &Equation::get_code_simple);
+    else if (espb_value < 120) 
+        return generate_expression(eq, &Equation::get_code_medium);
+    else 
+        return generate_expression(eq, &Equation::get_code_hard);
 }
 
 void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileSize, const unsigned Width,
@@ -61,13 +59,15 @@ void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileS
     falling_text.speed = TileSize * (rand() % 5 + 3);
     auto& text = falling_text.text;
 
-    std::string equation = generate_equation(espb);
+    Equation eq = Equation::Equation(3, 4, -5, 5);
+    std::string expression = generate_expression(espb, eq);
     text.position = transform.position;
     text.spacing = 0.6f;
-    text.message = equation;
+    text.message = eq.to_equation(expression);
+    text.evaluation = eq.evaluate(expression);
 
     auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size = { TileSize * 2, TileSize * 2 };
+    col.size = { TileSize * 4, TileSize * 2 };
 }
 
 void AcademicLife::GameplaySystemsSetup()

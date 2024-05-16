@@ -78,6 +78,9 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     if (entityEntity == col.colidedWith)
                     {
                         auto& falling_text = viewEntities2.get<FallingText>(entityEntity);
+
+                        // change ESPB based on text evaluation
+
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
 
                         Engine::Registry().destroy(entityEntity);

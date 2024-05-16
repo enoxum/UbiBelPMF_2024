@@ -41,7 +41,7 @@ std::string Equation::to_equation(const std::string& expression) const
     return "X = " + expression;
 }
 
-double Equation::calculate(const std::string& expression) {
+double Equation::evaluate(const std::string& expression) {
     exprtk::symbol_table<double> symbol_table;
     symbol_table.add_constants();
 
