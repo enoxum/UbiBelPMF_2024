@@ -22,6 +22,8 @@
 #include "gameplay/academic_life/health.h"
 #include "gameplay/academic_life/espb.h"
 
+#include "enumi.h"
+
 #include <cmath>
 
 using namespace dagger;
@@ -92,8 +94,6 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<common_res::ParticleSystem>();
 }
 
-struct negativan { int value; };
-struct pozitivan { int value; };
 constexpr int HEALTH_MARKER = 1;
 constexpr int ESPB_MARKER = 2;
 
@@ -145,7 +145,7 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
     if (lifestyle_prob == 0) {
         AssignSprite(sprite, "AcademicLife:cigarette");
 
-        reg.emplace<negativan>(entity);
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Cigarette);
 
         //ako je entity cigara - moze da ostavlja dim 
         common_res::ParticleSpawnerSettings settings;
@@ -155,19 +155,19 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
     }
     else if (lifestyle_prob == 1) {
         AssignSprite(sprite, "AcademicLife:beer");
-        reg.emplace<negativan>(entity);
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
     }
     else if (lifestyle_prob == 2) {
         AssignSprite(sprite, "AcademicLife:whey-protein");
-        reg.emplace<pozitivan>(entity);
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::WheyProtein);
     }
     else if (lifestyle_prob == 3) {
-        AssignSprite(sprite, "AcademicLife:fishMeal");
-        reg.emplace<pozitivan>(entity);
+        AssignSprite(sprite, "AcademicLife:FishMeal");
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
     }
     else {
             AssignSprite(sprite, "AcademicLife:apple");
-            reg.emplace<pozitivan>(entity);
+            reg.emplace<LifestyleChange>(entity, LifestyleChange::Apple);
     }
 }
 
@@ -219,7 +219,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, ESPB_MARKER);
+        reg.emplace<int>(entity, ESPB_MARKER);  //TO DO switch to EnumiScore
     }
 
     // Health
@@ -241,7 +241,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, HEALTH_MARKER);
+        reg.emplace<int>(entity, HEALTH_MARKER); //TO DO switch to EnumiScore
     }
 
 

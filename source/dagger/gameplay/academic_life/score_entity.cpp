@@ -12,7 +12,7 @@ using namespace academic_life;
 void ScoreEntitySystem::Run()
 {
     auto& registry = Engine::Registry();
-    auto view = registry.view<ScoreEntityBase, Transform, int>(); // Pogled na entitete sa ScoreEntityBase i Transform komponentama
+    auto view = registry.view<ScoreEntityBase, Transform, int>(); // TO DO switch int to EnumiScore
     Health& health = Health::Instance();
     ESPB& espb = ESPB::Instance();
 

@@ -14,6 +14,8 @@
 #include <iostream>
 #include "score_entity.h"
 
+#include "enumi.h"
+
 using namespace dagger;
 using namespace academic_life;
 
@@ -57,14 +59,15 @@ void AcademicLifeCollisionsLogicSystem::Run()
                 }
 
                 // TO DO: create random entity
-                auto viewEntities = Engine::Registry().view<FallingEntity>();
+                auto viewEntities = Engine::Registry().view<FallingEntity,LifestyleChange>();
                 for (auto entityEntity : viewEntities)
                 {
+                    auto lifestyleChange = static_cast<int>(Engine::Registry().get<LifestyleChange>(entityEntity));
+
                     if (entityEntity == col.colidedWith)
                     {
                         Health& health = Health::Instance();
-                        health.Decrease(2);             //TO DO za podvrste, za sad svaki deluje negativno na health 
-                        std::cerr << health.GetValue() << std::endl;
+                        health.Increase(lifestyleChange);             //TO DO Decrease proteklim vremenom 
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }

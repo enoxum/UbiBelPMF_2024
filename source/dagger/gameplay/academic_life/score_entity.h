@@ -29,17 +29,5 @@ namespace academic_life
 
         void Run() override;        
 
-        //void SetTextFromValue(int value)
-        //{
-        
-            //auto view = Engine::Registry().view<ScoreEntityBase>(); // pogled na entitete sa ScoreEntityBase komponentom
-        //    for (auto entity : view)
-        //    {
-        //        auto& scoreEntityBase = view.get<ScoreEntityBase>(entity); // referenca na ScoreEntityBase komponentu
-        //        auto& transform = view.get<Transform>(entity); // Dobijanje transformacije entiteta
-
-        //        scoreEntityBase.SetText("pixel-font", std::to_string(scoreEntityBase.value), Vector3{ 0, 0, 0 }); // Postavite tekst na vrednost value
-        //    }
-        //}
     };
 }
