@@ -15,7 +15,6 @@
 #include "gameplay/ping_pong/pingpong_playerinput.h"
 #include <cmath>
 
-
 using namespace ping_pong;
 
 Vector2 rotateVector(const Vector2 vector, float angle) {
