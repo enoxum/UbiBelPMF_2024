@@ -5,18 +5,19 @@
 #include "deadend_player.h"
 #include "deadend_playerinput.h"
 #include "deadend_map.h"
+#include "deadend_obstacle.h"
 
 #include "core/core.h"
 #include "core/engine.h"
 #include "core/input/inputs.h"
 #include "core/graphics/sprite.h"
 #include "core/graphics/window.h"
-#include "core/graphics/texture.h"
+#include "core/graphics/textures.h"
 #include "core/game/transforms.h"
-#include <core/graphics/sprite_render.h>
-#include <core/graphics/animations.h>
-#include <tools/diagnostics.h>
-#include <core/graphics/gui.h>
+#include "core/graphics/sprite_render.h"
+#include "core/graphics/animations.h"
+#include "tools/diagnostics.h"
+#include "core/graphics/gui.h"
 
 #include "gameplay/common/simple_collisions.h"
 
@@ -50,14 +51,16 @@ void dead_end::DeadEndGame::GameplaySystemsSetup()
     engine.AddPausableSystem<SimpleCollisionsSystem>();
     engine.AddPausableSystem<DeadEndCameraFollowSystem>();
     engine.AddPausableSystem<DeadEndPlayerInputSystem>();
-    engine.AddPausableSystem<AimSystem>();
+    //engine.AddPausableSystem<AimSystem>();
     engine.AddPausableSystem<PlayerSystem>();
     engine.AddPausableSystem<ShootingSystem>();
+    engine.AddPausableSystem<DeadEndObstacleSystem>();
     
 }
 
 void dead_end::DeadEndGame::WorldSetup()
 {
+    //ShaderSystem::Use("standard");
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };
@@ -79,12 +82,14 @@ void dead_end::setupWorld()
 
     constexpr float playerSize = 40.f;
 
-    float zPos = 2.f;
+    float zPos = 5.f;
 
     // generate map
-    loadTiles(float zPos);
-    loadObstacles(float zPos);
-    loadEnemies(float zPos, float size);
+    loadTiles(zPos);
+
+    zPos -= 1.f;
+    loadObstacles(zPos);
+    //loadEnemies( zPos, playerSize);
 
 
     // player
@@ -97,11 +102,12 @@ void dead_end::setupWorld()
         auto& transform = reg.emplace<Transform>(entity);
         transform.position.x = 100;
         transform.position.y = 100;
-        transform.position.z = zPos;
+        transform.position.z = zPos ;
 
         auto& sprite = reg.emplace<Sprite>(entity);
-        sprite.size.x = playerSize;
-        sprite.size.y = playerSize;
+        AssignSprite(sprite, "dead_end:Player:car");
+        sprite.size.x = playerSize ;
+        sprite.size.y = playerSize ;
 
         auto& player = reg.emplace<Player>(entity);
         auto& camera = reg.emplace<DeadEndCamera>(entity);

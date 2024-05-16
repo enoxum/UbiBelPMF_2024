@@ -10,9 +10,10 @@ namespace dead_end
 
 	struct Bullet {
 		int damage{ 10 };
-		Float32 speed;
-		Float32 speedX;
-		Float32 speedY;
+		Float32 speed = 200.f;
+		Float32 speedX = 100.f;
+		Float32 speedY = 100.f;
+		Vector2 direction;
 
 	};
 

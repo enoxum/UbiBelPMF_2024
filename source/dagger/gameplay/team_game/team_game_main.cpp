@@ -24,6 +24,8 @@ void TeamGame::WorldSetup()
 {
     ShaderSystem::Use("standard");
 
+
+
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };

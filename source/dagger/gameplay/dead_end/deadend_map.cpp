@@ -10,6 +10,11 @@
 #include <execution>
 #include <fstream>
 #include <iostream>
+#include <vector>
+
+#include "gameplay/dead_end/deadend_obstacle.h"
+
+using namespace dead_end;
 
 void loadTiles(float zPos)
 {
@@ -22,7 +27,7 @@ void loadTiles(float zPos)
     constexpr float tileSize = 128.f;
     constexpr float Space = -0.2f;
 
-    vector<vector<int>> tile_map{
+   std::vector<std::vector<int>> tile_map{
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -64,14 +69,19 @@ void loadTiles(float zPos)
             auto entity = reg.create();
             auto& sprite = reg.emplace<Sprite>(entity);
 
+            if (i == 0 || j == 0 || i == height - 1 || j == width - 1)
+            {
+                auto& obstacle = reg.emplace<DeadEndObstacle>(entity);
+            }
+
             if (tile_map[i][j] == 0)
-                AssignSprite(sprite, "data/textures/dead_end/Zombie Apocalypse Tileset/Zombie Apocalypse Tileset/Organized separated sprites/Terrain Variations/Zombie-Tileset---_0077_Capa-78.png");
+                AssignSprite(sprite, "dead_end:Terrain:terrain_grass");
 
             else if(tile_map[i][j] == 1)
-                AssignSprite(sprite, "data/textures/dead_end/Zombie Apocalypse Tileset/Zombie Apocalypse Tileset/Organized separated sprites/Modular Fences/Zombie-Tileset---_0133_Capa-134.png");
+                AssignSprite(sprite, "dead_end:Terrain:terrain_grass");
 
             else if(tile_map[i][j] == 2)
-                AssignSprite(sprite, "data/textures/dead_end/Zombie Apocalypse Tileset/Zombie Apocalypse Tileset/Organized separated sprites/Modular Fences/Zombie-Tileset---_0197_Capa-198.png");
+                AssignSprite(sprite, "dead_end:Terrain:terrain_grass");
 
             sprite.size = scale * tileSize;
             
@@ -94,7 +104,7 @@ void loadObstacles(float zPos)
     constexpr float tileSize = 128.f;
     constexpr float Space = -0.2f;
 
-    vector<vector<int>> obstacle_map{
+    std::vector<std::vector<int>> obstacle_map{
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -106,15 +116,15 @@ void loadObstacles(float zPos)
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -130,12 +140,41 @@ void loadObstacles(float zPos)
     };
 
      for (int i = 0; i < height; i++){
-        for (int j = 0; j < width; j++){
+        
+         for (int j = 0; j < width; j++){
             
-            if(obstacle_map[i][j] == 1)
-                // colide
-            
+             if (obstacle_map[i][j] == 0)
+                 continue;
 
+             auto entity = reg.create();
+             auto& sprite = reg.emplace<Sprite>(entity);
+             auto& col = reg.emplace<SimpleCollision>(entity);
+
+             if (obstacle_map[i][j] == 1){
+                 
+                 AssignSprite(sprite, "dead_end:Terrain:terrain_fence_1");
+                 sprite.size = scale * tileSize;
+                 //sprite.size.x = tileSize ;
+                 //sprite.size.y = tileSize ;
+             }
+
+             if (obstacle_map[i][j] == 2) {
+                 AssignSprite(sprite, "dead_end:Terrain:terrain_fence_2");
+                 sprite.size.x = tileSize ;
+                 sprite.size.y = tileSize ;
+             }
+             
+
+             col.size.x = sprite.size.x;
+             col.size.y = sprite.size.y;
+
+             auto& transform = reg.emplace<Transform>(entity);
+             transform.position.x = (j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+             transform.position.y = (i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
+             transform.position.z = zPos;
+
+             auto& obstacle = reg.emplace<DeadEndObstacle>(entity);
+        
         }
      }
 }
@@ -152,7 +191,7 @@ void loadEnemies(float zPos, float size)
     constexpr float tileSize = 128.f;
     constexpr float Space = -0.2f;
 
-    vector<vector<int>> enemy_map{
+    std::vector<std::vector<int>> enemy_map{
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -188,11 +227,13 @@ void loadEnemies(float zPos, float size)
     };
 
     for (int i = 0; i < height; i++){
-        for (int j = 0; j < width; j++){
-            
-            if(enemy_map[i][j] == 1)
+        
+        for (int j = 0; j < width; j++) {
+
+            if (enemy_map[i][j] == 1)
                 // spawn enemy
-            
+                ;
+
 
         }
      }
