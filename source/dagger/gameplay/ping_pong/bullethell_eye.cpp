@@ -141,9 +141,8 @@ void EyeSystem::Run() {
                         AssignSprite(sprite, "EmptyWhitePixel");
                         sprite.size = {3, 3};
                         sprite.scale = {5, 5};
-                        if (i==7)
-                            elapsed_time=0;
                     }
+                    elapsed_time=0;
                 }
             }
             if(EyeStats->hp < 40 && EyeStats->hp > 0){
@@ -172,9 +171,8 @@ void EyeSystem::Run() {
                         AssignSprite(sprite, "EmptyWhitePixel");
                         sprite.size = {3, 3};
                         sprite.scale = {5, 5};
-                        if(i==14)
-                            elapsed_time=0;
                     }
+                    elapsed_time=0;
                 }
             }
         }
