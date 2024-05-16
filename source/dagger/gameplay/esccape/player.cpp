@@ -8,6 +8,8 @@
 
 #include <algorithm>
 #include <execution>
+#include <chrono> // For std::chrono
+#include <thread> // For std::this_thread
 
 using namespace dagger;
 using namespace esccape;
@@ -76,6 +78,7 @@ void esccape::Player::setHealthChangedCallback(std::function<void(int)> callback
     healthChangedCallback = callback;
 }
 
+
 void Player::Run()
 {
     //RacingGameFieldSettings fieldSettings;
@@ -87,6 +90,7 @@ void Player::Run()
     auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
     auto view2 = Engine::Registry().view<Player, Transform, SimpleCollision>();
+
 
     for (auto entity : view)
     {

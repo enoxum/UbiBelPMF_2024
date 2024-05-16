@@ -24,6 +24,11 @@
 using namespace dagger;
 using namespace esccape;
 
+namespace esccape
+{
+    entt::entity healthBarEntity = entt::null;
+}
+
 void EsccapeGame::CoreSystemsSetup()
 {
     auto& engine = Engine::Instance();
@@ -64,13 +69,18 @@ void EsccapeGame::WorldSetup()
 }
 
 
-
 void esccape::CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health)
 {
     auto& healthBarReg = Engine::Registry();
+
+    if (healthBarEntity != entt::null) {
+        printf("aaaaaa");
+        healthBarReg.destroy(healthBarEntity);
+    }
     
-    auto entity = healthBarReg.create();
-    auto& healthBarSprite = healthBarReg.emplace<Sprite>(entity);
+    // Create a new health bar entity
+    healthBarEntity = healthBarReg.create();
+    auto& healthBarSprite = healthBarReg.emplace<Sprite>(healthBarEntity);
     String hbName;
     
     switch (health) {
@@ -97,7 +107,7 @@ void esccape::CreateHealthBar(int screenWidth, int screenHeight, int zPos, int h
     float ratio = healthBarSprite.size.y / healthBarSprite.size.x;
     float spriteSize = 150;
     healthBarSprite.size = { spriteSize, spriteSize * ratio };
-    auto& transform = healthBarReg.emplace<Transform>(entity);
+    auto& transform = healthBarReg.emplace<Transform>(healthBarEntity);
     transform.position.x = -screenWidth/2 + 100;
     transform.position.y = screenHeight/2 - 60;
     transform.position.z = zPos;
@@ -110,8 +120,7 @@ void esccape::onHealthChanged(int newHealth)
     if (newHealth < 0)
         newHealth = 0;
 
-    esccape:CreateHealthBar(800, 600, -1, newHealth);
-    
+    CreateHealthBar(800, 600, -1, newHealth);   
 }
 
 
