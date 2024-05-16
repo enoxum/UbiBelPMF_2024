@@ -64,7 +64,20 @@ sources = [
     'source/dagger/gameplay/racing/racing_game_logic.cpp',
     'source/dagger/gameplay/racing/racing_main.cpp',
     'source/dagger/gameplay/racing/racing_player_car.cpp',
-    'source/dagger/gameplay/team_game/team_game_main.cpp',
+    'source/dagger/gameplay/dead_end/dead_end_bullet.h'
+    'source/dagger/gameplay/dead_end/dead_end_bullet.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_main.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_main.h'
+    'source/dagger/gameplay/dead_end/dead_end_map.h'
+    'source/dagger/gameplay/dead_end/dead_end_map.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_camera.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_camera.h'
+    'source/dagger/gameplay/dead_end/dead_end_player.h'
+    'source/dagger/gameplay/dead_end/dead_end_player.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_playerinput.cpp'
+    'source/dagger/gameplay/dead_end/dead_end_playerinput.h'
+    'source/dagger/gameplay/dead_end/dead_end_crosshair.h'
+    'source/dagger/gameplay/dead_end/dead_end_crosshair.cpp'
     'source/dagger/gameplay/tiles_example/tiles_example_main.cpp',
     'source/dagger/tools/FileBrowser/imgui_demo.cpp',
     'source/dagger/tools/FileBrowser/ImGuiFileBrowser.cpp',

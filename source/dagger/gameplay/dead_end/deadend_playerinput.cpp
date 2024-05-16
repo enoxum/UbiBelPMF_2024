@@ -1,14 +1,16 @@
 #include "deadend_playerinput.h"
 #include "deadend_player.h"
 #include "deadend_crosshair.h"
+#include "deadend_bullet.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include "core/graphics/sprite.h"
 #include "core/input/inputs.h"
+#include "core/graphics/window.h"
 
 #include "gameplay/common/simple_collisions.h"
-#include "deadend_bullet.h"
+#include "../../../../projects/dagger/deadend_transform.h"
 using namespace dagger;
 using namespace dead_end;
 
@@ -89,21 +91,22 @@ void dead_end::DeadEndPlayerInputSystem::Run()
         auto& s = view.get<Sprite>(entity);
 
 
-        t.position.y += ctrl.input.y * Engine::DeltaTime() * player.speed;
         t.position.x += ctrl.input.x * Engine::DeltaTime() * player.speed;
+        t.position.y += ctrl.input.y * Engine::DeltaTime() * player.speed;
 
         if (player.weaponType == 1)
         {
-            // assign a sprite for a pistol.
+            // assign a sprite for a player w/pistol.
         }
         else {
-            // assign a sprite for a gun.
+            // assign a sprite for a player w/gun.
         }
 
 
         if (ctrl.shooting && player.weaponType != 0)
         {
-
+            auto* config = Engine::GetDefaultResource<RenderConfig>();
+            
             auto cursor = dagger::Input::CursorPositionInWorld();
             Vector2 position = { t.position.x, t.position.y };
             Vector2 target = { cursor.x, cursor.y };
