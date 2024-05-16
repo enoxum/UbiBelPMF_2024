@@ -4,6 +4,8 @@
 #include "core/game/transforms.h"
 
 #include "gameplay/academic_life/academic_life_logic.h"
+#include "health.h"
+
 
 using namespace dagger;
 using namespace academic_life;
@@ -58,7 +60,11 @@ void AcademicPlayerInputSystem::Run()
         auto &t = view.get<Transform>(entity);
         auto &ctrl = view.get<ControllerMapping>(entity);
         auto &academic_player = view.get<AcademicPlayer>(entity);
-        
+
+        Health& health = Health::Instance();
+        academic_player.SetSpeedBasedOnHealth(health.GetValue(), 20.f); //20.f je TileSize
+
+
         t.position.y = bottomBoarderY + 65.0f; 
                                 //npr -235.0f;
         t.position.x += ctrl.input.x * academic_player.horzSpeed * Engine::DeltaTime();

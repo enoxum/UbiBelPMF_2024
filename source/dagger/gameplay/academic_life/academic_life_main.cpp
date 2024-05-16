@@ -162,7 +162,7 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
         reg.emplace<LifestyleChange>(entity, LifestyleChange::WheyProtein);
     }
     else if (lifestyle_prob == 3) {
-        AssignSprite(sprite, "AcademicLife:FishMeal");
+        AssignSprite(sprite, "AcademicLife:fishMeal");
         reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
     }
     else {
