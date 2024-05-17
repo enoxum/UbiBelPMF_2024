@@ -157,8 +157,6 @@ void academic_life::SetupWorld()
     constexpr int Width = 30;
     constexpr float TileSize = 20.f;
 
-
-    //TO DO care about boundaries for health [-100,100]
     Health& Health = Health::Instance();
     ESPB& ESPB = ESPB::Instance();
 

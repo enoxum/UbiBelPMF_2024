@@ -7,7 +7,7 @@ void Health::Increase(int amount) {
 
 void Health::Decrease(int amount) {
     value -= amount;
-    if (value < 0) value = 0;
+    if (value < -100) value = -100;
 }
 
 int Health::GetValue() const {
