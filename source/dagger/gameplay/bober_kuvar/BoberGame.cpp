@@ -52,6 +52,7 @@ void BoberGame::WorldSetup()
     // bober
     Player *bober = new Player();
 
+
     // enemy
     Enemy* enemy = new Enemy();
     enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });
