@@ -96,7 +96,7 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
-                        auto &col = view.get<SimpleCollision>(playerView.front());
+                        auto &col = playerView.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
@@ -106,8 +106,7 @@ void EyeSystem::Run() {
 
                         transform.position = direction;
 
-                        auto dir = direction;
-                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity = glm::normalize(direction);
                         bulletData.velocity *= 200;
                         bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
@@ -125,7 +124,7 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
-                        auto &col = view.get<SimpleCollision>(playerView.front());
+                        auto &col = playerView.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
@@ -136,8 +135,7 @@ void EyeSystem::Run() {
 
                         transform.position = spawn_point_3D;
 
-                        auto dir = direction;
-                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity = glm::normalize(direction);
                         bulletData.velocity *= 200;
                         bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
@@ -155,11 +153,10 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
-                        auto &col = view.get<SimpleCollision>(playerView.front());
+                        auto &col = playerView.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
-                        float ugao = sqrt(2) / 2;;
                         auto spawn_point = rotateVector(rotated_vector, step * i);
                         auto spawn_point_3D = Vector3(spawn_point, 0);
                         auto direction = spawn_point_3D;
@@ -167,8 +164,7 @@ void EyeSystem::Run() {
 
                         transform.position = spawn_point_3D;
 
-                        auto dir = direction;
-                        bulletData.velocity = glm::normalize(dir);
+                        bulletData.velocity = glm::normalize(direction);
                         bulletData.velocity *= 200;
                         bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
