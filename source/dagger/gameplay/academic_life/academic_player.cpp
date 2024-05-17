@@ -67,10 +67,11 @@ void AcademicPlayerInputSystem::Run()
         int currentHealth = health.GetValue();
 
         academic_player.SetSpeedBasedOnHealth(currentHealth, 20.f); //20.f je TileSize TO DO
-        SetParticleSettings(particleSettings, currentHealth);   // TO DO - Fix update - za sad se ne azurira iako radi funkcija
+        SetParticleSettings(particleSettings, currentHealth); 
+        common_res::ParticleSystem::UpdateParticleSpawnerSettings(entity, particleSettings);
+
 
         t.position.y = bottomBoarderY + 65.0f; 
-                                //npr -235.0f;
         t.position.x += ctrl.input.x * academic_player.horzSpeed * Engine::DeltaTime();
 
         if (t.position.x > boarderX)
@@ -95,7 +96,7 @@ namespace academic_life
         if (health == -100)
             horzSpeed = TileSize * 6;
     }
-    
+
     void SetParticleSettings(common_res::ParticleSpawnerSettings& particleSettings, int currentHealth)
     {
         if (currentHealth < -60) {
@@ -123,6 +124,4 @@ namespace academic_life
                 { 0,0.5f,1,1 }, { 0,0.6f,1,1 }, "EmptyWhitePixel");
         }
     }
-
-
 }
