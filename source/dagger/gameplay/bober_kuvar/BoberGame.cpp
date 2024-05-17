@@ -21,6 +21,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "OurMap.h"
 #include "PlayerController.h"
 
 using namespace dagger;
@@ -49,9 +50,12 @@ void BoberGame::WorldSetup()
 {
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
 
-    // bober
-    Player *bober = new Player();
+    int map_size = 30;
+    int room_size = 4;
+    OurMap* map = new OurMap(map_size, room_size);
 
+    // bober
+    Player* bober = new Player();
 
     // enemy
     Enemy* enemy = new Enemy();
