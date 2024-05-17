@@ -92,6 +92,7 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<AcademicLifeCollisionsLogicSystem>();
     engine.AddSystem<SimpleCollisionsSystem>();
     engine.AddSystem<common_res::ParticleSystem>();
+    engine.AddSystem<ScoreEntitySystem>();
 }
 
 constexpr int HEALTH_MARKER = 1;

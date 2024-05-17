@@ -34,3 +34,11 @@ void ScoreEntitySystem::Run()
     }
     
 }
+
+void academic_life::ScoreEntitySystem::SpinUp()
+{
+}
+
+void academic_life::ScoreEntitySystem::WindDown()
+{
+}
