@@ -2,6 +2,9 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include <core/graphics/sprite.h>
+#include <gameplay/common/particles.h>
+#include "enumi.h"
 
 using namespace dagger;
 using namespace academic_life;
@@ -90,4 +93,36 @@ void FallingEntitySystem::Run()
     ProcessEntity<FallingEntity>(boarderY, mul, entitySpeed, fallingEntityCounter, fieldSettings, false);
     ProcessEntity<FallingText>(boarderY, mul, entitySpeed, fallingEntityCounter, fieldSettings, true);
 
+}
+
+
+void academic_life::setLifestyleEntity_byProbability(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite)
+{
+    if (lifestyle_prob == 0) {
+        AssignSprite(sprite, "AcademicLife:cigarette");
+
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Cigarette);
+
+        //ako je entity cigara - moze da ostavlja dim 
+        common_res::ParticleSpawnerSettings settings;
+        settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
+            { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+        common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+    }
+    else if (lifestyle_prob == 1) {
+        AssignSprite(sprite, "AcademicLife:beer");
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
+    }
+    else if (lifestyle_prob == 2) {
+        AssignSprite(sprite, "AcademicLife:whey-protein");
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::WheyProtein);
+    }
+    else if (lifestyle_prob == 3) {
+        AssignSprite(sprite, "AcademicLife:fishMeal");
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::fishMeal);
+    }
+    else {
+        AssignSprite(sprite, "AcademicLife:apple");
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::Apple);
+    }
 }

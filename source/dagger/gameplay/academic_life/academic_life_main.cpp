@@ -114,37 +114,6 @@ void AcademicLife::WorldSetup()
     academic_life::SetupWorld();
 }
 
-void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite) {
-    if (lifestyle_prob == 0) {
-        AssignSprite(sprite, "AcademicLife:cigarette");
-
-        reg.emplace<LifestyleChange>(entity, LifestyleChange::Cigarette);
-
-        //ako je entity cigara - moze da ostavlja dim 
-        common_res::ParticleSpawnerSettings settings;
-        settings.Setup(0.1f, { 4.f, 4.f }, { -0.2f, 0.4f }, { 0.2f, 1.2f },
-            { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
-        common_res::ParticleSystem::SetupParticleSystem(entity, settings);
-    }
-    else if (lifestyle_prob == 1) {
-        AssignSprite(sprite, "AcademicLife:beer");
-        reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
-    }
-    else if (lifestyle_prob == 2) {
-        AssignSprite(sprite, "AcademicLife:whey-protein");
-        reg.emplace<LifestyleChange>(entity, LifestyleChange::WheyProtein);
-    }
-    else if (lifestyle_prob == 3) {
-        AssignSprite(sprite, "AcademicLife:fishMeal");
-        reg.emplace<LifestyleChange>(entity, LifestyleChange::fishMeal);
-    }
-    else {
-            AssignSprite(sprite, "AcademicLife:apple");
-            reg.emplace<LifestyleChange>(entity, LifestyleChange::Apple);
-    }
-}
-
-
 
 void academic_life::SetupWorld()
 {
@@ -289,7 +258,7 @@ void academic_life::SetupWorld()
             auto entity = reg.create();
             auto& sprite = reg.emplace<Sprite>(entity);
             
-            setLifestyleEntity(lifestyle_prob, reg, entity, sprite);
+            setLifestyleEntity_byProbability(lifestyle_prob, reg, entity, sprite);
 
             float ratio = sprite.size.y / sprite.size.x;
             sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
