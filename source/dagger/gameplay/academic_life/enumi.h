@@ -12,7 +12,7 @@ namespace academic_life {
         Cigarette = -30,
         Beer = -20,
         WheyProtein = 50,
-        FishMeal = 40,
+        fishMeal = 40,
         Apple = 20
     };  
 

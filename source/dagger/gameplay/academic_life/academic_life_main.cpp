@@ -113,34 +113,6 @@ void AcademicLife::WorldSetup()
     academic_life::SetupWorld();
 }
 
-void SetupParticleSettingsBasedOnHealth(common_res::ParticleSpawnerSettings& settings, int health)
-{
-    if (health < -60) {
-        settings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-            { 0,0,0,1 }, { 0.2,0.2,0.2,1 }, "EmptyWhitePixel");
-    }
-    else if (health < -20) {
-        settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-            { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
-    }
-    else if (health < 20) {
-        settings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
-            { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
-    }
-    else if (health < 60) {
-        settings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-            { 0,0.6f,0.2f,1 }, { 0,0.8,0.2f,1 }, "EmptyWhitePixel");
-    }
-    else if (health < 100) {
-        settings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
-            { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
-    }
-    else {
-        settings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
-            { 0,0.5,1,1 }, { 0,0.6,1,1 }, "EmptyWhitePixel");
-    }
-}
-
 void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite) {
     if (lifestyle_prob == 0) {
         AssignSprite(sprite, "AcademicLife:cigarette");
@@ -163,7 +135,7 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
     }
     else if (lifestyle_prob == 3) {
         AssignSprite(sprite, "AcademicLife:fishMeal");
-        reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
+        reg.emplace<LifestyleChange>(entity, LifestyleChange::fishMeal);
     }
     else {
             AssignSprite(sprite, "AcademicLife:apple");
@@ -298,9 +270,9 @@ void academic_life::SetupWorld()
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size = sprite.size;
 
-        common_res::ParticleSpawnerSettings settings;        
-        SetupParticleSettingsBasedOnHealth(settings, Health.GetValue());
-        common_res::ParticleSystem::SetupParticleSystem(entity, settings);
+        auto& particleSettings = reg.emplace<common_res::ParticleSpawnerSettings>(entity);
+        SetParticleSettings(particleSettings, Health.GetValue());
+        common_res::ParticleSystem::SetupParticleSystem(entity, particleSettings);
     }
 
     // falling entities

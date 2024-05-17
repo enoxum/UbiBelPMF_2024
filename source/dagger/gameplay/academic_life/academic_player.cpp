@@ -5,6 +5,7 @@
 
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "health.h"
+#include <gameplay/common/particles.h>
 
 
 using namespace dagger;
@@ -54,16 +55,19 @@ void AcademicPlayerInputSystem::Run()
     Float32 bottomBoarderY = -fieldSettings.GetYBoarder();
     Float32 boarderX = fieldSettings.GetXBoarder();
 
-    auto view = Engine::Registry().view<Transform, ControllerMapping, AcademicPlayer>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, AcademicPlayer, common_res::ParticleSpawnerSettings>();
     for (auto entity : view)
     {
         auto &t = view.get<Transform>(entity);
         auto &ctrl = view.get<ControllerMapping>(entity);
         auto &academic_player = view.get<AcademicPlayer>(entity);
+        auto& particleSettings = view.get<common_res::ParticleSpawnerSettings>(entity);
 
         Health& health = Health::Instance();
-        academic_player.SetSpeedBasedOnHealth(health.GetValue(), 20.f); //20.f je TileSize
+        int currentHealth = health.GetValue();
 
+        academic_player.SetSpeedBasedOnHealth(currentHealth, 20.f); //20.f je TileSize TO DO
+        SetParticleSettings(particleSettings, currentHealth);   // TO DO - Fix update - za sad se ne azurira iako radi funkcija
 
         t.position.y = bottomBoarderY + 65.0f; 
                                 //npr -235.0f;
@@ -81,6 +85,7 @@ void AcademicPlayerInputSystem::Run()
     }
 }
 
+
 namespace academic_life
 {
     void AcademicPlayer::SetSpeedBasedOnHealth(int health, float TileSize)
@@ -90,4 +95,34 @@ namespace academic_life
         if (health == -100)
             horzSpeed = TileSize * 6;
     }
+    
+    void SetParticleSettings(common_res::ParticleSpawnerSettings& particleSettings, int currentHealth)
+    {
+        if (currentHealth < -60) {
+            particleSettings.Setup(0.05f, { 3.f, 3.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0,0,1 }, { 0.2f,0.2f,0.2f,1 }, "EmptyWhitePixel");
+        }
+        else if (currentHealth < -20) {
+            particleSettings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0.6f,0.6f,0.6f,1 }, { 1,1,1,1 }, "EmptyWhitePixel");
+        }
+        else if (currentHealth < 20) {
+            particleSettings.Setup(0.0f, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f },
+                { 0,0,0,1 }, { 0,0,0,0 }, "EmptyWhitePixel");
+        }
+        else if (currentHealth < 60) {
+            particleSettings.Setup(0.05f, { 1.5f, 1.5f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0.6f,0.2f,1 }, { 0,0.8f,0.2f,1 }, "EmptyWhitePixel");
+        }
+        else if (currentHealth < 100) {
+            particleSettings.Setup(0.03f, { 3.f, 3.f }, { -0.2f, -2.4f }, { 0.2f, -1.6f },
+                { 0.2f,0.8f,0.2f,1 }, { 0.2f,1,0.2f,1 }, "EmptyWhitePixel");
+        }
+        else {
+            particleSettings.Setup(0.05f, { 2.f, 2.f }, { -0.2f, -1.4f }, { 0.2f, -0.6f },
+                { 0,0.5f,1,1 }, { 0,0.6f,1,1 }, "EmptyWhitePixel");
+        }
+    }
+
+
 }
