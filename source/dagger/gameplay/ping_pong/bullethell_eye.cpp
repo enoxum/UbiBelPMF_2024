@@ -76,10 +76,11 @@ void EyeSystem::Run() {
             auto &reg = dagger::Engine::Registry();
             ctrl.eyeShoot = false;
             auto eyeView = Engine::Registry().view<Eye, Transform>();
-            auto playerView = Engine::Registry().view<EyeTarget, Transform, MovementData>();
+            auto playerView = Engine::Registry().view<EyeTarget, Transform, MovementData, SimpleCollision>();
 
             auto &eyePos = eyeView.get<Transform>(eyeView.front());
             auto &playerPos = playerView.get<Transform>(playerView.front());
+            auto &PlayerStats = playerView.get<EyeTarget>(playerView.front());
             auto &movData = playerView.get<MovementData>(playerView.front());
             auto EyeStats = Engine::Registry().try_get<StatsData>(eye);
 
@@ -95,6 +96,7 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
+                        auto &col = view.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
@@ -107,7 +109,7 @@ void EyeSystem::Run() {
                         auto dir = direction;
                         bulletData.velocity = glm::normalize(dir);
                         bulletData.velocity *= 200;
-                        bulletData.owner = playerView.front();
+                        bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
                         sprite.size = {3, 3};
                         sprite.scale = {5, 5};
@@ -123,6 +125,7 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
+                        auto &col = view.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
@@ -136,7 +139,7 @@ void EyeSystem::Run() {
                         auto dir = direction;
                         bulletData.velocity = glm::normalize(dir);
                         bulletData.velocity *= 200;
-                        bulletData.owner = playerView.front();
+                        bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
                         sprite.size = {3, 3};
                         sprite.scale = {5, 5};
@@ -152,6 +155,7 @@ void EyeSystem::Run() {
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
                         auto &sprite = reg.emplace<Sprite>(bullet);
+                        auto &col = view.get<SimpleCollision>(playerView.front());
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
@@ -166,7 +170,7 @@ void EyeSystem::Run() {
                         auto dir = direction;
                         bulletData.velocity = glm::normalize(dir);
                         bulletData.velocity *= 200;
-                        bulletData.owner = playerView.front();
+                        bulletData.owner = eyeView.front();
                         AssignSprite(sprite, "EmptyWhitePixel");
                         sprite.size = {3, 3};
                         sprite.scale = {5, 5};
