@@ -2,7 +2,8 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
-#include "gameplay/academic_life/exprtk.hpp"
+#include <cmath>
+#include <cctype>
 
 using namespace dagger;
 using namespace academic_life;
@@ -41,20 +42,31 @@ std::string Equation::to_equation(const std::string& expression) const
     return "X = " + expression;
 }
 
-double Equation::evaluate(const std::string& expression) {
-    exprtk::symbol_table<double> symbol_table;
-    symbol_table.add_constants();
+double Equation::evaluate(const std::string& expression_str) {
+    double result = 0.0;
 
-    exprtk::expression<double> expr;
-    expr.register_symbol_table(symbol_table);
+    double a, b, c, d;
+    char op1, op2, op3;
 
-    exprtk::parser<double> parser;
-    if (parser.compile(expression, expr)) {
-        return expr.value();
-    }
-    else {
-        throw std::runtime_error("Failed to parse equation");
-    }
+    sscanf(expression_str.c_str(), "(%d %c %d) %c (%d %c %d)", &a, &op1, &b, &op2, &c, &op3, &d);
+
+    double result1 = (op1 == '+') ? a + b : 
+                     (op1 == '-') ? a - b : 
+                     (op1 == '*') ? a * b : 
+                     (op1 == '/') ? a / b : 
+                     pow(a, b);
+
+    double result2 = (op3 == '+') ? c + d : 
+                     (op3 == '-') ? c - d : 
+                     (op3 == '*') ? c * d : 
+                     (op3 == '/') ? a / b : 
+                     pow(a, b);
+
+    return (op2 == '+') ? result1 + result2 : 
+           (op2 == '-') ? result1 - result2 : 
+           (op2 == '*') ? result1 * result2 : 
+           (op2 == '/') ? result1 / result2 : 
+           pow(result1, result2);
 }
 
 const std::vector<std::string>& Equation::get_code_simple() const

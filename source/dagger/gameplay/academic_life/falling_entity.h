@@ -24,7 +24,7 @@ namespace academic_life
 
     class Equation {
     public:
-        Equation::Equation(const unsigned num_operators, const unsigned num_operands, const int lb, const int ub)
+        Equation(const unsigned num_operators, const unsigned num_operands, const int lb, const int ub)
             : m_num_operators(num_operators), m_num_operands(num_operands), m_lb(lb), m_ub(ub)
         {
             initialize_code(m_code_simple, &Equation::random_operator_simple);

@@ -24,8 +24,6 @@
 
 #include "enumi.h"
 
-#include <cmath>
-
 using namespace dagger;
 using namespace academic_life;
 
@@ -67,7 +65,7 @@ void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileS
     text.evaluation = eq.evaluate(expression);
 
     auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size = { TileSize * 4, TileSize * 2 };
+    col.size = { TileSize * 4, TileSize * 4 };
 }
 
 void AcademicLife::GameplaySystemsSetup()
@@ -232,9 +230,6 @@ void academic_life::SetupWorld()
     }
 
 
-
-
-
     zPos = 1.f;
 
     for (int i = 0; i < Height; i++)
@@ -294,10 +289,31 @@ void academic_life::SetupWorld()
     int numFallingEntities = rand() % 3 + 3;
     for (int i = 0; i < numFallingEntities; i++)
     {
-        int entity_prob = rand() % 2;
+        int entity_prob = 0;//rand() % 2;
 
         // jednacine
-        if (entity_prob == 0) generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
+        if (entity_prob == 0)
+        {
+            //generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
+            auto entity = reg.create();
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Height / 2), zPos };
+
+            auto& falling_text = reg.emplace<FallingText>(entity);
+            falling_text.speed = TileSize * (rand() % 5 + 3);
+            auto& text = falling_text.text;
+
+            Equation eq = Equation::Equation(3, 4, -5, 5);
+            std::string expression = generate_expression(ESPB, eq);
+            text.position = transform.position;
+            text.spacing = 0.6f;
+            text.message = eq.to_equation(expression);
+            text.evaluation = eq.evaluate(expression);
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size = { TileSize * 11.5, TileSize * 2 };
+        }
 
         // lifestyle objekti
         else {
