@@ -70,6 +70,7 @@ void EyeSystem::Run() {
                 speed = 0;
             spr.rotation += speed;
 
+
             auto &t = view.get<Transform>(entity);
             auto &ctrl = view.get<ControllerMapping>(entity);
 
@@ -118,8 +119,9 @@ void EyeSystem::Run() {
             }
             if (EyeStats->hp >= 40 && EyeStats->hp <=80){
                 if(elapsed_time >= 0.3){
+                    spawn_point_count= 24;
+                    rotated_vector = rotateVector(rotated_vector, M_PI_2 / 6.f);
                     for(int i=0; i<8; i++) {
-                        spawn_point_count = 8;
                         auto bullet = reg.create();
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
@@ -128,7 +130,7 @@ void EyeSystem::Run() {
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
-                        auto spawn_point = rotateVector(Vector2(radius, 0), step * i);
+                        auto spawn_point = rotateVector(rotated_vector, (M_PI_2 / 2.f) * i);
                         auto spawn_point_3D = Vector3(spawn_point, 0);
                         auto direction = spawn_point_3D;
                         float angle = angleBetweenVectors(spawn_point, fixed_vector);
@@ -147,8 +149,9 @@ void EyeSystem::Run() {
             }
             if(EyeStats->hp < 40 && EyeStats->hp > 0){
                 if(elapsed_time >= 0.3) {
+                    spawn_point_count= 24;
+                    rotated_vector = rotateVector(rotated_vector, M_PI_2 / 8.f);
                     for (int i = 0; i < 24; i++) {
-                        spawn_point_count = 24;
                         auto bullet = reg.create();
                         auto &bulletData = reg.emplace<Bullet>(bullet);
                         auto &transform = reg.emplace<Transform>(bullet);
@@ -157,7 +160,7 @@ void EyeSystem::Run() {
                         reg.emplace<SimpleCollision>(bullet);
 
                         float step = 2 * M_PI / spawn_point_count;
-                        auto spawn_point = rotateVector(rotated_vector, step * i);
+                        auto spawn_point = rotateVector(rotated_vector,  (M_PI_2 / 6.f) * i);
                         auto spawn_point_3D = Vector3(spawn_point, 0);
                         auto direction = spawn_point_3D;
                         float angle = angleBetweenVectors(spawn_point, fixed_vector);
