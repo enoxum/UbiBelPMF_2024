@@ -197,6 +197,44 @@ struct Character
     }
 };
 
+// CreatingEnemy
+struct EnemyCharachter
+{
+    Entity entity;
+    Sprite& sprite;
+    EsccapeCharacter& character;
+
+    static EnemyCharachter Get(Entity entity)
+    {
+        auto& reg = Engine::Registry();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+        auto& anim = reg.get_or_emplace<Animator>(entity);
+        auto& input = reg.get_or_emplace<InputReceiver>(entity);
+        auto& character = reg.get_or_emplace<EsccapeCharacter>(entity);
+
+        return EnemyCharachter{ entity, sprite, character };
+    }
+
+    static EnemyCharachter Create(
+        ColorRGB color_ = { 1, 1, 1 },
+        Vector2 position_ = { 0, 0 })
+    {
+        auto& reg = Engine::Registry();
+        auto entity = reg.create();
+
+        auto chr = EnemyCharachter::Get(entity);
+
+        chr.sprite.scale = { 2.5, 2.5 };
+        chr.sprite.position = { position_, 0.0f };
+        chr.sprite.color = { color_, 1.0f };
+
+        AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
+
+        chr.character.speed = 50;
+
+        return chr;
+    }
+};
 
 
 void esccape::SetupWorld()
