@@ -3,7 +3,8 @@
 
 using namespace bober_game;
 
-Player::Player() : Character()
+Player::Player()
+	: Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64))
 {
 	controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 	PlayerController::SetupPlayerInput(*controller_);

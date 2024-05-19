@@ -1,11 +1,16 @@
+#define _USE_MATH_DEFINES
+
 #include "OurMap.h"
-#include <random>;
+#include <iomanip>
+#include <random>
+#include <algorithm>
 
 OurMap::OurMap(int n, int room_size)
 {
 	n_ = n;
 	room_size_ = room_size;
 	matrix_ = std::vector<std::vector<int>>(n_, std::vector<int>(n_, 0));
+	tile_matrix_ = std::vector<std::vector<Tile*>>(n_, std::vector<Tile*>(n_, 0));
 	generateMap();
 }
 
@@ -14,6 +19,7 @@ void OurMap::generateMap()
 	make_wall_matrix();
 	fill_rooms();
 	rearange_interior();
+	paint_map();
 }
 
 void OurMap::make_wall_matrix()
@@ -60,7 +66,7 @@ void OurMap::make_wall_matrix()
 
 				//left
 				int copy_x = random_x;
-				while (matrix_[random_y][copy_x] != 1) {
+				while (matrix_[random_y][copy_x] == 0) {
 					matrix_[random_y][copy_x] = 1;
 					for (int k = 0; k < room_size_; k++) {
 						horizontal_restriction_matrix[random_y + k][copy_x] = 1;
@@ -73,10 +79,15 @@ void OurMap::make_wall_matrix()
 					horizontal_restriction_matrix[random_y - k][copy_x] = 1;
 				}
 				int min_x = copy_x + 1;
+				if (matrix_[random_y][copy_x] == 2) {
+					matrix_[random_y][copy_x] = 1;
+					matrix_[random_y - 1][copy_x] = 2;
+					matrix_[random_y + 1][copy_x] = 2;
+				}
 
 				//right
 				copy_x = random_x + 1;
-				while (matrix_[random_y][copy_x] != 1) {
+				while (matrix_[random_y][copy_x] == 0) {
 					matrix_[random_y][copy_x] = 1;
 					for (int k = 0; k < room_size_; k++) {
 						horizontal_restriction_matrix[random_y + k][copy_x] = 1;
@@ -87,6 +98,11 @@ void OurMap::make_wall_matrix()
 				for (int k = 0; k < room_size_; k++) {
 					horizontal_restriction_matrix[random_y + k][copy_x] = 1;
 					horizontal_restriction_matrix[random_y - k][copy_x] = 1;
+				}
+				if (matrix_[random_y][copy_x] == 2) {
+					matrix_[random_y][copy_x] = 1;
+					matrix_[random_y - 1][copy_x] = 2;
+					matrix_[random_y + 1][copy_x] = 2;
 				}
 
 				//door
@@ -105,7 +121,7 @@ void OurMap::make_wall_matrix()
 
 				//up
 				int copy_y = random_y;
-				while (matrix_[copy_y][random_x] != 1) {
+				while (matrix_[copy_y][random_x] == 0) {
 					matrix_[copy_y][random_x] = 1;
 					for (int k = 0; k < room_size_; k++) {
 						vertical_restriction_matrix[copy_y][random_x + k] = 1;
@@ -118,10 +134,15 @@ void OurMap::make_wall_matrix()
 					vertical_restriction_matrix[copy_y][random_x - k] = 1;
 				}
 				int min_y = copy_y + 1;
+				if (matrix_[copy_y][random_x] == 2) {
+					matrix_[copy_y][random_x] = 1;
+					matrix_[copy_y][random_x - 1] = 2;
+					matrix_[copy_y][random_x + 1] = 2;
+				}
 
 				//down
 				copy_y = random_y + 1;
-				while (matrix_[copy_y][random_x] != 1) {
+				while (matrix_[copy_y][random_x] == 0) {
 					matrix_[copy_y][random_x] = 1;
 					for (int k = 0; k < room_size_; k++) {
 						vertical_restriction_matrix[copy_y][random_x + k] = 1;
@@ -145,7 +166,7 @@ void OurMap::make_wall_matrix()
 		}
 	}
 
-	print_matrix_in_console(matrix_);
+	//print_matrix_in_console(matrix_);
 	//print_matrix_in_console(horizontal_restriction_matrix);
 	//print_matrix_in_console(vertical_restriction_matrix);
 	//for (int i = 0; i < all_doors_coords_.size(); i++) {
@@ -174,7 +195,11 @@ void OurMap::fill_rooms()
 		}
 	}
 
-	print_matrix_in_console(matrix_);
+	//print_matrix_in_console(matrix_);
+}
+
+int OurMap::calculate_distance(std::pair<int, int> a, std::pair<int, int> b) {
+	return sqrt((a.first - b.first) * (a.first - b.first) + (a.second - b.second) * (a.second - b.second));
 }
 
 void OurMap::rearange_interior()
@@ -182,44 +207,56 @@ void OurMap::rearange_interior()
 	for (auto room : rooms_) {
 		std::pair<int, int> topLeft = (*room).getTopLeft();
 		std::pair<int, int> bottomRight = (*room).getBottomRight();
-		std::pair<int, int> center = std::pair<int, int>((bottomRight.first + topLeft.first)/2, (bottomRight.second + topLeft.second)/2);
 
 		std::vector<std::pair<int, int>> doors_coords = (*room).getDoorsCoords();
 		int door_number = doors_coords.size();
-		int max_distance = 0;
-		std::vector<int> distances(door_number);
+
+		std::pair<int, int> center = std::pair<int, int>((topLeft.first + bottomRight.first) / 2, (topLeft.second + bottomRight.second) / 2);
+		std::vector<std::pair<int, int>> middles;
 		for (int k = 0; k < door_number; k++) {
-			int distance = sqrt((doors_coords[k].first - center.first) * (doors_coords[k].first - center.first) + (doors_coords[k].second - center.second) * (doors_coords[k].second - center.second));
-			distances[k] = distance;
-			if (max_distance < distance)
-				max_distance = distance;
+			std::pair<int, int> middle = std::pair<int, int>((center.first + doors_coords[k].first) / 2, (center.second + doors_coords[k].second) / 2);
+			middles.push_back(middle);
 		}
 
 		for (int j = topLeft.first; j <= bottomRight.first; j++) {
 			for (int i = topLeft.second; i <= bottomRight.second; i++) {
-				//distance from current point to the door
 				for (int k = 0; k < door_number; k++) {
-					int distance = sqrt((doors_coords[k].first - j) * (doors_coords[k].first - j) + (doors_coords[k].second - i) * (doors_coords[k].second - i));
-					if (distance < distances[k])
+					int distance = calculate_distance(middles[k], std::pair<int, int>(j, i));
+					int door_distance = calculate_distance(middles[k], doors_coords[k]);
+					int dot_door_distance = calculate_distance(std::pair<int, int>(j, i), doors_coords[k]);
+					if (distance <= door_distance)
 						matrix_[j][i] = 0;
-					else if (distance < distances[k] + 1 && matrix_[j][i] != 0)
+					else if (matrix_[j][i] != 0)
 						matrix_[j][i] = 3;
-					else if (distance > distances[k] && matrix_[j][i] != 0 && matrix_[j][i] != 3)
-						matrix_[j][i] = 4;
 				}
-				//distance from current point to the center
-				int distance = sqrt((center.first - j) * (center.first - j) + (center.second - i) * (center.second - i));
-				if (distance < max_distance/2)
-					matrix_[j][i] = 0;
-				else if (distance < max_distance/2 + 1 && matrix_[j][i] != 0)
-					matrix_[j][i] = 3;
-				else if (distance > max_distance/2 && matrix_[j][i] != 0 && matrix_[j][i] != 3)
-					matrix_[j][i] = 4;
 			}
 		}
 	}
 
-	print_matrix_in_console(matrix_);
+	//print_matrix_in_console(matrix_);
+}
+
+void OurMap::paint_map()
+{
+	int sprite_size = 64;
+	for (int j = 0; j < n_; j++) {
+		for (int i = 0; i < n_; i++) {
+			std::string tile_string;
+			bool collidable = false;
+			if (matrix_[j][i] == 0 || matrix_[j][i] == 2) {
+				tile_string = "BoberKuvar:64x64 darkness";
+				collidable = true;
+			}
+			else {
+				tile_string = "BoberKuvar:64x64 backwall";
+				collidable = true;
+			}
+			tile_matrix_[j][i] = new Tile(tile_string, "", collidable);
+			tile_matrix_[j][i]->move(Vector3(sprite_size * i, -sprite_size * j, 0));
+		}
+	}
+
+	//print_matrix_in_console(matrix_);
 }
 
 void OurMap::fill(int x, int y, int *min_x, int *min_y, int *max_x, int *max_y, std::vector<std::pair<int, int>> *doors_coords) {
