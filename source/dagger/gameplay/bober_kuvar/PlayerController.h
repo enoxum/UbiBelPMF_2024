@@ -2,6 +2,7 @@
 
 #include "core/core.h"
 #include "core/system.h"
+#include "OurEntity.h"
 
 using namespace dagger;
 
@@ -15,6 +16,12 @@ namespace bober_game
 		EDaggerKeyboard rightKey;
 
 		Vector2 input = { 0.f, 0.f };
+	};
+
+	struct Cursor
+	{
+		bool isMouseBtnPressed = false;
+		Vector2 position{ 0, 0 };
 	};
 
 	class PlayerController
@@ -31,6 +38,8 @@ namespace bober_game
 		void SpinUp() override;
 		void WindDown() override;
 		void Run() override;
+		void OnCursorMoveEvent(CursorEvent cursor_);
+		void OnMouseEvent(MouseEvent input_);
 
 		static void SetupPlayerInput(ControllerMapping& controllerMapping_)
 		{

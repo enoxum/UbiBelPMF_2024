@@ -7,7 +7,8 @@ Player::Player() : Character()
 {
 	controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 	PlayerController::SetupPlayerInput(*controller_);
-
+	AssignSprite(*sprite, "souls_like_knight_character:IDLE:idle1");
+	AnimatorPlay(*animator, "souls_like_knight_character:IDLE");
 	Engine::Registry().emplace<common::CameraFollowFocus>(instance);
 }
 

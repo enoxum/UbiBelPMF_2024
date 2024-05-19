@@ -18,10 +18,12 @@
 
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
+#include "gameplay/common/aiming_system.h"
 
 #include "Player.h"
 #include "Enemy.h"
 #include "PlayerController.h"
+#include "Cursor.h"
 
 using namespace dagger;
 using namespace bober_game;
@@ -33,6 +35,7 @@ void BoberGame::GameplaySystemsSetup()
 
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
+    //engine.AddSystem<AimingSystem>();
 }
 
 void BoberGame::SetCamera()
@@ -48,7 +51,8 @@ void BoberGame::SetCamera()
 void BoberGame::WorldSetup()
 {
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
-
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
     // bober
     Player *bober = new Player();
 
@@ -56,5 +60,20 @@ void BoberGame::WorldSetup()
     Enemy* enemy = new Enemy();
     enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });
 
+    OurEntity* cursor = new OurEntity();
+    //Cursor
+    {
+        Vector2 scale(1, 1);
+        float zPos = 1.f;
+        constexpr float tileSize = 20.f;
+        (*cursor->transform).position.x = 0;
+        (*cursor->transform).position.y = 0;
+        (*cursor->transform).position.z = zPos;
+
+        AssignSprite(*cursor->sprite, "crosshair");
+        (*cursor->sprite).size = scale * tileSize;
+        reg.remove<Animator>(cursor->instance);
+        reg.emplace<Cursor>(cursor->instance);
+    }
     SetCamera();
 }

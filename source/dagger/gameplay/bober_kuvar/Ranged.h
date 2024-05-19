@@ -4,6 +4,7 @@
 class Ranged :
     public Weapon
 {
+    void shoot(Vector3 crosshairPos);
 private:
     int currentAmmo;
     int magSize;
