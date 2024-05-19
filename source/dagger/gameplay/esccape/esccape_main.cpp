@@ -169,10 +169,14 @@ void esccape::CreateObstacles(int zPos)
         auto& transform = reg.emplace<Transform>(entity);
 
         int minY = -300, maxY = 150;
-        int minX = -350, maxX = 200;
+        int minX = -350, maxX = 180;
         transform.position.x = rand() % (maxX - minX + 1) + minX;
         transform.position.y = rand() % (maxY - minY + 1) + minY;
         transform.position.z = zPos;
+
+        auto& col = reg.emplace<SimpleCollision>(entity);
+        col.size.x = rockSize;
+        col.size.y = rockSize * ratio;
     }
 }
 
@@ -365,10 +369,13 @@ void esccape::SetupWorld()
         racingPlayer.speed = playerSize * 3;
         racingPlayer.health = 5;
 
+
         Player player = Player(racingPlayer, onHealthChanged);
 
-
         auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
+
+        auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
+
 
         //auto player = reg.create();
     }
