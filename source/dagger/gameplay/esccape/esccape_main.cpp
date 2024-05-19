@@ -224,7 +224,7 @@ struct EnemyCharachter
 
         auto chr = EnemyCharachter::Get(entity);
 
-        chr.sprite.scale = { 2.5, 2.5 };
+        chr.sprite.scale = { 0.2, 0.2 };
         chr.sprite.position = { position_, 0.0f };
         chr.sprite.color = { color_, 1.0f };
 
