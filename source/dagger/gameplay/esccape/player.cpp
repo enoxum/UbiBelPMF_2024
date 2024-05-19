@@ -128,17 +128,6 @@ void Player::Run()
                 }
             }
         }
-
-        /*Float32 boarderX = fieldSettings.GetXBoarder();
-        if (t.position.x > boarderX)
-        {
-            t.position.x = boarderX;
-        }
-
-        if (t.position.x < -boarderX)
-        {
-            t.position.x = -boarderX;
-        }*/
     }
 }
 

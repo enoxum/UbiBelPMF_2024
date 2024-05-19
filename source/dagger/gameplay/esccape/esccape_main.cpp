@@ -228,9 +228,7 @@ struct EnemyCharachter
         chr.sprite.position = { position_, 0.0f };
         chr.sprite.color = { color_, 1.0f };
 
-        AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
-
-        chr.character.speed = 50;
+        AssignSprite(chr.sprite, "Esccape:turret");
 
         return chr;
     }
@@ -271,7 +269,6 @@ void esccape::SetupWorld()
 
     // create machine
     CreateMachineRandom(playerSize, screenWidth, screenHeight, zPos, 3);
-
 
     // collisions
     {
@@ -346,6 +343,8 @@ void esccape::SetupWorld()
 
 
         auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
+
+        auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
 
         /*auto player = reg.create();
 

@@ -40,3 +40,6 @@ void esccape::Enemy::setHealth(int newHealth)
 {
     enemy.health = newHealth;
 }
+
+void esccape::Enemy::Run() {
+}
