@@ -50,7 +50,7 @@ void BoberGame::WorldSetup()
 {
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
 
-    int map_size = 25;
+    int map_size = 30;
     int room_size = 5;
     OurMap* map = new OurMap(map_size, room_size);
 

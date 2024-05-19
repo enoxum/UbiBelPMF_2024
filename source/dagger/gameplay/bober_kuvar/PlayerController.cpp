@@ -5,7 +5,7 @@
 
 using namespace bober_game;
 
-double PlayerController::playerSpeed = 100.0;
+double PlayerController::playerSpeed = 1000.0;
 
 void PlayerController::SpinUp()
 {
