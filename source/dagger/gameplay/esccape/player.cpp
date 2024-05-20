@@ -8,9 +8,20 @@
 
 #include <algorithm>
 #include <execution>
+#include <chrono> // For std::chrono
+#include <thread> // For std::this_thread
 
 using namespace dagger;
 using namespace esccape;
+
+esccape::Player::Player()
+{
+}
+
+esccape::Player::Player(PlayerEntity playerEntity, std::function<void(int)> healthChangedCallback2) :
+    player(playerEntity), healthChangedCallback(healthChangedCallback2)
+{
+}
 
 void Player::SpinUp()
 {
@@ -62,6 +73,12 @@ void Player::OnKeyboardEvent(KeyboardEvent kEvent_)
         });
 }
 
+void esccape::Player::setHealthChangedCallback(std::function<void(int)> callback)
+{
+    healthChangedCallback = callback;
+}
+
+
 void Player::Run()
 {
     //RacingGameFieldSettings fieldSettings;
@@ -71,19 +88,20 @@ void Player::Run()
     //}
 
     auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
-    auto view = Engine::Registry().view<Transform, ControllerMapping, PlayerEntity>();
-    auto view2 = Engine::Registry().view<PlayerEntity, Transform, SimpleCollision>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
+    auto view2 = Engine::Registry().view<Player, Transform, SimpleCollision>();
+
 
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
-        auto& player = view.get<PlayerEntity>(entity);
+        auto& player = view.get<Player>(entity);
 
         auto& col = view2.get<SimpleCollision>(entity);
 
-        t.position.x += ctrl.input.x * player.speed * Engine::DeltaTime();
-        t.position.y += ctrl.input.y * player.speed * Engine::DeltaTime();
+        t.position.x += ctrl.input.x * player.player.speed * Engine::DeltaTime();
+        t.position.y += ctrl.input.y * player.player.speed * Engine::DeltaTime();
 
         Logger::trace(t.position.x);
 
@@ -110,17 +128,26 @@ void Player::Run()
                 }
             }
         }
-
-        /*Float32 boarderX = fieldSettings.GetXBoarder();
-        if (t.position.x > boarderX)
-        {
-            t.position.x = boarderX;
-        }
-
-        if (t.position.x < -boarderX)
-        {
-            t.position.x = -boarderX;
-        }*/
     }
+}
+
+float esccape::Player::getSpeed()
+{
+    return player.speed;
+}
+
+void esccape::Player::setSpeed(float newSpeed)
+{
+    player.speed = newSpeed;
+}
+
+int esccape::Player::getHealth()
+{
+    return player.health;
+}
+
+void esccape::Player::setHealth(int newHealth)
+{
+    player.health = newHealth;
 }
 
