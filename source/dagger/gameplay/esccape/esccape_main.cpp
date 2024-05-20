@@ -53,6 +53,7 @@ void EsccapeGame::GameplaySystemsSetup()
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
     engine.AddSystem<Player>();
+    engine.AddSystem<EsccapeControllerSystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -95,35 +96,6 @@ void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenH
 }
 
 
-enum class CharacterInputCommand {
-    left,
-    right,
-    up,
-    down,
-    attack,
-};
-
-struct CharacterInputContext
-{
-    InputContext context;
-    std::unordered_map<CharacterInputCommand, int> keyMappings;
-
-};
-
-CharacterInputContext CreateCharacterInputContext(const InputContext& baseContext)
-{
-    CharacterInputContext characterContext;
-    characterContext.context = baseContext;
-    // Map input commands to their corresponding keys
-    characterContext.keyMappings[CharacterInputCommand::left] = GLFW_KEY_A;
-    characterContext.keyMappings[CharacterInputCommand::right] = GLFW_KEY_D;
-    characterContext.keyMappings[CharacterInputCommand::up] = GLFW_KEY_W;
-    characterContext.keyMappings[CharacterInputCommand::down] = GLFW_KEY_S;
-    characterContext.keyMappings[CharacterInputCommand::attack] = GLFW_KEY_SPACE;
-
-    return characterContext;
-}
-
 //Creating player
 struct Character
 {
@@ -132,7 +104,8 @@ struct Character
     Animator& animator;
     InputReceiver& input;
     esccape::EsccapeCharacter& character;
-    std::vector<CharacterInputContext> contexts;
+   // std::vector<CharacterInputContext> contexts;
+
 
     static Character Get(Entity entity)
     {
@@ -166,11 +139,8 @@ struct Character
 
         if (!input_.empty())
         {
-            InputContext baseContext;
-            baseContext.name = "CharacterInput";
-            CharacterInputContext characterContext = CreateCharacterInputContext(baseContext);
-            chr.contexts.push_back(characterContext); // Push the created context into the vector
-        
+            chr.input.contexts.push_back(input_);
+
         }
 
         chr.character.speed = 50;
@@ -273,23 +243,18 @@ void esccape::SetupWorld()
     // player
     {
         auto entity = reg.create();
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "Esccape:djura");
-        float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { playerSize, playerSize * ratio };
+      //  auto& sprite = reg.emplace<Sprite>(entity);
+      //  AssignSprite(sprite, "Esccape:djura");
+      //  float ratio = sprite.size.y / sprite.size.x;
+      //  sprite.size = { playerSize, playerSize * ratio };
 
-        auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { 0, 0, zPos };
+      //  auto& transform = reg.emplace<Transform>(entity);
+      //  transform.position = { 0, 0, zPos };
 
-        auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-        racingPlayer.speed = playerSize * 3;
+    //    auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+    //    racingPlayer.speed = playerSize * 3;
 
-        InputContext baseContext;
-        baseContext.name = "CharacterInput";
-        //// Initialize baseContext...
-
-        CharacterInputContext characterContext = CreateCharacterInputContext(InputContext());
-        auto mainChar = Character::Create("CharacterInput", {1, 1, 1}, {-100, 0});
+        auto mainChar = Character::Create("ASDWSpace", {1, 1, 1}, {-100, 0});
         
         
         //reg.emplace<ControllerMapping>(entity);
