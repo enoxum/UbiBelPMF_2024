@@ -46,6 +46,7 @@ void DiagnosticSystem::RenderGUI()
 		auto cursorInWorld = Camera::WorldToWindow(cursorInWindow);
 		ImGui::Text("Picked: %f %f", cursorInWorld.x, cursorInWorld.y);
 	}
+
 	ImGui::End();
 }
 
