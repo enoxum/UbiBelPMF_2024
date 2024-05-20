@@ -208,8 +208,11 @@ struct Character
 
     static Character Create(
         String input_ = "",
+        String spritesheet_ = "",
+        String animation_ = "",
         ColorRGB color_ = { 1, 1, 1 },
-        Vector2 position_ = { 0, 0 })
+        Vector2 position_ = { 0, 0 },
+        int id = 0)
     {
         auto& reg = Engine::Registry();
         auto entity = reg.create();
@@ -221,9 +224,12 @@ struct Character
         chr.sprite.scale = { 2.5, 2.5 };
         chr.sprite.position = { position_, 0.0f };
         chr.sprite.color = { color_, 1.0f };
+        chr.character.id = id;
 
-        AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
-        AnimatorPlay(chr.animator, "player:player_idle_front");
+        /*AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
+        AnimatorPlay(chr.animator, "player:player_idle_front");*/
+        AssignSprite(chr.sprite, spritesheet_);
+        AnimatorPlay(chr.animator, animation_);
 
         if (!input_.empty())
         {
@@ -374,46 +380,29 @@ void esccape::SetupWorld()
 
     // player
     {
-        auto entity = reg.create();
-        //  auto& sprite = reg.emplace<Sprite>(entity);
-        //  AssignSprite(sprite, "Esccape:djura");
-        //  float ratio = sprite.size.y / sprite.size.x;
-        //  sprite.size = { playerSize, playerSize * ratio };
-
-        //  auto& transform = reg.emplace<Transform>(entity);
-        //  transform.position = { 0, 0, zPos };
-
-      //    auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-      //    racingPlayer.speed = playerSize * 3;
-
-      // djura - test
         {
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            AssignSprite(sprite, "Esccape:rock2");
-            float ratio = sprite.size.y / sprite.size.x;
-            sprite.size = { playerSize, playerSize * ratio };
+           auto entity = reg.create();
 
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { 0, 0, zPos };
+            auto mainChar = Character::Create("ASDWSpace", 
+                "spritesheets:player_anim:player_idle_front:1", 
+                "player:player_idle_front",
+                { 1, 1, 1 }, { -100, 0 }, 0);
 
-            auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-            racingPlayer.speed = playerSize * 3;
-            racingPlayer.health = 5;
+            auto skeletonChar = Character::Create("skeleton-arrows",
+                "spritesheets:skeleton:skeleton_idle_front:1",
+                "skeleton:skeleton_idle_front",
+                 { 1, 1, 1 }, { -100, 0 }, 1);
 
-            auto mainChar = Character::Create("ASDWSpace", { 1, 1, 1 }, { -100, 0 });
+            reg.emplace<ControllerMapping>(entity);
 
-
-            //reg.emplace<ControllerMapping>(entity);
-            //auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
-
-            Player player = Player(racingPlayer, onHealthChanged);
 
             auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
 
 
-            //auto player = reg.create();
         }
+
+        
+        
     }
 }
 
