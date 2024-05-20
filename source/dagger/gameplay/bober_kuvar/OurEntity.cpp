@@ -15,9 +15,11 @@ OurEntity::OurEntity(const std::string& sprite_path, const std::string& animatio
 	if (animation_path_ != "")
 		AnimatorPlay(*animator, animation_path_);
 
-	collision = &Engine::Instance().Registry().emplace<SimpleCollision>(instance);
-	(*collision).size.x = collision_size.second;
-	(*collision).size.y = collision_size.first;
+	if (collidable_) {
+		collision = &Engine::Instance().Registry().emplace<SimpleCollision>(instance);
+		(*collision).size.x = collision_size.second;
+		(*collision).size.y = collision_size.first;
+	}
 }
 
 void OurEntity::move(Vector3 vector)

@@ -14,6 +14,16 @@ OurMap::OurMap(int n, int room_size)
 	generateMap();
 }
 
+int OurMap::get_n()
+{
+	return n_;
+}
+
+std::vector<std::vector<int>> OurMap::get_matrix()
+{
+	return matrix_;
+}
+
 void OurMap::generateMap()
 {
 	make_wall_matrix();
@@ -227,11 +237,36 @@ void OurMap::rearange_interior()
 					if (distance <= door_distance)
 						matrix_[j][i] = 0;
 					else if (matrix_[j][i] != 0)
-						matrix_[j][i] = 3;
+						matrix_[j][i] = 1;
 				}
 			}
 		}
 	}
+	//print_matrix_in_console(matrix_);
+
+	// remove unnecessary walls
+	for (int j = 1; j < n_ - 1; j++) {
+		for (int i = 1; i < n_ - 1; i++) {
+			if ((matrix_[j - 1][i] == 1 || matrix_[j - 1][i] == -1) &&
+				(matrix_[j + 1][i] == 1 || matrix_[j + 1][i] == -1) &&
+				(matrix_[j][i - 1] == 1 || matrix_[j][i - 1] == -1) &&
+				(matrix_[j][i + 1] == 1 || matrix_[j][i + 1] == -1))
+				matrix_[j][i] = -1;
+		}
+	}
+	for (int j = 0; j < n_; j++) {
+		if (matrix_[j][1] == 1 || matrix_[j][1] == -1)
+			matrix_[j][0] = -1;
+		if (matrix_[j][n_ - 2] == 1 || matrix_[j][n_ - 2] == -1)
+			matrix_[j][n_ - 1] = -1;
+	}
+	for (int i = 0; i < n_; i++) {
+		if (matrix_[1][i] == 1 || matrix_[1][i] == -1)
+			matrix_[0][i] = -1;
+		if (matrix_[n_ - 2][i] == 1 || matrix_[n_ - 2][i] == -1)
+			matrix_[n_ - 1][i] = -1;
+	}
+
 
 	//print_matrix_in_console(matrix_);
 }
@@ -245,12 +280,14 @@ void OurMap::paint_map()
 			bool collidable = false;
 			if (matrix_[j][i] == 0 || matrix_[j][i] == 2) {
 				tile_string = "BoberKuvar:64x64 darkness";
-				collidable = true;
+				collidable = false;
 			}
 			else {
 				tile_string = "BoberKuvar:64x64 backwall";
 				collidable = true;
 			}
+			if (matrix_[j][i] == -1)
+				continue;
 			tile_matrix_[j][i] = new Tile(tile_string, "", collidable);
 			tile_matrix_[j][i]->move(Vector3(sprite_size * i, -sprite_size * j, 0));
 		}

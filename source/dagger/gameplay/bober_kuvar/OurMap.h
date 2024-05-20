@@ -7,6 +7,8 @@ class OurMap
 {
 public:
 	OurMap(int n, int room_size);
+	int get_n();
+	std::vector<std::vector<int>> get_matrix();
 
 private:
 	int n_;
