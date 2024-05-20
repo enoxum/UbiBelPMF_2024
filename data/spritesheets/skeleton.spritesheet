@@ -1,0 +1,14 @@
+skeleton_idle_front 0 0 48 48 6
+skeleton_idle_right 0 48 48 48 6
+skeleton_idle_back 0 96 48 48 6
+skeleton_move_down 0 144 48 48 6
+skeleton_move_right 0 192 48 48 6
+skeleton_move_up 0 240 48 48 6
+skeleton_attack_down 0 288 48 48 6
+skeleton_attack_right 0 336 48 48 6
+skeleton_attack_up 0 384 48 48 6
+skeleton_damaged_down 0 432 48 48 3
+skeleton_damaged_right 0 480 48 48 3
+skeleton_damaged_up 0 528 48 48 3
+skeleton_death 0 576 48 48 5
+

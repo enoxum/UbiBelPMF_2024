@@ -1,0 +1,12 @@
+{
+	"animation-name": "skeleton:skeleton_idle_back",
+	"animation-length-ms": 600,
+	"animation-frames": [
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:1" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:2" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:3" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:4" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:5" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_idle_back:6" }
+	]
+}

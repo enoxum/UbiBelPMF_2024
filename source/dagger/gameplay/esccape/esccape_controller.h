@@ -10,6 +10,7 @@ namespace esccape
 {
 	struct EsccapeCharacter
 	{
+		int id = 0;
 		int speed{ 1 };
 	};
 

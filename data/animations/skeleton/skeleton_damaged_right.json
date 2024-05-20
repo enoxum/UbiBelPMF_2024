@@ -1,0 +1,10 @@
+{
+	"animation-name": "skeleton:skeleton_damaged_up",
+	"animation-length-ms": 600,
+	"animation-frames": [
+		{ "texture-name": "spritesheets:skeleton:skeleton_damaged_right:1" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_damaged_right:2" },
+		{ "texture-name": "spritesheets:skeleton:skeleton_damaged_right:3" }
+
+	]
+}

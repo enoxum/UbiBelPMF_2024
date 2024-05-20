@@ -6,9 +6,11 @@
 #include "core/graphics/animation.h"
 #include "core/game/transforms.h"
 #include "core/system.h"
+#include "esccape_controller.h"
 
 
 using namespace dagger;
+using namespace esccape;
 
 
 // pomocne funkcije za okretanje spritea
@@ -25,8 +27,12 @@ void FaceSpriteLeft(Sprite& sprite) {
 
 void CharacterControllerFSM::Idle_Front::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_idle_front");
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if(character.id == 0)
+		AnimatorPlay(animator, "player:player_idle_front");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_idle_front");
+
 }
 
 void CharacterControllerFSM::Idle_Front::Run(CharacterControllerFSM::StateComponent& state_)
@@ -63,9 +69,13 @@ void CharacterControllerFSM::Idle_Left::Enter(CharacterControllerFSM::StateCompo
 {
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 	 
 	FaceSpriteLeft(sprite);
-	AnimatorPlay(animator, "player:player_idle_right");
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_idle_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_idle_right");
 }
 
 void CharacterControllerFSM::Idle_Left::Run(CharacterControllerFSM::StateComponent& state_)
@@ -100,8 +110,11 @@ void CharacterControllerFSM::Idle_Left::Exit(CharacterControllerFSM::StateCompon
 
 void CharacterControllerFSM::Idle_Back::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_idle_back");
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_idle_back");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_idle_back");
 }
 
 void CharacterControllerFSM::Idle_Back::Run(CharacterControllerFSM::StateComponent& state_)
@@ -139,9 +152,15 @@ void CharacterControllerFSM::Idle_Right::Enter(CharacterControllerFSM::StateComp
 	
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	
 	FaceSpriteRight(sprite);
-	AnimatorPlay(animator, "player:player_idle_right");
+
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_idle_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_idle_right");
+
 }
 
 void CharacterControllerFSM::Idle_Right::Run(CharacterControllerFSM::StateComponent& state_)
@@ -177,8 +196,11 @@ void CharacterControllerFSM::Idle_Right::Exit(CharacterControllerFSM::StateCompo
 
 void CharacterControllerFSM::Running_Down::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_move_down");
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_move_down");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_move_down");
 }
 
 void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComponent& state_)
@@ -204,11 +226,18 @@ void CharacterControllerFSM::Running_Down::Exit(CharacterControllerFSM::StateCom
 
 void CharacterControllerFSM::Running_Left::Enter(CharacterControllerFSM::StateComponent& state_)
 {
+
+
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	FaceSpriteLeft(sprite);
-	AnimatorPlay(animator, "player:player_move_right");
+
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_move_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_move_right");
 }
 
 void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComponent& state_)
@@ -231,11 +260,17 @@ void CharacterControllerFSM::Running_Left::Exit(CharacterControllerFSM::StateCom
 
 void CharacterControllerFSM::Running_Right::Enter(CharacterControllerFSM::StateComponent& state_)
 {
+
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	FaceSpriteRight(sprite);
-	AnimatorPlay(animator, "player:player_move_right");
+
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_move_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_move_right");
 }
 
 void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateComponent& state_)
@@ -258,8 +293,11 @@ void CharacterControllerFSM::Running_Right::Exit(CharacterControllerFSM::StateCo
 
 void CharacterControllerFSM::Running_Up::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_move_up");
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_move_up");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_move_up");
 }
 
 void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateComponent& state_)
@@ -283,8 +321,12 @@ void CharacterControllerFSM::Running_Up::Exit(CharacterControllerFSM::StateCompo
 
 void CharacterControllerFSM::Attack_Down::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_attack_down");
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_attack_down");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_attack_down");
 }
 
 void CharacterControllerFSM::Attack_Down::Run(CharacterControllerFSM::StateComponent& state_)
@@ -308,11 +350,17 @@ void CharacterControllerFSM::Attack_Down::Exit(CharacterControllerFSM::StateComp
 
 void CharacterControllerFSM::Attack_Left::Enter(CharacterControllerFSM::StateComponent& state_)
 {
+
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	FaceSpriteLeft(sprite);
-	AnimatorPlay(animator, "player:player_attack_right");
+
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_attack_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_attack_right");
 }
 
 void CharacterControllerFSM::Attack_Left::Run(CharacterControllerFSM::StateComponent& state_)
@@ -335,11 +383,17 @@ void CharacterControllerFSM::Attack_Left::Exit(CharacterControllerFSM::StateComp
 
 void CharacterControllerFSM::Attack_Right::Enter(CharacterControllerFSM::StateComponent& state_)
 {
+
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	FaceSpriteRight(sprite);
-	AnimatorPlay(animator, "player:player_attack_right");
+
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_attack_right");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_attack_right");
 }
 
 void CharacterControllerFSM::Attack_Right::Run(CharacterControllerFSM::StateComponent& state_)
@@ -363,8 +417,12 @@ void CharacterControllerFSM::Attack_Right::Exit(CharacterControllerFSM::StateCom
 
 void CharacterControllerFSM::Attack_Up::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_attack_up");
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_attack_up");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_attack_up");
 }
 
 void CharacterControllerFSM::Attack_Up::Run(CharacterControllerFSM::StateComponent& state_)
@@ -388,14 +446,22 @@ void CharacterControllerFSM::Attack_Up::Exit(CharacterControllerFSM::StateCompon
 
 void CharacterControllerFSM::Death::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_death");
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_death");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_death");
 }
 
 void CharacterControllerFSM::Death::Run(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	AnimatorPlay(animator, "player:player_death");
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_death");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_death");
 }
 
 void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent& state_)
