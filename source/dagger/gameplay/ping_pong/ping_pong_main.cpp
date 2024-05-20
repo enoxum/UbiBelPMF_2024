@@ -188,8 +188,8 @@ void ping_pong::SetupWorld()
             transform.position.y = 0;
             transform.position.z = zPos;
 
-            //auto& wall = reg.emplace<PingPongWall>(entity);
-            //wall.isLeft = true;
+            auto& wall = reg.emplace<PingPongWall>(entity);
+            wall.isLeft = true;
         }
 
         // right
