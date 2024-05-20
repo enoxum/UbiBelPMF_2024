@@ -9,8 +9,12 @@ using namespace dagger;
 
 namespace esccape
 {
+    extern entt::entity healthBarEntity; 
     //void CreatePlayer(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
+    void onHealthChanged(int newHealth);
+    void CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health);
     void CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale);
+    void CreateObstacles(int zPos);
     void SetupWorld();
 
 
