@@ -305,7 +305,7 @@ void esccape::SetupWorld()
     zPos -= 1.f;
 
     // ui
-    
+
     // health bar
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
 
@@ -369,50 +369,51 @@ void esccape::SetupWorld()
         }
     }
 
-    
+
 
 
     // player
     {
         auto entity = reg.create();
-      //  auto& sprite = reg.emplace<Sprite>(entity);
-      //  AssignSprite(sprite, "Esccape:djura");
-      //  float ratio = sprite.size.y / sprite.size.x;
-      //  sprite.size = { playerSize, playerSize * ratio };
+        //  auto& sprite = reg.emplace<Sprite>(entity);
+        //  AssignSprite(sprite, "Esccape:djura");
+        //  float ratio = sprite.size.y / sprite.size.x;
+        //  sprite.size = { playerSize, playerSize * ratio };
 
-      //  auto& transform = reg.emplace<Transform>(entity);
-      //  transform.position = { 0, 0, zPos };
+        //  auto& transform = reg.emplace<Transform>(entity);
+        //  transform.position = { 0, 0, zPos };
 
-    //    auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-    //    racingPlayer.speed = playerSize * 3;
+      //    auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+      //    racingPlayer.speed = playerSize * 3;
 
-    // djura - test
-    {
-        auto entity = reg.create();
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "Esccape:rock2");
-        float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { playerSize, playerSize * ratio };
+      // djura - test
+        {
+            auto entity = reg.create();
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Esccape:rock2");
+            float ratio = sprite.size.y / sprite.size.x;
+            sprite.size = { playerSize, playerSize * ratio };
 
-        auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { 0, 0, zPos };
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position = { 0, 0, zPos };
 
-        auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-        racingPlayer.speed = playerSize * 3;
-        racingPlayer.health = 5;
+            auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+            racingPlayer.speed = playerSize * 3;
+            racingPlayer.health = 5;
 
-        auto mainChar = Character::Create("ASDWSpace", {1, 1, 1}, {-100, 0});
-        
-        
-        //reg.emplace<ControllerMapping>(entity);
-        //auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
-
-        Player player = Player(racingPlayer, onHealthChanged);
-
-        auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
+            auto mainChar = Character::Create("ASDWSpace", { 1, 1, 1 }, { -100, 0 });
 
 
-        //auto player = reg.create();
+            //reg.emplace<ControllerMapping>(entity);
+            //auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
+
+            Player player = Player(racingPlayer, onHealthChanged);
+
+            auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
+
+
+            //auto player = reg.create();
+        }
     }
 }
 
