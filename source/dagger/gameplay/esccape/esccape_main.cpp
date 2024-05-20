@@ -14,9 +14,12 @@
 #include "core/graphics/gui.h"
 #include "tools/diagnostics.h"
 
+
+#include <unordered_map>
+
 #include "gameplay/common/simple_collisions.h"
-#include "character_controller_fsm.h"
 #include "esccape_main.h"
+#include "esccape_controller.h"
 #include "player.h"
 
 #include <random>
@@ -91,6 +94,36 @@ void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenH
     col.size.y = machineSize * ratio;
 }
 
+
+enum class CharacterInputCommand {
+    left,
+    right,
+    up,
+    down,
+    attack,
+};
+
+struct CharacterInputContext
+{
+    InputContext context;
+    std::unordered_map<CharacterInputCommand, int> keyMappings;
+
+};
+
+CharacterInputContext CreateCharacterInputContext(const InputContext& baseContext)
+{
+    CharacterInputContext characterContext;
+    characterContext.context = baseContext;
+    // Map input commands to their corresponding keys
+    characterContext.keyMappings[CharacterInputCommand::left] = GLFW_KEY_A;
+    characterContext.keyMappings[CharacterInputCommand::right] = GLFW_KEY_D;
+    characterContext.keyMappings[CharacterInputCommand::up] = GLFW_KEY_W;
+    characterContext.keyMappings[CharacterInputCommand::down] = GLFW_KEY_S;
+    characterContext.keyMappings[CharacterInputCommand::attack] = GLFW_KEY_SPACE;
+
+    return characterContext;
+}
+
 //Creating player
 struct Character
 {
@@ -98,7 +131,8 @@ struct Character
     Sprite& sprite;
     Animator& animator;
     InputReceiver& input;
-    EsccapeCharacter& character;
+    esccape::EsccapeCharacter& character;
+    std::vector<CharacterInputContext> contexts;
 
     static Character Get(Entity entity)
     {
@@ -106,12 +140,13 @@ struct Character
         auto& sprite = reg.get_or_emplace<Sprite>(entity);
         auto& anim = reg.get_or_emplace<Animator>(entity);
         auto& input = reg.get_or_emplace<InputReceiver>(entity);
-        auto& character = reg.get_or_emplace<EsccapeCharacter>(entity);
+        auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
 
         return Character{ entity, sprite, anim, input, character };
     }
 
     static Character Create(
+        String input_ = "",
         ColorRGB color_ = { 1, 1, 1 },
         Vector2 position_ = { 0, 0 })
     {
@@ -129,11 +164,22 @@ struct Character
         AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
         AnimatorPlay(chr.animator, "player:player_idle_front");
 
+        if (!input_.empty())
+        {
+            InputContext baseContext;
+            baseContext.name = "CharacterInput";
+            CharacterInputContext characterContext = CreateCharacterInputContext(baseContext);
+            chr.contexts.push_back(characterContext); // Push the created context into the vector
+        
+        }
+
         chr.character.speed = 50;
 
         return chr;
     }
 };
+
+
 
 
 void esccape::SetupWorld()
@@ -155,7 +201,7 @@ void esccape::SetupWorld()
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "Esccape:pesak");
-        sprite.size = { screenWidth, screenHeight};
+        sprite.size = { screenWidth, screenHeight };
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { 0, 0, zPos };
@@ -203,7 +249,7 @@ void esccape::SetupWorld()
             col.size.y = screenHeight;
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = - screenWidth / 2;
+            transform.position.x = -screenWidth / 2;
             transform.position.y = 0;
             transform.position.z = zPos;
         }
@@ -221,6 +267,9 @@ void esccape::SetupWorld()
         }
     }
 
+    
+
+
     // player
     {
         auto entity = reg.create();
@@ -230,39 +279,48 @@ void esccape::SetupWorld()
         sprite.size = { playerSize, playerSize * ratio };
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = {0, 0, zPos };
+        transform.position = { 0, 0, zPos };
 
         auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
-        racingPlayer.speed = playerSize * 3;  
+        racingPlayer.speed = playerSize * 3;
 
+        InputContext baseContext;
+        baseContext.name = "CharacterInput";
+        //// Initialize baseContext...
 
-    auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
+        CharacterInputContext characterContext = CreateCharacterInputContext(InputContext());
+        auto mainChar = Character::Create("CharacterInput", {1, 1, 1}, {-100, 0});
+        
+        
+        //reg.emplace<ControllerMapping>(entity);
+        //auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
 
-            /*auto player = reg.create();
+        /*auto player = reg.create();
 
-            auto& sprite = reg.emplace<Sprite>(player);
-            AssignSprite(sprite, "spritesheets:player_anim:player_attack_right:1");
-            sprite.position = { 0, 0 , 0};
-            sprite.position.z = (150.0f + sprite.position.y) / 10.0f;
-            sprite.scale = { 3, 3 };
+        auto& sprite = reg.emplace<Sprite>(player);
+        AssignSprite(sprite, "spritesheets:player_anim:player_attack_right:1");
+        sprite.position = { 0, 0 , 0};
+        sprite.position.z = (150.0f + sprite.position.y) / 10.0f;
+        sprite.scale = { 3, 3 };
 
-            auto& anim = reg.emplace<Animator>(player);
-            AnimatorPlay(anim, "player:player_attack_right");
-           
-           float ratio = sprite.size.y / sprite.size.x;
-           sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
+        auto& anim = reg.emplace<Animator>(player);
+        AnimatorPlay(anim, "player:player_attack_right");
 
-        auto& col = reg.emplace<SimpleCollision>(entity);
-        col.size = sprite.size;
+       float ratio = sprite.size.y / sprite.size.x;
+       sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
+
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size = sprite.size;
+}
+
+       auto& transform = reg.emplace<Transform>(player);
+       transform.position = { -tileSize * 4, -tileSize * 4, zPos };
+
+       auto& racingPlayer = reg.emplace<PlayerEntity>(player);
+       racingPlayer.speed = tileSize * 6;
+
+       
+   */
     }
-
-           auto& transform = reg.emplace<Transform>(player);
-           transform.position = { -tileSize * 4, -tileSize * 4, zPos };
-
-           auto& racingPlayer = reg.emplace<PlayerEntity>(player);
-           racingPlayer.speed = tileSize * 6;
-
-           reg.emplace<ControllerMapping>(player);
-       */
 }
 

@@ -12,6 +12,7 @@
 using namespace dagger;
 using namespace esccape;
 
+
 void Player::SpinUp()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().connect<&Player::OnKeyboardEvent>(this);

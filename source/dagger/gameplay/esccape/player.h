@@ -2,6 +2,9 @@
 
 #include "core/system.h"
 #include "core/core.h"
+#include "character_controller.h"
+
+
 
 using namespace dagger; 
 
@@ -13,6 +16,7 @@ namespace esccape
         EDaggerKeyboard rightKey = EDaggerKeyboard::KeyD;
         EDaggerKeyboard upKey = EDaggerKeyboard::KeyW;
         EDaggerKeyboard downKey = EDaggerKeyboard::KeyS;
+        EDaggerKeyboard attackKey = EDaggerKeyboard::KeySpace;
 
         Vector2 input{ 0, 0 };
     };
