@@ -14,8 +14,12 @@
 #include "core/graphics/gui.h"
 #include "tools/diagnostics.h"
 
+
+#include <unordered_map>
+
 #include "gameplay/common/simple_collisions.h"
 #include "esccape_main.h"
+#include "esccape_controller.h"
 #include "player.h"
 
 #include <random>
@@ -54,6 +58,7 @@ void EsccapeGame::GameplaySystemsSetup()
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
     engine.AddSystem<Player>();
+    engine.AddSystem<EsccapeControllerSystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -187,7 +192,8 @@ struct Character
     Sprite& sprite;
     Animator& animator;
     InputReceiver& input;
-    EsccapeCharacter& character;
+    esccape::EsccapeCharacter& character;
+
 
     static Character Get(Entity entity)
     {
@@ -195,19 +201,20 @@ struct Character
         auto& sprite = reg.get_or_emplace<Sprite>(entity);
         auto& anim = reg.get_or_emplace<Animator>(entity);
         auto& input = reg.get_or_emplace<InputReceiver>(entity);
-        auto& character = reg.get_or_emplace<EsccapeCharacter>(entity);
+        auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
 
         return Character{ entity, sprite, anim, input, character };
     }
 
     static Character Create(
+        String input_ = "",
         ColorRGB color_ = { 1, 1, 1 },
         Vector2 position_ = { 0, 0 })
     {
         auto& reg = Engine::Registry();
         auto entity = reg.create();
 
-        //ATTACH_TO_FSM(CharacterControllerFSM, entity);
+        ATTACH_TO_FSM(CharacterControllerFSM, entity);
 
         auto chr = Character::Get(entity);
 
@@ -217,6 +224,12 @@ struct Character
 
         AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
         AnimatorPlay(chr.animator, "player:player_idle_front");
+
+        if (!input_.empty())
+        {
+            chr.input.contexts.push_back(input_);
+
+        }
 
         chr.character.speed = 50;
 
@@ -260,6 +273,8 @@ struct EnemyCharachter
         return chr;
     }
 };
+
+
 
 
 void esccape::SetupWorld()
@@ -354,6 +369,23 @@ void esccape::SetupWorld()
         }
     }
 
+    
+
+
+    // player
+    {
+        auto entity = reg.create();
+      //  auto& sprite = reg.emplace<Sprite>(entity);
+      //  AssignSprite(sprite, "Esccape:djura");
+      //  float ratio = sprite.size.y / sprite.size.x;
+      //  sprite.size = { playerSize, playerSize * ratio };
+
+      //  auto& transform = reg.emplace<Transform>(entity);
+      //  transform.position = { 0, 0, zPos };
+
+    //    auto& racingPlayer = reg.emplace<PlayerEntity>(entity);
+    //    racingPlayer.speed = playerSize * 3;
+
     // djura - test
     {
         auto entity = reg.create();
@@ -369,40 +401,18 @@ void esccape::SetupWorld()
         racingPlayer.speed = playerSize * 3;
         racingPlayer.health = 5;
 
+        auto mainChar = Character::Create("ASDWSpace", {1, 1, 1}, {-100, 0});
+        
+        
+        //reg.emplace<ControllerMapping>(entity);
+        //auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
 
         Player player = Player(racingPlayer, onHealthChanged);
-
-        auto mainChar = Character::Create({ 1, 1, 1 }, { -100, 0 });
 
         auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
 
 
         //auto player = reg.create();
     }
-//        auto& sprite = reg.emplace<Sprite>(player);
-//        AssignSprite(sprite, "spritesheets:player_anim:player_attack_right:1");
-//        sprite.position = { 0, 0 , 0};
-//        sprite.position.z = (150.0f + sprite.position.y) / 10.0f;
-//        sprite.scale = { 3, 3 };
-//
-//        auto& anim = reg.emplace<Animator>(player);
-//        AnimatorPlay(anim, "player:player_attack_right");
-//
-//       float ratio = sprite.size.y / sprite.size.x;
-//       sprite.size = { 4 * tileSize, 4 * tileSize * ratio };
-//
-//    auto& col = reg.emplace<SimpleCollision>(entity);
-//    col.size = sprite.size;
-//}
-//
-//       auto& transform = reg.emplace<Transform>(player);
-//       transform.position = { -tileSize * 4, -tileSize * 4, zPos };
-//
-//       auto& racingPlayer = reg.emplace<PlayerEntity>(player);
-//       racingPlayer.speed = tileSize * 6;
-//
-//       reg.emplace<ControllerMapping>(player);
-  
-    
 }
 

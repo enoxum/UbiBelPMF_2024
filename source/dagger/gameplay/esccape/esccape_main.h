@@ -18,12 +18,6 @@ namespace esccape
     void SetupWorld();
 
 
-    struct EsccapeCharacter
-    {
-        int speed{ 1 };
-    };
-
-
     class EsccapeGame : public Game
     {
         inline String GetIniFile() override
