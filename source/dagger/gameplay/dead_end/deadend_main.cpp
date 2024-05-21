@@ -105,7 +105,7 @@ void dead_end::setupWorld()
         transform.position.z = zPos ;
 
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "dead_end:Player:car");
+        AssignSprite(sprite, "dead_end:Player:player_pistol");
         sprite.size.x = playerSize ;
         sprite.size.y = playerSize ;
 
