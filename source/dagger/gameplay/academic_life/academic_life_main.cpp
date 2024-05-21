@@ -62,7 +62,7 @@ void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileS
     text.position = transform.position;
     text.spacing = 0.6f;
     text.message = eq.to_equation(expression);
-    text.evaluation = eq.evaluate(expression);
+    //text.evaluation = eq.evaluate(expression);
 
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size = { TileSize * 4, TileSize * 4 };
@@ -157,7 +157,6 @@ void setLifestyleEntity(int lifestyle_prob, Registry& reg, entt::entity entity, 
 }
 
 
-
 void academic_life::SetupWorld()
 {
     auto& engine = Engine::Instance();
@@ -165,9 +164,11 @@ void academic_life::SetupWorld()
 
     constexpr Vector2 scale(1, 1);
 
+    constexpr float TileSize = 20.f;
     constexpr int Height = 30;
     constexpr int Width = 30;
-    constexpr float TileSize = 20.f;
+    const int leftBorder = -80;
+    const int rightBorder = 120;
 
 
     //TO DO care about boundaries for health [-100,100]
@@ -298,18 +299,22 @@ void academic_life::SetupWorld()
             auto entity = reg.create();
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Height / 2), zPos };
+            auto randomX = rand() % 200 - 150;
+            auto randomY = (rand() % 50) * ((rand() % 10) + 5) + 300;
+            transform.position = { randomX, randomY, zPos }; 
 
             auto& falling_text = reg.emplace<FallingText>(entity);
-            falling_text.speed = TileSize * (rand() % 5 + 3);
             auto& text = falling_text.text;
+            text.scale = { 0.6f, 0.6f };
+            text.spacing = { 0.3f };
+            text.position = transform.position;
+            falling_text.speed = TileSize * (rand() % 5 + 3);
 
             Equation eq = Equation::Equation(3, 4, -5, 5);
             std::string expression = generate_expression(ESPB, eq);
-            text.position = transform.position;
-            text.spacing = 0.6f;
             text.message = eq.to_equation(expression);
-            text.evaluation = eq.evaluate(expression);
+            double evaluation = eq.evaluate(expression);
+            ESPB.Increase(evaluation);
 
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size = { TileSize * 11.5, TileSize * 2 };
