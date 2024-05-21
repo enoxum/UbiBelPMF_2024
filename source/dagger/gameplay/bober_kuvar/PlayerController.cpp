@@ -1,4 +1,5 @@
 #include "PlayerController.h"
+#include "Bullet.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
@@ -12,6 +13,7 @@ using namespace bober_game;
 
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
+//std::vector<Bullet> bullets;
 
 void PlayerController::SpinUp()
 {
@@ -42,6 +44,13 @@ void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
                 ctrl_.input.x = -1;
             if (kEvent_.key == ctrl_.rightKey)
                 ctrl_.input.x = 1;
+
+            if (kEvent_.key == ctrl_.num1) {
+                ctrl_.index = 0;
+            }
+            if (kEvent_.key == ctrl_.num2) {
+                ctrl_.index = 1;
+            }
         }
         else if (kEvent_.action == EDaggerInputState::Released)
         {
@@ -82,6 +91,7 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
     {
         auto& c = viewRanged.get<RangedWeaponSystem>(entity);
         c.isMouseBtnPressed = isMousePressed;
+        //Event za kreiranje bullet-a (mozda).
     }
     auto viewMelee = Engine::Registry().view<MeleeWeaponSystem>();
     for (auto entity : viewMelee)
@@ -94,11 +104,18 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
 void PlayerController::Run()
 {
     double cos_, sin_;
+    Vector2 dir{ 0,0 };
     auto view = Engine::Registry().view<Transform, ControllerMapping>();
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
+        if (ctrl.index) {
+            //Ranged
+        }
+        else {
+            //Melee
+        }
 
         if (ctrl.input == Vector2{0.0f, 0.0f})
             break;
@@ -120,7 +137,7 @@ void PlayerController::Run()
         sin_ = sin(theta);
         t.position.x = playerPos.x + 50 * cos_;
         t.position.y = playerPos.y + 50 * sin_;
-        s.color.r = c.isMouseBtnPressed ? 1 : 0;
+        s.color.r = c.isMouseBtnPressed ? 0 : 1;
     }
     auto viewRanged = Engine::Registry().view<Transform, Sprite, RangedWeaponSystem>();
     for (auto entity : viewRanged)
@@ -131,7 +148,9 @@ void PlayerController::Run()
 
         t.position.x = playerPos.x + 8 * cos_;
         t.position.y = playerPos.y + 8 * sin_;
-        s.color.r = r.isMouseBtnPressed ? 1 : 0;
+        dir.x = t.position.x - playerPos.x;
+        dir.y = t.position.y - playerPos.y;
+        s.color.r = r.isMouseBtnPressed ? 0 : 1;
     }
     auto viewMelee = Engine::Registry().view<Transform, Sprite, MeleeWeaponSystem>();
     for (auto entity : viewMelee)
@@ -142,6 +161,27 @@ void PlayerController::Run()
 
         t.position.x = playerPos.x + 8 * cos_;
         t.position.y = playerPos.y + 8 * sin_;
-        s.color.r = m.isMouseBtnPressed ? 1 : 0;
+        s.color.r = m.isMouseBtnPressed ? 0 : 1;
+    }
+    auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem>();
+    for (auto entity : viewBullet)
+    {
+        auto& t = viewBullet.get<Transform>(entity);
+        auto& s = viewBullet.get<Sprite>(entity);
+        auto& b = viewBullet.get<BulletSystem>(entity);
+                            //get<SimpleCollision>
+        if (b.firstTime) {
+            b.dir = dir;
+            float length = sqrt(b.dir.x * b.dir.x + b.dir.y * b.dir.y);
+
+            if (length != 0)
+            {
+                b.dir.x /= length;
+                b.dir.y /= length;
+            }
+            b.firstTime = false;
+        }
+        t.position.x += b.dir.x * b.speed * Engine::DeltaTime();
+        t.position.y += b.dir.y * b.speed * Engine::DeltaTime();
     }
 }

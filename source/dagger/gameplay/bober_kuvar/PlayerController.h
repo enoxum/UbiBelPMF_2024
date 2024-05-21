@@ -14,8 +14,11 @@ namespace bober_game
 		EDaggerKeyboard leftKey;
 		EDaggerKeyboard downKey;
 		EDaggerKeyboard rightKey;
+		EDaggerKeyboard num1;
+		EDaggerKeyboard num2;
 
 		Vector2 input = { 0.f, 0.f };
+		int index=0;
 	};
 
 	struct Cursor
@@ -29,7 +32,13 @@ namespace bober_game
 		bool isActive;
 		bool isMouseBtnPressed;
 		Vector2 position{ 0,0 };
-		Vector3 dir{ 0,0,0 };
+	};
+
+	struct BulletSystem 
+	{
+		bool firstTime = true;
+		float speed;
+		Vector2 dir{ 0,0 };
 	};
 	
 	struct MeleeWeaponSystem
@@ -62,6 +71,8 @@ namespace bober_game
 			controllerMapping_.leftKey = EDaggerKeyboard::KeyA;
 			controllerMapping_.downKey = EDaggerKeyboard::KeyS;
 			controllerMapping_.rightKey = EDaggerKeyboard::KeyD;
+			controllerMapping_.num1 = EDaggerKeyboard::Key1;
+			controllerMapping_.num2 = EDaggerKeyboard::Key2;
 		}
 	private:
 		void OnKeyboardEvent(KeyboardEvent kEvent_);

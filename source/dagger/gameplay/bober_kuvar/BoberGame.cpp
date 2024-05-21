@@ -62,12 +62,7 @@ void BoberGame::WorldSetup()
     //Cursor
     {
         Vector2 scale(1, 1);
-        float zPos = 0.f;
         constexpr float tileSize = 10.f;
-        (*cursor->transform).position.x =0;
-        (*cursor->transform).position.y =0;
-        (*cursor->transform).position.z = zPos;
-
         AssignSprite(*cursor->sprite, "crosshair");
         (*cursor->sprite).size = scale * tileSize;
         reg.remove<Animator>(cursor->instance);
@@ -78,18 +73,22 @@ void BoberGame::WorldSetup()
     //Ranged
     {
         Vector2 scale(1, 1);
-        float zPos = 0.f;
-        constexpr float tileSize = 10.f;
-        (*gun->transform).position.x = 0;
-        (*gun->transform).position.y = 0;
-        (*gun->transform).position.z = zPos;
-
-        AssignSprite(*gun->sprite, "crosshair");
+        constexpr float tileSize = 20.f;
+        AssignSprite(*gun->sprite, "pizzaGun");
         (*gun->sprite).size = scale * tileSize;
         reg.remove<Animator>(gun->instance);
         //reg.emplace<RangedWeaponSystem>(gun->instance);
 
        bober->weapons.push_back(gun);
+    }
+    Bullet* bullet = new Bullet(50.0f);
+    //Bullet
+    {
+        Vector2 scale(1, 1);
+        constexpr float tileSize = 20.f;
+        AssignSprite(*bullet->sprite, "pizzaSlice");
+        (*bullet->sprite).size = scale * tileSize;
+        reg.remove<Animator>(bullet->instance);
     }
     SetCamera();
 }
