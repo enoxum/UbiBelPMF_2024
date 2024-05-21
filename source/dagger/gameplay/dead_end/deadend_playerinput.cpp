@@ -106,26 +106,38 @@ void dead_end::DeadEndPlayerInputSystem::Run()
         }
 
 
+        auto* c = Engine::GetDefaultResource<Camera>();
+
+        auto cursor = dagger::Input::CursorPositionInWindow();
+
+        //Vector2 screenCenter{400, 300}; // width / 2, height / 2
+        Vector2 screenCenter{ camera.size.x / 2, camera.size.y / 2 }; // width / 2, height / 2
+
+        Vector2 relativePosition = cursor - screenCenter;
+
+
+        Vector2 windowCoord{ 0,0 };
+        windowCoord.x += camera.position.x + relativePosition.x;
+        windowCoord.y += camera.position.y - relativePosition.y;
+
+        Vector2 position = { t.position.x, t.position.y };
+        Vector2 target = windowCoord;
+
+        Vector2 direction = windowCoord - position;
+
+        float angleRadians = atan2(-direction.x, direction.y);
+        float angleDegs = glm::degrees(angleRadians);
+
+        if (angleDegs < 0)
+        {
+            angleDegs += 360.0f;
+        }
+
+        s.rotation = angleDegs;
+
         if (ctrl.shooting && player.weaponType != 0)
         {
-            auto* config = Engine::GetDefaultResource<RenderConfig>();
-            auto* c = Engine::GetDefaultResource<Camera>();
-            
-            auto cursor = dagger::Input::CursorPositionInWindow();
-
-            //Vector2 screenCenter{400, 300}; // width / 2, height / 2
-            Vector2 screenCenter{camera.size.x / 2, camera.size.y / 2}; // width / 2, height / 2
-
-            Vector2 relativePosition = cursor - screenCenter; 
-
-
-            Vector2 windowCoord{ 0,0 }; 
-            windowCoord.x += camera.position.x + relativePosition.x;
-            windowCoord.y += camera.position.y - relativePosition.y;
-
-            Vector2 position = { t.position.x, t.position.y };
-            Vector2 target = windowCoord;
-
+           
 
             dead_end::CreateBullet(position, target, player.weaponType);
             
