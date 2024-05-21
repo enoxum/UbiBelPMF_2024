@@ -5,14 +5,18 @@ class Character :
     public OurEntity
 {
 public:
-    Character();
+    Character(double hp, double speed, double strength);
     void move(Vector3 vector);
+    
+    double getSpeed();
+
 private:
     virtual void spawn();
     virtual void die();
     virtual void collision();
 
-    double hp;
-    double speed;
-    double strength;
+protected:
+    double m_hp;
+    double m_speed;
+    double m_strength;
 };

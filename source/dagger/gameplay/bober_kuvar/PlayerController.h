@@ -17,12 +17,24 @@ namespace bober_game
 		Vector2 input = { 0.f, 0.f };
 	};
 
+	struct MovementData
+	{
+		Float32 speed;
+		Vector2 velocity{ 0.f, 0.f };
+	};
+
+	struct EnemyData
+	{
+		int ID;
+		Vector3 target{ 0, 0, 0 };
+	};
+
 	class PlayerController
 		: public System
 	{
 
 	public:
-		static double playerSpeed;
+		//static double playerSpeed;
 
 		String SystemName() override {
 			return "Character Controller System";
