@@ -60,6 +60,7 @@ void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
 
 void PlayerController::Run()
 {
+    Vector3 playerPosition;
 
     auto view = Engine::Registry().view<Transform, ControllerMapping, MovementData>();
     for (auto entity : view)
@@ -67,6 +68,8 @@ void PlayerController::Run()
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
         auto& mov = view.get<MovementData>(entity);
+
+        playerPosition = t.position;
 
         if (ctrl.input == Vector2{0.0f, 0.0f})
             break;
@@ -76,11 +79,76 @@ void PlayerController::Run()
         t.position.x += normalized * ctrl.input.x * mov.speed * Engine::DeltaTime();
         t.position.y += normalized * ctrl.input.y * mov.speed * Engine::DeltaTime();
 
+        playerPosition = t.position;
+
+    }
+
+    auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol>();
+    for (auto entity : enemyView) 
+    {
+        auto& t = enemyView.get<Transform>(entity);
+        auto& enemy = enemyView.get<EnemyData>(entity);
+        auto& mov = enemyView.get<MovementData>(entity);
+        auto& patrol = enemyView.get<Patrol>(entity);
+
+        if (!enemy.focusOnPlayer)
+        {
+            Vector3 currentWaypoint = patrol.waypoints[patrol.currentWaypointIndex];
+
+            Vector3 direction = currentWaypoint - t.position;
+            float length = sqrt(direction.x * direction.x + direction.y * direction.y);
+                
+            if (length <= 1.0f)
+            {
+                patrol.forward = (rand() % 2) > 0.5f ? true : false;
+                if (patrol.forward)
+                {
+                    patrol.currentWaypointIndex = (patrol.currentWaypointIndex + 1) % patrol.waypoints.size();
+                }
+                else
+                {
+                    patrol.currentWaypointIndex = patrol.currentWaypointIndex - 1;
+                    if (patrol.currentWaypointIndex < 0)
+                    {
+                        patrol.currentWaypointIndex = patrol.waypoints.size() - 1;
+                    }
+                }
+                t.position = currentWaypoint;
+            }
+            else
+            {
+                if (length != 0)
+                {
+                    direction /= length;
+                }
+
+                t.position.x += direction.x * mov.speed * Engine::DeltaTime();
+                t.position.y += direction.y * mov.speed * Engine::DeltaTime();
+            }
+        }
+        else
+        {
+            float directionX = playerPosition.x - t.position.x;
+            float directionY = playerPosition.y - t.position.y;
+            float length = sqrt(directionX * directionX + directionY * directionY);
+
+            if (length != 0)
+            {
+                directionX /= length;
+                directionY /= length;
+            }
+
+            mov.velocity.x = directionX * mov.speed * Engine::DeltaTime();
+            mov.velocity.y = directionY * mov.speed * Engine::DeltaTime();
+
+            t.position.x += mov.velocity.x;
+            t.position.y += mov.velocity.y;
+        }
     }
 
  
 
-   /* auto viewPosition = Engine::Registry().view<Transform, MovementData>();
+    /*auto viewPosition = Engine::Registry().view<Transform, MovementData>();
     for (auto entity : viewPosition)
     {
         auto& t = viewPosition.get<Transform>(entity);

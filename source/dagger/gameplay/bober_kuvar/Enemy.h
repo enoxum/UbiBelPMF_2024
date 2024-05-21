@@ -1,6 +1,6 @@
 #pragma once
-#include "Character.h"
 #include "PlayerController.h"
+#include "Character.h"
 
 using namespace bober_game;
 
@@ -12,11 +12,14 @@ public:
 private:
     double xpDrop;
     double lootAmount;
+    Vector3 initialPosition;
     MovementData* movement_;
     EnemyData* data_;
+    Patrol* patrol_;
 
     void spawn() override;
     void die() override;
     void collision() override;
+    void generatePath();
 
 };

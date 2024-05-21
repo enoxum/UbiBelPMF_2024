@@ -26,7 +26,14 @@ namespace bober_game
 	struct EnemyData
 	{
 		int ID;
+		bool focusOnPlayer;
 		Vector3 target{ 0, 0, 0 };
+	};
+
+	struct Patrol {
+		std::vector<Vector3> waypoints;
+		int currentWaypointIndex;
+		bool forward;
 	};
 
 	class PlayerController
