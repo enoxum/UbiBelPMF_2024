@@ -5,9 +5,13 @@
 #include <core/graphics/window.h>
 #include <core/graphics/sprite.h>
 
+#include <cmath>
+#include <math.h>
+
 using namespace bober_game;
 
 double PlayerController::playerSpeed = 100.0;
+Vector2 playerPos{ 0,0 };
 
 void PlayerController::SpinUp()
 {
@@ -73,10 +77,23 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
         auto& c = viewCursor.get<Cursor>(entity);
         c.isMouseBtnPressed = isMousePressed;
     }
+    auto viewRanged = Engine::Registry().view<RangedWeaponSystem>();
+    for (auto entity : viewRanged)
+    {
+        auto& c = viewRanged.get<RangedWeaponSystem>(entity);
+        c.isMouseBtnPressed = isMousePressed;
+    }
+    auto viewMelee = Engine::Registry().view<MeleeWeaponSystem>();
+    for (auto entity : viewMelee)
+    {
+        auto& c = viewMelee.get<MeleeWeaponSystem>(entity);
+        c.isMouseBtnPressed = isMousePressed;
+    }
 }
 
 void PlayerController::Run()
 {
+    double cos_, sin_;
     auto view = Engine::Registry().view<Transform, ControllerMapping>();
     for (auto entity : view)
     {
@@ -89,6 +106,8 @@ void PlayerController::Run()
 
         t.position.x += normalized * ctrl.input.x * playerSpeed * Engine::DeltaTime();
         t.position.y += normalized * ctrl.input.y * playerSpeed * Engine::DeltaTime();
+        playerPos.x = t.position.x;
+        playerPos.y = t.position.y;
     }
     auto viewCursor = Engine::Registry().view<Transform, Sprite, Cursor>();
     for (auto entity : viewCursor)
@@ -96,10 +115,33 @@ void PlayerController::Run()
         auto& t = viewCursor.get<Transform>(entity);
         auto& s = viewCursor.get<Sprite>(entity);
         auto& c = viewCursor.get<Cursor>(entity);
+        double theta = atan2(c.position.y , c.position.x);
+        cos_ = cos(theta);
+        sin_ = sin(theta);
+        t.position.x = playerPos.x + 50 * cos_;
+        t.position.y = playerPos.y + 50 * sin_;
+        s.color.r = c.isMouseBtnPressed ? 1 : 0;
+    }
+    auto viewRanged = Engine::Registry().view<Transform, Sprite, RangedWeaponSystem>();
+    for (auto entity : viewRanged)
+    {
+        auto& t = viewRanged.get<Transform>(entity);
+        auto& s = viewRanged.get<Sprite>(entity);
+        auto& r = viewRanged.get<RangedWeaponSystem>(entity);
 
-        t.position.x = c.position.x;
-        t.position.y = c.position.y;
+        t.position.x = playerPos.x + 8 * cos_;
+        t.position.y = playerPos.y + 8 * sin_;
+        s.color.r = r.isMouseBtnPressed ? 1 : 0;
+    }
+    auto viewMelee = Engine::Registry().view<Transform, Sprite, MeleeWeaponSystem>();
+    for (auto entity : viewMelee)
+    {
+        auto& t = viewMelee.get<Transform>(entity);
+        auto& s = viewMelee.get<Sprite>(entity);
+        auto& m = viewMelee.get<MeleeWeaponSystem>(entity);
 
-        s.color.g = c.isMouseBtnPressed ? 1 : 0;
+        t.position.x = playerPos.x + 8 * cos_;
+        t.position.y = playerPos.y + 8 * sin_;
+        s.color.r = m.isMouseBtnPressed ? 1 : 0;
     }
 }

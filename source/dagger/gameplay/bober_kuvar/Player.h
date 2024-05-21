@@ -1,6 +1,9 @@
 #pragma once
 #include "Character.h"
 #include "PlayerController.h"
+#include "Weapon.h"
+#include "Ranged.h"
+#include "Melee.h"
 
 using namespace bober_game;
 
@@ -12,6 +15,7 @@ public:
 
     void levelUp();
     int getLevel();
+    std::vector<Weapon*> weapons;
 private:
     void spawn() override;
     void die() override;

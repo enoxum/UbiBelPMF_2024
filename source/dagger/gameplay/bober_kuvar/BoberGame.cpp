@@ -23,7 +23,6 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "PlayerController.h"
-#include "Cursor.h"
 
 using namespace dagger;
 using namespace bober_game;
@@ -35,7 +34,6 @@ void BoberGame::GameplaySystemsSetup()
 
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
-    //engine.AddSystem<AimingSystem>();
 }
 
 void BoberGame::SetCamera()
@@ -64,16 +62,34 @@ void BoberGame::WorldSetup()
     //Cursor
     {
         Vector2 scale(1, 1);
-        float zPos = 1.f;
-        constexpr float tileSize = 20.f;
-        (*cursor->transform).position.x = 0;
-        (*cursor->transform).position.y = 0;
+        float zPos = 0.f;
+        constexpr float tileSize = 10.f;
+        (*cursor->transform).position.x =0;
+        (*cursor->transform).position.y =0;
         (*cursor->transform).position.z = zPos;
 
         AssignSprite(*cursor->sprite, "crosshair");
         (*cursor->sprite).size = scale * tileSize;
         reg.remove<Animator>(cursor->instance);
         reg.emplace<Cursor>(cursor->instance);
+    }
+
+    Ranged* gun = new Ranged();
+    //Ranged
+    {
+        Vector2 scale(1, 1);
+        float zPos = 0.f;
+        constexpr float tileSize = 10.f;
+        (*gun->transform).position.x = 0;
+        (*gun->transform).position.y = 0;
+        (*gun->transform).position.z = zPos;
+
+        AssignSprite(*gun->sprite, "crosshair");
+        (*gun->sprite).size = scale * tileSize;
+        reg.remove<Animator>(gun->instance);
+        //reg.emplace<RangedWeaponSystem>(gun->instance);
+
+       bober->weapons.push_back(gun);
     }
     SetCamera();
 }

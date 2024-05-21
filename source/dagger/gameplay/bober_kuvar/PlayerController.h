@@ -24,6 +24,21 @@ namespace bober_game
 		Vector2 position{ 0, 0 };
 	};
 
+	struct RangedWeaponSystem 
+	{
+		bool isActive;
+		bool isMouseBtnPressed;
+		Vector2 position{ 0,0 };
+		Vector3 dir{ 0,0,0 };
+	};
+	
+	struct MeleeWeaponSystem
+	{
+		bool isActive;
+		bool isMouseBtnPressed;
+		Vector2 position{ 0,0 };
+	};
+
 	class PlayerController
 		: public System
 	{
