@@ -9,11 +9,11 @@ namespace academic_life {
     };
 
     enum LifestyleChange {
-        Cigarette = -3,
-        Beer = -2,
-        WheyProtein = 5,
-        FishMeal = 4,
-        Apple = 2
+        Cigarette = -30,
+        Beer = -20,
+        WheyProtein = 50,
+        fishMeal = 40,
+        Apple = 20
     };  
 
 }

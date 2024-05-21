@@ -5,15 +5,13 @@
 #include "core/graphics/text.h"
 
 #include "gameplay/common/simple_collisions.h"
-#include "gameplay/academic_life/academic_player.h"
-#include "gameplay/academic_life/academic_life_main.h"
+#include "academic_player.h"
+#include "academic_life_main.h"
 #include "falling_entity.h"
 
-#include "gameplay/academic_life/health.h"
-
-#include <iostream>
+#include "health.h"
+#include "espb.h"
 #include "score_entity.h"
-
 #include "enumi.h"
 
 using namespace dagger;
@@ -83,14 +81,13 @@ void AcademicLifeCollisionsLogicSystem::Run()
 
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
 
+                        ESPB& espb = ESPB::Instance();
+                        espb.Increase(3);                   // TO DO logika za promenu espb na osnovu jednacina
+
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }
                 }
-
-                //svaki put kada se detektuje kolizija pokrenuce se nas sistem za skor
-                ScoreEntitySystem scoreSystem;
-                scoreSystem.Run();
             }
         }
     }

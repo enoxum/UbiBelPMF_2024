@@ -16,6 +16,15 @@ void ParticleSystem::SetupParticleSystem(Entity entity_, const ParticleSpawnerSe
     particleSys.settings = settings_;
 }
 
+void ParticleSystem::UpdateParticleSpawnerSettings(Entity entity, const ParticleSpawnerSettings& newSettings)
+{
+    auto& reg = Engine::Registry();
+    if (auto* particleSys = reg.try_get<ParticleSpawner>(entity))
+    {
+        particleSys->settings = newSettings;
+    }
+}
+
 // get rand float value from 0 to 1
 Float32 particle_getRand()
 {

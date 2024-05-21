@@ -5,6 +5,7 @@
 #include "core/core.h"
 
 #include "gameplay/academic_life/academic_life_logic.h"
+#include "core/graphics/sprite.h"
 
 using namespace dagger;
 
@@ -102,4 +103,6 @@ namespace academic_life
 
         void Run() override;
     };
+
+    void setLifestyleEntity_byProbability(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite);
 }

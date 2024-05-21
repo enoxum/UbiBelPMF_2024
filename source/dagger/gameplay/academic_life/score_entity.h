@@ -28,6 +28,7 @@ namespace academic_life
         inline String SystemName() { return "Score Entity's System"; }
 
         void Run() override;        
-
+        void SpinUp() override;
+        void WindDown() override;
     };
 }
