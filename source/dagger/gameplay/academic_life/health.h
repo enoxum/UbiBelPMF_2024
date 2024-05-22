@@ -8,11 +8,12 @@ public:
         return instance;
     }
 
-    void Increase(int amount) override;
-    void Decrease(int amount) override;
+    void Update(int amount) override;
     int GetValue() const override;
 
 private:
-    Health() : value(100) {}
+    Health() : value(50) {}
     int value;
+    const int m_max_health = 100;
+    const int m_min_health = 0;
 };

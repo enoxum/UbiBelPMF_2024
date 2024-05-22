@@ -1,14 +1,9 @@
 #include "health.h"
 
-void Health::Increase(int amount) {
+void Health::Update(int amount) {
     value += amount;
-    if (value > 100) value = 100;
-    if (value < 0) value = 0;
-}
-
-void Health::Decrease(int amount) {
-    value -= amount;
-    if (value < 0) value = 0;
+    value = std::min(value, m_max_health);
+    value = std::max(value, m_min_health);
 }
 
 int Health::GetValue() const {
