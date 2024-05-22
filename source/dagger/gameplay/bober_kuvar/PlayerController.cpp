@@ -16,15 +16,12 @@ using namespace bober_game;
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
 //std::vector<Bullet> bullets;
-ShootEvent event=ShootEvent();
 
 void PlayerController::SpinUp()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().connect<&PlayerController::OnKeyboardEvent>(this);
     Engine::Dispatcher().sink<CursorEvent>().connect<&PlayerController::OnCursorMoveEvent>(this);
     Engine::Dispatcher().sink<MouseEvent>().connect<&PlayerController::OnMouseEvent>(this);
-    Engine::Dispatcher().sink<ShootEvent>().connect<&Ranged::shoot>(this);
-    Engine::Dispatcher().sink<SlashEvent>().connect<&Melee::slash>(this);
 }
 
 void PlayerController::WindDown()
@@ -32,8 +29,6 @@ void PlayerController::WindDown()
     Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PlayerController::OnKeyboardEvent>(this);
     Engine::Dispatcher().sink<CursorEvent>().disconnect<&PlayerController::OnCursorMoveEvent>(this);
     Engine::Dispatcher().sink<MouseEvent>().disconnect<&PlayerController::OnMouseEvent>(this);
-    Engine::Dispatcher().sink<ShootEvent>().disconnect<&Ranged::shoot>(this);
-    Engine::Dispatcher().sink<SlashEvent>().disconnect<&Melee::slash>(this);
 }
 
 void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
@@ -93,33 +88,35 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
         auto& c = viewCursor.get<Cursor>(entity);
         c.isMouseBtnPressed = isMousePressed;
     }
-    auto viewRanged = Engine::Registry().view<RangedWeaponSystem>();//<RangedWeaponSystem,ShootEvent>
+    auto viewRanged = Engine::Registry().view<RangedWeaponSystem,ShootEvent>();//<RangedWeaponSystem,ShootEvent>
     for (auto entity : viewRanged)
     {
         auto& r = viewRanged.get<RangedWeaponSystem>(entity);
-        //auto& s = viewRanged.get<ShootEvent>(entity);
+        auto& s = viewRanged.get<ShootEvent>(entity);
         r.isMouseBtnPressed = isMousePressed;
         //Event za kreiranje bullet-a
         if (r.isMouseBtnPressed && r.isActive) {
-            //s.speed = 70.f;
-            Engine::Dispatcher().trigger<ShootEvent>();//prosledjujemo s
+            s.speed = 150.f;
+            s.position = r.position;
+            Engine::Dispatcher().trigger<ShootEvent>(s);//prosledjujemo s
         }
     }
-    auto viewMelee = Engine::Registry().view<MeleeWeaponSystem>();// <MeleeWeaponSystem, MeleeEvent>
+    auto viewMelee = Engine::Registry().view<MeleeWeaponSystem,SlashEvent>();// <MeleeWeaponSystem, SlashEvent>
     for (auto entity : viewMelee)
     {
         auto& m = viewMelee.get<MeleeWeaponSystem>(entity);
-        //auto& s = viewMelee.get<SlashEvent>(entity);
+        auto& s = viewMelee.get<SlashEvent>(entity);
         m.isMouseBtnPressed = isMousePressed;
         if (m.isMouseBtnPressed && m.isActive) {
 
-            //Engine::Dispatcher().trigger<SlashEvent>(s);
+            Engine::Dispatcher().trigger<SlashEvent>(s);
         }
     }
 }
 
 void PlayerController::Run()
 {
+    bool focusRanged=true;
     double cos_, sin_;
     Vector2 dir{ 0,0 };
     auto view = Engine::Registry().view<Transform, ControllerMapping>();
@@ -128,10 +125,10 @@ void PlayerController::Run()
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
         if (ctrl.index) {
-            //Ranged
+            focusRanged = true;
         }
         else {
-            //Melee
+            focusRanged = false;
         }
 
         if (ctrl.input == Vector2{0.0f, 0.0f})
@@ -162,12 +159,20 @@ void PlayerController::Run()
         auto& t = viewRanged.get<Transform>(entity);
         auto& s = viewRanged.get<Sprite>(entity);
         auto& r = viewRanged.get<RangedWeaponSystem>(entity);
-
-        t.position.x = playerPos.x + 8 * cos_;
-        t.position.y = playerPos.y + 8 * sin_;
-        dir.x = t.position.x - playerPos.x;
-        dir.y = t.position.y - playerPos.y;
-        s.color.r = r.isMouseBtnPressed ? 0 : 1;
+        r.isActive = focusRanged;
+        if (r.isActive) {
+            s.color.b = 0;
+            //Missing: Activate sprite transparency or add sprite back
+            r.position.x=t.position.x = playerPos.x + 8 * cos_;
+            r.position.y=t.position.y = playerPos.y + 8 * sin_;
+            dir.x = t.position.x - playerPos.x;
+            dir.y = t.position.y - playerPos.y;
+            s.color.r = r.isMouseBtnPressed ? 0 : 1;
+        }
+        else {
+            s.color.b = 1;
+            //Missing: Make sprite transparent or remove sprite.
+        }
     }
     auto viewMelee = Engine::Registry().view<Transform, Sprite, MeleeWeaponSystem>();
     for (auto entity : viewMelee)
@@ -175,10 +180,18 @@ void PlayerController::Run()
         auto& t = viewMelee.get<Transform>(entity);
         auto& s = viewMelee.get<Sprite>(entity);
         auto& m = viewMelee.get<MeleeWeaponSystem>(entity);
-
-        t.position.x = playerPos.x + 8 * cos_;
-        t.position.y = playerPos.y + 8 * sin_;
-        s.color.r = m.isMouseBtnPressed ? 0 : 1;
+        m.isActive = !focusRanged;
+        if (m.isActive) {
+            s.color.b = 0;
+            //Missing: Activate sprite transparency or add sprite back
+            t.position.x = playerPos.x + 8 * cos_;
+            t.position.y = playerPos.y + 8 * sin_;
+            s.color.r = m.isMouseBtnPressed ? 0 : 1;
+        }
+        else {
+            s.color.b = 1;
+            //Missing: Make sprite transparent or remove sprite.
+        }
     }
     auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem>();
     for (auto entity : viewBullet)

@@ -6,6 +6,7 @@ Melee::Melee() : Weapon(20.0)
 	melee->isMouseBtnPressed = false;
 
 	Engine::Registry().emplace<SlashEvent>(instance);
+	Engine::Dispatcher().sink<SlashEvent>().connect<&Melee::slash>(this);
 };
 
 void Melee::slash(SlashEvent slash_)

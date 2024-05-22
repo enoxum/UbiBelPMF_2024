@@ -30,11 +30,12 @@ namespace bober_game
 	struct ShootEvent 
 	{
 		float speed;
+		Vector2 position{ 0,0 };
 	};
 
 	struct SlashEvent	
 	{
-
+		float range;
 	};
 
 	struct RangedWeaponSystem 
@@ -74,6 +75,8 @@ namespace bober_game
 		void Run() override;
 		void OnCursorMoveEvent(CursorEvent cursor_);
 		void OnMouseEvent(MouseEvent input_);
+		void OnShoot(ShootEvent shoot_);
+		void OnSlash(SlashEvent slash_);
 
 		static void SetupPlayerInput(ControllerMapping& controllerMapping_)
 		{
