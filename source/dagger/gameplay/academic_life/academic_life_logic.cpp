@@ -81,8 +81,9 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
 
                         ESPB& espb = ESPB::Instance();
-                        espb.Increase(3);                   // TO DO logika za promenu espb na osnovu jednacina
-
+                        espb.Increase(falling_text.text.value);
+                        std::cout << falling_text.text.value << std::endl;
+               
                         Engine::Registry().destroy(entityEntity);
                         break;
                     }

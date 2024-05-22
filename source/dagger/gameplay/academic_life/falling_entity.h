@@ -51,7 +51,7 @@ namespace academic_life
 
         std::string to_string(const std::vector<std::string>& code);
         std::string to_equation(const std::string& expression) const;
-        double calculate(const std::string& expression);
+        double calculate(const std::string& expression_str);
 
         const std::vector<std::string>& get_code_simple() const;
         const std::vector<std::string>& get_code_medium() const;

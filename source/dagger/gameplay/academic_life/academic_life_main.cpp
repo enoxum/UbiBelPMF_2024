@@ -29,35 +29,22 @@
 using namespace dagger;
 using namespace academic_life;
 
-std::string generate_equation_simple(ESPB& espb, Equation& eq)
+template<typename T>
+std::string generate_expression(Equation& eq, T& (Equation::* get_code)() const)
 {
-    std::string expression = eq.to_string(eq.get_code_simple());
-    return eq.to_equation(expression);
+    return eq.to_string((eq.*get_code)());
 }
 
-std::string generate_equation_medium(ESPB& espb, Equation& eq)
-{
-    std::string expression = eq.to_string(eq.get_code_medium());
-    return eq.to_equation(expression);
-}
-
-std::string generate_equation_hard(ESPB& espb, Equation& eq)
-{
-    std::string expression = eq.to_string(eq.get_code_hard());
-    return eq.to_equation(expression);
-}
-
-std::string generate_equation(ESPB& espb)
+std::string generate_expression(ESPB& espb, Equation& eq)
 {
     int espb_value = espb.GetValue();
-    Equation eq = Equation::Equation(3, 4, -5, 5);
 
-    std::string equation;
-    if (espb_value < 60) equation = generate_equation_simple(espb, eq);
-    else if (espb_value < 120) equation = generate_equation_hard(espb, eq);
-    else equation = generate_equation_hard(espb, eq);
-
-    return equation;
+    if (espb_value < 60)
+        return generate_expression(eq, &Equation::get_code_simple);
+    else if (espb_value < 120)
+        return generate_expression(eq, &Equation::get_code_medium);
+    else
+        return generate_expression(eq, &Equation::get_code_hard);
 }
 
 void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileSize, const unsigned Width,
@@ -72,15 +59,15 @@ void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileS
     falling_text.speed = TileSize * (rand() % 5 + 3);
     auto& text = falling_text.text;
 
-    //std::string equation = "jednacina";
-    std::string equation = generate_equation(espb);
+    Equation eq = Equation::Equation(3, 4, -5, 5);
+    std::string expression = generate_expression(espb, eq);
     text.position = transform.position;
     text.spacing = 0.6f;
-    text.message = equation;
-    //text.Set("pixel-font", equation, text.position);
+    text.message = eq.to_equation(expression);
+    espb.Increase( eq.calculate(expression) );
 
     auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size = { TileSize * 2, TileSize * 2 };
+    col.size = { TileSize * 11.5, TileSize * 2 };
 }
 
 void AcademicLife::GameplaySystemsSetup()
@@ -247,10 +234,34 @@ void academic_life::SetupWorld()
     int numFallingEntities = rand() % 3 + 3;
     for (int i = 0; i < numFallingEntities; i++)
     {
-        int entity_prob = rand() % 2;
+        int entity_prob = 0; //rand() % 2;
 
         // jednacine
-        if (entity_prob == 0) generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
+        if (entity_prob == 0)
+        {
+            //generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
+            auto entity = reg.create();
+
+            auto& transform = reg.emplace<Transform>(entity);
+            auto randomX = rand() % 200 - 150;
+            auto randomY = (rand() % 50) * ((rand() % 10) + 5) + 300;
+            transform.position = { randomX, randomY, zPos };
+
+            auto& falling_text = reg.emplace<FallingText>(entity);
+            auto& text = falling_text.text;
+            text.scale = { 0.6f, 0.6f };
+            text.spacing = { 0.3f };
+            text.position = transform.position;
+            falling_text.speed = TileSize * (rand() % 5 + 3);
+
+            Equation eq = Equation::Equation(3, 4, -5, 5);
+            std::string expression = generate_expression(ESPB, eq);
+            text.message = eq.to_equation(expression);
+            text.value = eq.calculate(expression);
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size = { TileSize * 11.5, TileSize * 2 };
+        }
 
         // lifestyle objekti
         else {

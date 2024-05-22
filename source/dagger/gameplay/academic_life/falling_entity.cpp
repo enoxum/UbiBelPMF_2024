@@ -43,23 +43,39 @@ std::string Equation::to_equation(const std::string& expression) const
     return "X = " + expression;
 }
 
-double Equation::calculate(const std::string& expression) {
-    /*exprtk::symbol_table<double> symbol_table;
-    symbol_table.add_constants();
+double Equation::calculate(const std::string& expression_str) {
+    double eps = 0.0001;
 
-    exprtk::expression<double> expr;
-    expr.register_symbol_table(symbol_table);
+    int a, b, c, d;
+    char op1, op2, op3;
 
-    exprtk::parser<double> parser;
-    if (parser.compile(expression, expr)) {
-        return expr.value();
-    }
-    else {
-        throw std::runtime_error("Failed to parse equation");
-    }
-    */
-    return 0.f;
+    sscanf(expression_str.c_str(), "(%d %c %d) %c (%d %c %d)", &a, &op1, &b, &op2, &c, &op3, &d);
 
+    double result1 = (op1 == '+') ? a + b :
+                     (op1 == '-') ? a - b :
+                     (op1 == '*') ? a * b :
+                     (op1 == '/') ? a / b :
+                     pow(a, b);
+
+    if (result1 < eps || result1 == INFINITE) result1 = 0.0;
+
+    double result2 = (op3 == '+') ? c + d :
+                     (op3 == '-') ? c - d :
+                     (op3 == '*') ? c * d :
+                     (op3 == '/') ? c / d :
+                     pow(c, d);
+
+    if (result2 < eps || result2 == INFINITE) result2 = 0.0;
+
+    double result = (op2 == '+') ? result1 + result2 :
+                    (op2 == '-') ? result1 - result2 :
+                    (op2 == '*') ? result1 * result2 :
+                    (op2 == '/') ? result1 / result2 :
+                    pow(result1, result2);
+
+    if (result < eps || result == INFINITE) result = 0.0;
+
+    return result;
 }
 
 const std::vector<std::string>& Equation::get_code_simple() const
