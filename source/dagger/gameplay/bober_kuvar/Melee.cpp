@@ -2,10 +2,13 @@
 
 Melee::Melee() : Weapon(20.0)
 {
-	melee = &Engine::Instance().Registry().emplace<MeleeWeaponSystem>(instance);
+	melee = &Engine::Registry().emplace<MeleeWeaponSystem>(instance);
 	melee->isMouseBtnPressed = false;
-}
 
-void Melee::slash()
+	Engine::Registry().emplace<SlashEvent>(instance);
+};
+
+void Melee::slash(SlashEvent slash_)
 {
-}
+
+};

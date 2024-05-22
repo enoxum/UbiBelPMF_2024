@@ -1,5 +1,7 @@
 #include "PlayerController.h"
 #include "Bullet.h"
+#include "Ranged.h"
+#include "Melee.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
@@ -14,12 +16,15 @@ using namespace bober_game;
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
 //std::vector<Bullet> bullets;
+ShootEvent event=ShootEvent();
 
 void PlayerController::SpinUp()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().connect<&PlayerController::OnKeyboardEvent>(this);
     Engine::Dispatcher().sink<CursorEvent>().connect<&PlayerController::OnCursorMoveEvent>(this);
     Engine::Dispatcher().sink<MouseEvent>().connect<&PlayerController::OnMouseEvent>(this);
+    Engine::Dispatcher().sink<ShootEvent>().connect<&Ranged::shoot>(this);
+    Engine::Dispatcher().sink<SlashEvent>().connect<&Melee::slash>(this);
 }
 
 void PlayerController::WindDown()
@@ -27,6 +32,8 @@ void PlayerController::WindDown()
     Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PlayerController::OnKeyboardEvent>(this);
     Engine::Dispatcher().sink<CursorEvent>().disconnect<&PlayerController::OnCursorMoveEvent>(this);
     Engine::Dispatcher().sink<MouseEvent>().disconnect<&PlayerController::OnMouseEvent>(this);
+    Engine::Dispatcher().sink<ShootEvent>().disconnect<&Ranged::shoot>(this);
+    Engine::Dispatcher().sink<SlashEvent>().disconnect<&Melee::slash>(this);
 }
 
 void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
@@ -86,18 +93,28 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
         auto& c = viewCursor.get<Cursor>(entity);
         c.isMouseBtnPressed = isMousePressed;
     }
-    auto viewRanged = Engine::Registry().view<RangedWeaponSystem>();
+    auto viewRanged = Engine::Registry().view<RangedWeaponSystem>();//<RangedWeaponSystem,ShootEvent>
     for (auto entity : viewRanged)
     {
-        auto& c = viewRanged.get<RangedWeaponSystem>(entity);
-        c.isMouseBtnPressed = isMousePressed;
-        //Event za kreiranje bullet-a (mozda).
+        auto& r = viewRanged.get<RangedWeaponSystem>(entity);
+        //auto& s = viewRanged.get<ShootEvent>(entity);
+        r.isMouseBtnPressed = isMousePressed;
+        //Event za kreiranje bullet-a
+        if (r.isMouseBtnPressed && r.isActive) {
+            //s.speed = 70.f;
+            Engine::Dispatcher().trigger<ShootEvent>();//prosledjujemo s
+        }
     }
-    auto viewMelee = Engine::Registry().view<MeleeWeaponSystem>();
+    auto viewMelee = Engine::Registry().view<MeleeWeaponSystem>();// <MeleeWeaponSystem, MeleeEvent>
     for (auto entity : viewMelee)
     {
-        auto& c = viewMelee.get<MeleeWeaponSystem>(entity);
-        c.isMouseBtnPressed = isMousePressed;
+        auto& m = viewMelee.get<MeleeWeaponSystem>(entity);
+        //auto& s = viewMelee.get<SlashEvent>(entity);
+        m.isMouseBtnPressed = isMousePressed;
+        if (m.isMouseBtnPressed && m.isActive) {
+
+            //Engine::Dispatcher().trigger<SlashEvent>(s);
+        }
     }
 }
 

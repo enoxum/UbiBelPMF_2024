@@ -27,6 +27,16 @@ namespace bober_game
 		Vector2 position{ 0, 0 };
 	};
 
+	struct ShootEvent 
+	{
+		float speed;
+	};
+
+	struct SlashEvent	
+	{
+
+	};
+
 	struct RangedWeaponSystem 
 	{
 		bool isActive;

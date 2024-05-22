@@ -8,13 +8,13 @@ class Ranged :
     public Weapon
 {
 public:
-    Ranged();
-    void shoot(Vector3 crosshairPos);
+    Ranged(int currentAmmo,int magSize,double reloadSpeed);
+    void shoot(ShootEvent shoot_);
 private:
     RangedWeaponSystem* ranged;
-    int currentAmmo;
-    int magSize;
-    double reloadSpeed;
+    int currentAmmo_;
+    int magSize_;
+    double reloadSpeed_;
 
     void reload();
 };

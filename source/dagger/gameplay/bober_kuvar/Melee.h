@@ -8,7 +8,7 @@ class Melee :
 {
 public:
     Melee();
-    void slash();
+    void slash(SlashEvent slash_);
 private:
     MeleeWeaponSystem* melee;
     double cooldown;

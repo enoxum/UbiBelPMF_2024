@@ -69,7 +69,7 @@ void BoberGame::WorldSetup()
         reg.emplace<Cursor>(cursor->instance);
     }
 
-    Ranged* gun = new Ranged();
+    Ranged* gun = new Ranged(8,8,2.0);
     //Ranged
     {
         Vector2 scale(1, 1);
