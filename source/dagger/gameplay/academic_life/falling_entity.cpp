@@ -43,38 +43,30 @@ std::string Equation::to_equation(const std::string& expression) const
 }
 
 double Equation::evaluate(const std::string& expression_str) {
-    double eps = 0.0001;
+    double result = 0.0;
 
-    int a, b, c, d;
+    double a, b, c, d;
     char op1, op2, op3;
 
     sscanf(expression_str.c_str(), "(%d %c %d) %c (%d %c %d)", &a, &op1, &b, &op2, &c, &op3, &d);
 
-    double result1 = (op1 == '+') ? a + b :
-        (op1 == '-') ? a - b :
-        (op1 == '*') ? a * b :
-        (op1 == '/') ? a / b :
-        pow(a, b);
+    double result1 = (op1 == '+') ? a + b : 
+                     (op1 == '-') ? a - b : 
+                     (op1 == '*') ? a * b : 
+                     (op1 == '/') ? a / b : 
+                     pow(a, b);
 
-    if (result1 < eps || result1 == INFINITE) result1 = 0.0;
+    double result2 = (op3 == '+') ? c + d : 
+                     (op3 == '-') ? c - d : 
+                     (op3 == '*') ? c * d : 
+                     (op3 == '/') ? a / b : 
+                     pow(a, b);
 
-    double result2 = (op3 == '+') ? c + d :
-        (op3 == '-') ? c - d :
-        (op3 == '*') ? c * d :
-        (op3 == '/') ? c / d :
-        pow(c, d);
-
-    if (result2 < eps || result2 == INFINITE) result2 = 0.0;
-
-    double result = (op2 == '+') ? result1 + result2 :
-        (op2 == '-') ? result1 - result2 :
-        (op2 == '*') ? result1 * result2 :
-        (op2 == '/') ? result1 / result2 :
-        pow(result1, result2);
-
-    if (result < eps || result == INFINITE) result = 0.0;
-
-    return result;
+    return (op2 == '+') ? result1 + result2 : 
+           (op2 == '-') ? result1 - result2 : 
+           (op2 == '*') ? result1 * result2 : 
+           (op2 == '/') ? result1 / result2 : 
+           pow(result1, result2);
 }
 
 const std::vector<std::string>& Equation::get_code_simple() const
