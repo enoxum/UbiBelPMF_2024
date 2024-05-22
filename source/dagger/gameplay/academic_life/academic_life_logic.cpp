@@ -66,7 +66,8 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     {
                         Health& health = Health::Instance();
                         health.Increase(lifestyleChange);             //TO DO Decrease proteklim vremenom 
-                        Engine::Registry().destroy(entityEntity);
+                        Engine::Registry().destroy(entityEntity);  // delete current entity
+                        createRandomEntity();  // create new random entity
                         break;
                     }
                 }
@@ -84,7 +85,8 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         espb.Increase(falling_text.text.value);
                         std::cout << falling_text.text.value << std::endl;
                
-                        Engine::Registry().destroy(entityEntity);
+                        Engine::Registry().destroy(entityEntity);  // delete current entity
+                        createRandomEntity();  // create new random entity
                         break;
                     }
                 }

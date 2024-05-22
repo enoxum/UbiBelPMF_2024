@@ -13,6 +13,6 @@ public:
     int GetValue() const override;
 
 private:
-    Health() : value(-40) {}
+    Health() : value(100) {}
     int value;
 };

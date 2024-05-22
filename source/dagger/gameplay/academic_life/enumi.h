@@ -15,5 +15,4 @@ namespace academic_life {
         fishMeal = 40,
         Apple = 20
     };  
-
 }

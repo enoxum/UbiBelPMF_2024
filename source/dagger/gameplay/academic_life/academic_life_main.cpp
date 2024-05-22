@@ -18,7 +18,6 @@
 #include "gameplay/academic_life/academic_player.h"
 #include "gameplay/academic_life/falling_entity.h"
 #include "gameplay/academic_life/score_entity.h"
-
 #include "gameplay/academic_life/health.h"
 #include "gameplay/academic_life/espb.h"
 
@@ -28,47 +27,6 @@
 
 using namespace dagger;
 using namespace academic_life;
-
-template<typename T>
-std::string generate_expression(Equation& eq, T& (Equation::* get_code)() const)
-{
-    return eq.to_string((eq.*get_code)());
-}
-
-std::string generate_expression(ESPB& espb, Equation& eq)
-{
-    int espb_value = espb.GetValue();
-
-    if (espb_value < 60)
-        return generate_expression(eq, &Equation::get_code_simple);
-    else if (espb_value < 120)
-        return generate_expression(eq, &Equation::get_code_medium);
-    else
-        return generate_expression(eq, &Equation::get_code_hard);
-}
-
-void generate_equation_entity(entt::registry& reg, ESPB& espb, const float TileSize, const unsigned Width,
-    const unsigned Height, const float zPos, int iteration)
-{
-    auto entity = reg.create();
-
-    auto& transform = reg.emplace<Transform>(entity);
-    transform.position = { TileSize * (3 * (iteration + 1) - Width / 2), TileSize * (-iteration * 2 + Height / 2), zPos };
-
-    auto& falling_text = reg.emplace<FallingText>(entity);
-    falling_text.speed = TileSize * (rand() % 5 + 3);
-    auto& text = falling_text.text;
-
-    Equation eq = Equation::Equation(3, 4, -5, 5);
-    std::string expression = generate_expression(espb, eq);
-    text.position = transform.position;
-    text.spacing = 0.6f;
-    text.message = eq.to_equation(expression);
-    espb.Increase( eq.calculate(expression) );
-
-    auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size = { TileSize * 11.5, TileSize * 2 };
-}
 
 void AcademicLife::GameplaySystemsSetup()
 {
@@ -109,32 +67,27 @@ void academic_life::SetupWorld()
 
     constexpr Vector2 scale(1, 1);
 
-    constexpr int Height = 30;
-    constexpr int Width = 30;
-    constexpr float TileSize = 20.f;
-
     Health& Health = Health::Instance();
     ESPB& ESPB = ESPB::Instance();
 
     {
         auto entity = reg.create();
         auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
-        fieldSettings.fieldWidth = Width;
-        fieldSettings.fieldHeight = Height;
-        fieldSettings.fieldTileSize = TileSize;
+        fieldSettings.fieldWidth = width;
+        fieldSettings.fieldHeight = height;
+        fieldSettings.fieldTileSize = tileSize;
 
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
     }
 
-    float zPos = 0.5f;
     // ESPB
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos); 
+        text.Set("pixel-font", "ESPB", glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos); 
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f);
+        transform.position = glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f, 0.5f);
     }
     {
         auto entity = reg.create();
@@ -142,10 +95,10 @@ void academic_life::SetupWorld()
         auto& text = reg.emplace<Text>(entity);
 
         scoreText.value = ESPB.GetValue();
-        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f));
+        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f));
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = glm::vec3(-700.0f / 2.0f + TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
+        transform.position = glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
         reg.emplace<int>(entity, ESPB_MARKER);  //TO DO switch to EnumiScore
     }
 
@@ -153,10 +106,10 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& text = reg.emplace<Text>(entity);
-        text.Set("pixel-font", "Health", glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f), zPos);
+        text.Set("pixel-font", "Health", glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos);
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f, 0.5f);
+        transform.position = glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f, 0.5f);
     }
     {
         auto entity = reg.create();
@@ -164,27 +117,21 @@ void academic_life::SetupWorld()
         auto& text = reg.emplace<Text>(entity);
 
         scoreText.value = Health.GetValue();
-        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f));
+        scoreText.SetText("pixel-font", std::to_string(scoreText.value), glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f));
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = glm::vec3(700.0f / 2.0f - TileSize / 2.0f, -600.0f / 2.0f + TileSize / 2.0f + 30.0f, 0.5f);
+        transform.position = glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
         reg.emplace<int>(entity, HEALTH_MARKER); //TO DO switch to EnumiScore
     }
 
-
-
-
-
-    zPos = 1.f;
-
-    for (int i = 0; i < Height; i++)
+    for (int i = 0; i < height; i++)
     {
-        for (int j = 0; j < Width; j++)
+        for (int j = 0; j < width; j++)
         {
             auto entity = reg.create();
             auto& sprite = reg.emplace<Sprite>(entity);
             AssignSprite(sprite, "EmptyWhitePixel");
-            sprite.size = scale * TileSize;
+            sprite.size = scale * tileSize;
 
             if (ESPB.GetValue() < 80) {
                 sprite.color = { 0.8f, 0.8f, 0.4f, 1 };
@@ -197,13 +144,11 @@ void academic_life::SetupWorld()
             }
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f + j - static_cast<float>(Width) / 2.f) * TileSize;
-            transform.position.y = (0.5f + i - static_cast<float>(Height) / 2.f) * TileSize;
-            transform.position.z = zPos;
+            transform.position.x = (0.5f + j - static_cast<float>(width) / 2.f) * tileSize;
+            transform.position.y = (0.5f + i - static_cast<float>(height) / 2.f) * tileSize;
+            transform.position.z = 1;
         }
     }
-
-    zPos -= 0.5f;
 
     // player
     {
@@ -211,13 +156,13 @@ void academic_life::SetupWorld()
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "AcademicLife:student");
         float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 3 * TileSize, 3 * TileSize * ratio };
+        sprite.size = { 3 * tileSize, 3 * tileSize * ratio };
 
         auto& transform = reg.emplace<Transform>(entity);
-        transform.position = { -TileSize * 4, -TileSize * 4, zPos };
+        transform.position = { -tileSize * 4, -tileSize * 4, zPos };
 
         auto& player = reg.emplace<AcademicPlayer>(entity);
-        player.SetSpeedBasedOnHealth(Health.GetValue(), TileSize);
+        player.SetSpeedBasedOnHealth(Health.GetValue(), tileSize);
 
 
         reg.emplace<ControllerMapping>(entity);
@@ -231,15 +176,17 @@ void academic_life::SetupWorld()
     }
 
     // falling entities
-    int numFallingEntities = rand() % 3 + 3;
+    int numFallingEntities = 5;
     for (int i = 0; i < numFallingEntities; i++)
     {
-        int entity_prob = 0; //rand() % 2;
+        createRandomEntity();
+        /*
+        int entity_prob = rand() % 2;
 
         // jednacine
         if (entity_prob == 0)
         {
-            //generate_equation_entity(reg, ESPB, TileSize, Width, Height, zPos, i);
+            //generate_equation_entity(reg, ESPB, tileSize, width, height, zPos, i);
             auto entity = reg.create();
 
             auto& transform = reg.emplace<Transform>(entity);
@@ -252,7 +199,7 @@ void academic_life::SetupWorld()
             text.scale = { 0.6f, 0.6f };
             text.spacing = { 0.3f };
             text.position = transform.position;
-            falling_text.speed = TileSize * (rand() % 5 + 3);
+            falling_text.speed = tileSize * (rand() % 5 + 3);
 
             Equation eq = Equation::Equation(3, 4, -5, 5);
             std::string expression = generate_expression(ESPB, eq);
@@ -260,7 +207,7 @@ void academic_life::SetupWorld()
             text.value = eq.calculate(expression);
 
             auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size = { TileSize * 11.5, TileSize * 2 };
+            col.size = { tileSize * 11.5, tileSize * 2 };
         }
 
         // lifestyle objekti
@@ -272,16 +219,17 @@ void academic_life::SetupWorld()
             setLifestyleEntity_byProbability(lifestyle_prob, reg, entity, sprite);
 
             float ratio = sprite.size.y / sprite.size.x;
-            sprite.size = { 2 * TileSize, 2 * TileSize * ratio };
+            sprite.size = { 2 * tileSize, 2 * tileSize * ratio };
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { TileSize * (3 * (i + 1) - Width / 2), TileSize * (-i * 2 + Height / 2), zPos };
+            transform.position = { tileSize * (3 * (i + 1) - width / 2), tileSize * (-i * 2 + height / 2), zPos };
 
             auto& falling_entity = reg.emplace<FallingEntity>(entity);
-            falling_entity.speed = TileSize * (rand() % 5 + 3);
+            falling_entity.speed = tileSize * (rand() % 5 + 3);
 
             auto& col = reg.emplace<SimpleCollision>(entity);
             col.size = sprite.size;
         }
+        */
     }
 }

@@ -22,4 +22,9 @@ namespace academic_life
         void GameplaySystemsSetup() override;
         void WorldSetup() override;
     };
+
+    const float zPos = 0.5f;
+    const float tileSize = 20.f;
+    const int height = 30;
+    const int width = 30;
 }
