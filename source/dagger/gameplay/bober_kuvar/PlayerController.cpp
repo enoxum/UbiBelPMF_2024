@@ -15,7 +15,6 @@ using namespace bober_game;
 
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
-//std::vector<Bullet> bullets;
 
 void PlayerController::SpinUp()
 {
@@ -61,6 +60,10 @@ void PlayerController::OnKeyboardEvent(KeyboardEvent kEvent_)
 
             if (kEvent_.key == ctrl_.leftKey || kEvent_.key == ctrl_.rightKey)
                 ctrl_.input.x = 0;
+
+            if (kEvent_.key == ctrl_.reloadKey)
+                Engine::Dispatcher().trigger<ReloadEvent>();
+            
         }
     });
 }
@@ -199,7 +202,17 @@ void PlayerController::Run()
         auto& t = viewBullet.get<Transform>(entity);
         auto& s = viewBullet.get<Sprite>(entity);
         auto& b = viewBullet.get<BulletSystem>(entity);
-                            //get<SimpleCollision>
+                           //get<SimpleCollision>
+        //Privremeni TimeToLive sistem za metke.
+        /*if ((--b.ttl) == 0) {
+            Bullet* bullet= bullets[b.index];
+            bullets.erase(bullets.begin() + b.index);
+            for (int i=b.index;i<bullets.size();i++) {
+                bullets[i]->bullet_system->index--;
+            }
+            delete bullet;
+            continue;
+        }*/
         if (b.firstTime) {
             b.dir = dir;
             float length = sqrt(b.dir.x * b.dir.x + b.dir.y * b.dir.y);

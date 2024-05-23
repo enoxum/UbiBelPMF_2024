@@ -9,8 +9,9 @@ class Bullet :
 {
 public:
 	Bullet(float speed);
-private:
+	~Bullet();
 	BulletSystem* bullet_system;
+private:
 	float speed_;
 };
 

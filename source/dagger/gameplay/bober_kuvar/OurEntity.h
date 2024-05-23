@@ -23,6 +23,7 @@ class OurEntity
 {
 public:
 	OurEntity();
+	~OurEntity();
 	Entity instance;
 	Transform* transform;
 	Sprite* sprite;

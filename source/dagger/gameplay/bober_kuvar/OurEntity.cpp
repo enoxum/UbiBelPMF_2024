@@ -11,3 +11,11 @@ OurEntity::OurEntity()
 
 	animator = &Engine::Instance().Registry().emplace<Animator>(instance);
 }
+
+OurEntity::~OurEntity()
+{
+	delete transform;
+	delete sprite;
+	delete animator;
+	Engine::Instance().Registry().destroy(instance);
+}

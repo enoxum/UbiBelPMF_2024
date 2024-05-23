@@ -16,9 +16,14 @@ namespace bober_game
 		EDaggerKeyboard rightKey;
 		EDaggerKeyboard num1;
 		EDaggerKeyboard num2;
+		EDaggerKeyboard reloadKey;
 
 		Vector2 input = { 0.f, 0.f };
 		int index=0;
+	};
+
+	struct ReloadEvent 
+	{
 	};
 
 	struct Cursor
@@ -47,9 +52,11 @@ namespace bober_game
 
 	struct BulletSystem 
 	{
+		int index;
 		bool firstTime = true;
 		float speed;
 		Vector2 dir{ 0,0 };
+		int ttl = 5000;
 	};
 	
 	struct MeleeWeaponSystem
@@ -69,7 +76,7 @@ namespace bober_game
 		String SystemName() override {
 			return "Character Controller System";
 		}
-
+		//static std::vector<Bullet*> bullets;
 		void SpinUp() override;
 		void WindDown() override;
 		void Run() override;
@@ -86,6 +93,7 @@ namespace bober_game
 			controllerMapping_.rightKey = EDaggerKeyboard::KeyD;
 			controllerMapping_.num1 = EDaggerKeyboard::Key1;
 			controllerMapping_.num2 = EDaggerKeyboard::Key2;
+			controllerMapping_.reloadKey = EDaggerKeyboard::KeyR;
 		}
 	private:
 		void OnKeyboardEvent(KeyboardEvent kEvent_);
