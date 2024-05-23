@@ -216,7 +216,13 @@ void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComp
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= 50 * Engine::DeltaTime();
+		Vector2 newPosition = sprite.position;
+		newPosition.y -= 50 * Engine::DeltaTime();
+
+		if (!IsCollisionAt(newPosition)) {
+			sprite.position.x = newPosition.x;
+			sprite.position.y = newPosition.y;
+		}
 	}
 }
 
@@ -250,7 +256,13 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.x -= 50 *  Engine::DeltaTime();
+		Vector2 newPosition = sprite.position;
+		newPosition.x -= 50 * Engine::DeltaTime();
+
+		if (!IsCollisionAt(newPosition)) {
+			sprite.position.x = newPosition.x;
+			sprite.position.y = newPosition.y;
+		}
 	}
 }
 
@@ -283,7 +295,13 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.x += 50 * Engine::DeltaTime();
+		Vector2 newPosition = sprite.position;
+		newPosition.x += 50 * Engine::DeltaTime();
+
+		if (!IsCollisionAt(newPosition)) {
+			sprite.position.x = newPosition.x;
+			sprite.position.y = newPosition.y;
+		}
 	}
 }
 
@@ -310,7 +328,13 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y += 50 * Engine::DeltaTime();
+		Vector2 newPosition = sprite.position;
+		newPosition.y += 50 * Engine::DeltaTime();
+
+		if (!IsCollisionAt(newPosition)) {
+			sprite.position.x = newPosition.x;
+			sprite.position.y = newPosition.y;
+		}
 	}
 }
 
@@ -468,3 +492,8 @@ void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent&
 {
 }
 
+
+bool IsCollisionAt(Vector2 position)
+{
+	return false;
+}

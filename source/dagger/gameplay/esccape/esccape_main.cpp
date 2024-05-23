@@ -57,7 +57,7 @@ void EsccapeGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
-    engine.AddSystem<Player>();
+    //engine.AddSystem<Player>();
     engine.AddSystem<EsccapeControllerSystem>();
 }
 
@@ -129,14 +129,14 @@ void esccape::onHealthChanged(int newHealth)
 }
 
 
-void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenHeight, int zPos, int machineScale)
+void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, int machineScale)
 {
     auto& reg = Engine::Registry();
     auto entity = reg.create();
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:masina");
     float ratio = sprite.size.y / sprite.size.x;    
-    float machineSize = playerSize * machineScale;
+    float machineSize = 80 * machineScale;              // 80 rnd parametar za velicinu
     sprite.size = { machineSize, machineSize * ratio };
     
     auto& transform = reg.emplace<Transform>(entity); 
@@ -144,12 +144,6 @@ void esccape::CreateMachineRandom(float playerSize, int screenWidth, int screenH
     transform.position.x = 250;
     transform.position.y = -200;
     transform.position.z = zPos;
-
-   /* while ((transform.position.x <= playerSize && transform.position.x >= -playerSize) || (transform.position.y <= playerSize && transform.position.y >= -playerSize))
-    {
-        transform.position.x = rand() % (maxX - minX + 1) + minX;
-        transform.position.y = rand() % (maxY - minY + 1) + minY;
-    }*/
 
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = machineSize;
@@ -185,65 +179,7 @@ void esccape::CreateObstacles(int zPos)
     }
 }
 
-//Creating player
-struct Character
-{
-    Entity entity;
-    Sprite& sprite;
-    Animator& animator;
-    InputReceiver& input;
-    esccape::EsccapeCharacter& character;
-
-
-    static Character Get(Entity entity)
-    {
-        auto& reg = Engine::Registry();
-        auto& sprite = reg.get_or_emplace<Sprite>(entity);
-        auto& anim = reg.get_or_emplace<Animator>(entity);
-        auto& input = reg.get_or_emplace<InputReceiver>(entity);
-        auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
-
-        return Character{ entity, sprite, anim, input, character };
-    }
-
-    static Character Create(
-        String input_ = "",
-        String spritesheet_ = "",
-        String animation_ = "",
-        ColorRGB color_ = { 1, 1, 1 },
-        Vector2 position_ = { 0, 0 },
-        int id = 0)
-    {
-        auto& reg = Engine::Registry();
-        auto entity = reg.create();
-
-        ATTACH_TO_FSM(CharacterControllerFSM, entity);
-
-        auto chr = Character::Get(entity);
-
-        chr.sprite.scale = { 2.5, 2.5 };
-        chr.sprite.position = { position_, 0.0f };
-        chr.sprite.color = { color_, 1.0f };
-        chr.character.id = id;
-
-        /*AssignSprite(chr.sprite, "spritesheets:player_anim:player_idle_front:1");
-        AnimatorPlay(chr.animator, "player:player_idle_front");*/
-        AssignSprite(chr.sprite, spritesheet_);
-        AnimatorPlay(chr.animator, animation_);
-
-        if (!input_.empty())
-        {
-            chr.input.contexts.push_back(input_);
-
-        }
-
-        chr.character.speed = 50;
-
-        return chr;
-    }
-};
-
-// CreatingEnemy
+//// CreatingEnemy
 struct EnemyCharachter
 {
     Entity entity;
@@ -294,8 +230,6 @@ void esccape::SetupWorld()
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 600;
 
-    constexpr float playerSize = 80.f;// / static_cast<float>(Width);
-
     float zPos = 1.f;
 
     {
@@ -310,14 +244,9 @@ void esccape::SetupWorld()
 
     zPos -= 1.f;
 
-    // ui
-
-    // health bar
+    
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
-
-    // create machine
-    CreateMachineRandom(playerSize, screenWidth, screenHeight, zPos, 3);
-
+    CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateObstacles(zPos);
 
 
@@ -383,7 +312,7 @@ void esccape::SetupWorld()
         {
            auto entity = reg.create();
 
-            auto mainChar = Character::Create("ASDWSpace", 
+            /*auto mainChar = Character::Create("ASDWSpace", 
                 "spritesheets:player_anim:player_idle_front:1", 
                 "player:player_idle_front",
                 { 1, 1, 1 }, { -100, 0 }, 0);
@@ -391,9 +320,19 @@ void esccape::SetupWorld()
             auto skeletonChar = Character::Create("skeleton-arrows",
                 "spritesheets:skeleton:skeleton_idle_front:1",
                 "skeleton:skeleton_idle_front",
-                 { 1, 1, 1 }, { -100, 0 }, 1);
+                 { 1, 1, 1 }, { -100, 0 }, 1);*/
 
-            reg.emplace<ControllerMapping>(entity);
+            //reg.emplace<ControllerMapping>(entity);
+
+           auto mainChar = new Character(Character::Create("ASDWSpace",
+               "spritesheets:player_anim:player_idle_front:1",
+               "player:player_idle_front",
+               { 1, 1, 1 }, { -100, 0 }, 0));
+
+           auto skeletonChar = new Character(Character::Create("skeleton-arrows",
+               "spritesheets:skeleton:skeleton_idle_front:1",
+               "skeleton:skeleton_idle_front",
+               { 1, 1, 1 }, { -100, 0 }, 1));
 
 
             auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });

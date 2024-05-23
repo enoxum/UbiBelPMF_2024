@@ -54,4 +54,8 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 		CONNECT_STATE(ECharacterStates, Death);
 
 	}
+
+	
 };
+
+bool IsCollisionAt(Vector2 position);
