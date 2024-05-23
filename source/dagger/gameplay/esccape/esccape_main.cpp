@@ -247,7 +247,7 @@ void esccape::SetupWorld()
     
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
-    CreateObstacles(zPos);
+    //CreateObstacles(zPos);
 
 
     // collisions
@@ -305,39 +305,22 @@ void esccape::SetupWorld()
     }
 
 
-
-
     // player
     {
         {
            auto entity = reg.create();
 
-            /*auto mainChar = Character::Create("ASDWSpace", 
-                "spritesheets:player_anim:player_idle_front:1", 
-                "player:player_idle_front",
-                { 1, 1, 1 }, { -100, 0 }, 0);
-
-            auto skeletonChar = Character::Create("skeleton-arrows",
-                "spritesheets:skeleton:skeleton_idle_front:1",
-                "skeleton:skeleton_idle_front",
-                 { 1, 1, 1 }, { -100, 0 }, 1);*/
-
-            //reg.emplace<ControllerMapping>(entity);
-
            auto mainChar = new Character(Character::Create("ASDWSpace",
                "spritesheets:player_anim:player_idle_front:1",
                "player:player_idle_front",
-               { 1, 1, 1 }, { -100, 0 }, 0));
+               { 1, 1, 1 }, { 100, 100 }, 0));
 
            auto skeletonChar = new Character(Character::Create("skeleton-arrows",
                "spritesheets:skeleton:skeleton_idle_front:1",
                "skeleton:skeleton_idle_front",
                { 1, 1, 1 }, { -100, 0 }, 1));
 
-
             auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
-
-
         }
 
         

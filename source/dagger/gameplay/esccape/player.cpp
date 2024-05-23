@@ -84,11 +84,11 @@ esccape::EsccapeCharacter& Character::getEsccapeCharacter()
 
 void esccape::Character::Run()
 {
+
     //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     ////auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
-    //auto view2 = Engine::Registry().view<Player, Transform, SimpleCollision>();
-    //
-    //
+    //auto view2 = Engine::Registry().view<Character, Transform, SimpleCollision>();
+    
     //for (auto entity : view)
     //{
     //    auto& t = view.get<Transform>(entity);
@@ -219,47 +219,47 @@ void esccape::Character::Run()
 //    //    fieldSettings = *ptr;
 //    //}
 //
-//    auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
-//    auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
-//    auto view2 = Engine::Registry().view<Player, Transform, SimpleCollision>();
-//
-//
-//    for (auto entity : view)
-//    {
-//        auto& t = view.get<Transform>(entity);
-//        auto& ctrl = view.get<ControllerMapping>(entity);
-//        auto& player = view.get<Player>(entity);
-//
-//        auto& col = view2.get<SimpleCollision>(entity);
-//
-//        t.position.x += ctrl.input.x * player.player.speed * Engine::DeltaTime();
-//        t.position.y += ctrl.input.y * player.player.speed * Engine::DeltaTime();
-//
-//        Logger::trace(t.position.x);
-//
-//        // How to have collisions be the same as sprite
-//        if (col.colided)
-//        {
-//            if (Engine::Registry().valid(col.colidedWith))
-//            {
-//                SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
-//                Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
-//
-//                Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
-//
-//                while(col.IsCollided(t.position, collision, transform.position))
-//                {                   
-//                    if (std::abs(collisionSides.x) > 0 && col.IsCollided(t.position, collision, transform.position))
-//                    {
-//                        t.position.x -= t.position.x < 0 ? -1 : 1;
-//                    }
-//                    if (std::abs(collisionSides.y) > 0 && col.IsCollided(t.position, collision, transform.position))
-//                    {
-//                        t.position.y -= t.position.y < 0 ? -1 : 1;
-//                    }
-//                }
-//            }
-//        }
+    //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
+    //auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
+    //auto view2 = Engine::Registry().view<Player, Transform, SimpleCollision>();
+
+
+    //for (auto entity : view)
+    //{
+    //    auto& t = view.get<Transform>(entity);
+    //    auto& ctrl = view.get<ControllerMapping>(entity);
+    //    auto& player = view.get<Player>(entity);
+
+    //    auto& col = view2.get<SimpleCollision>(entity);
+
+    //    t.position.x += ctrl.input.x * player.player.speed * Engine::DeltaTime();
+    //    t.position.y += ctrl.input.y * player.player.speed * Engine::DeltaTime();
+
+    //    Logger::trace(t.position.x);
+
+    //    // How to have collisions be the same as sprite
+    //    if (col.colided)
+    //    {
+    //        if (Engine::Registry().valid(col.colidedWith))
+    //        {
+    //            SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
+    //            Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
+
+    //            Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
+
+    //            while(col.IsCollided(t.position, collision, transform.position))
+    //            {                   
+    //                if (std::abs(collisionSides.x) > 0 && col.IsCollided(t.position, collision, transform.position))
+    //                {
+    //                    t.position.x -= t.position.x < 0 ? -1 : 1;
+    //                }
+    //                if (std::abs(collisionSides.y) > 0 && col.IsCollided(t.position, collision, transform.position))
+    //                {
+    //                    t.position.y -= t.position.y < 0 ? -1 : 1;
+    //                }
+    //            }
+    //        }
+    //    }
 //    }
 //}
 //

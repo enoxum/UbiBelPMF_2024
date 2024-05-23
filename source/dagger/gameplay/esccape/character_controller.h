@@ -1,6 +1,13 @@
 #pragma once
 #include "core/core.h"
 #include "core/game/finite_state_machine.h"
+#include "core/engine.h"
+#include "core/input/inputs.h"
+#include "core/graphics/sprite.h"
+#include "core/graphics/animation.h"
+
+#include "blackboard_manager.h"
+
 
 enum struct ECharacterStates
 {
@@ -19,6 +26,7 @@ enum struct ECharacterStates
 	Death
 };
 
+
 struct CharacterControllerFSM : public FSM<ECharacterStates>
 {
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Idle_Front);
@@ -35,8 +43,6 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Attack_Down);
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Death);
 
-
-
 	CharacterControllerFSM()
 	{
 		CONNECT_STATE(ECharacterStates, Idle_Front);
@@ -52,10 +58,10 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 		CONNECT_STATE(ECharacterStates, Attack_Up);
 		CONNECT_STATE(ECharacterStates, Attack_Down);
 		CONNECT_STATE(ECharacterStates, Death);
-
 	}
 
-	
+	static BlackboardManager& blackboardManager;
 };
 
-bool IsCollisionAt(Vector2 position);
+void CheckCollisions(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager);
+void ResolveCollision(CharacterControllerFSM::StateComponent& state_, Entity collidedWith, BlackboardManager& bbManager);
