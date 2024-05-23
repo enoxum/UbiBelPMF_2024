@@ -10,9 +10,10 @@ class Enemy :
 public:
     Enemy();
 private:
-    double xpDrop;
-    double lootAmount;
-    Vector3 initialPosition;
+    double xpDrop_;
+    double lootAmount_;
+    Vector3 initialPosition_;
+    int numOfWaypoints_;
     MovementData* movement_;
     EnemyData* data_;
     Patrol* patrol_;

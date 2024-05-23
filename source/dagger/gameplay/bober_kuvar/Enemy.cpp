@@ -1,9 +1,12 @@
 #include "Enemy.h"
+#include <queue>
 
 Enemy::Enemy() : Character(200.0, 40.0, 10.0)
 {
-	lootAmount = 100.0f;
-	xpDrop = 100.0f;
+	lootAmount_ = 100.0f;
+	xpDrop_ = 100.0f;
+	//initialPosition_ = ...
+	numOfWaypoints_ = (rand() % 4) + 3;
 
 	movement_ = &Engine::Instance().Registry().emplace<MovementData>(instance);
 	movement_->speed = m_speed;
@@ -36,5 +39,18 @@ void Enemy::collision()
 
 void Enemy::generatePath()
 {
+	patrol_->waypoints.push_back(initialPosition_);
+	Vector3 waypoint = initialPosition_;
+	numOfWaypoints_--;
+
+	while (numOfWaypoints_ > 0)
+	{
+		//roomSizeX, roomSizeY
+		
+		
+
+
+		numOfWaypoints_--;
+	}
 
 }

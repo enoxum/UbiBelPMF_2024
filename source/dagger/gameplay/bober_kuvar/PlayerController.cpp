@@ -91,6 +91,12 @@ void PlayerController::Run()
         auto& mov = enemyView.get<MovementData>(entity);
         auto& patrol = enemyView.get<Patrol>(entity);
 
+        float distance = sqrt(pow(t.position.x - playerPosition.x, 2) + pow(t.position.y - playerPosition.y, 2));
+        if (distance < 50.f)
+            enemy.focusOnPlayer = true;
+        else if (distance > 150.f)
+            enemy.focusOnPlayer = false;
+
         if (!enemy.focusOnPlayer)
         {
             Vector3 currentWaypoint = patrol.waypoints[patrol.currentWaypointIndex];
