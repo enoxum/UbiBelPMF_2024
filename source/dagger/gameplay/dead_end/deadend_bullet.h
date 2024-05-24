@@ -14,6 +14,7 @@ namespace dead_end
 		Float32 speedX = 100.f;
 		Float32 speedY = 100.f;
 		Vector2 direction;
+		float playerOffset{5.0f};
 
 	};
 
