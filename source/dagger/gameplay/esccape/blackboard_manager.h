@@ -4,6 +4,8 @@
 #include "character_controller.h"
 
 #include "entt/entt.hpp"
+#include <unordered_map>
+
 
 using namespace dagger;
 
@@ -14,16 +16,16 @@ class BlackboardManager {
 public:
     static BlackboardManager& GetInstance();
 
-    bool HasCollided();
-    void SetCollided(bool colided);
+    bool HasCollided(Entity entity);
+    void SetCollided(Entity entity, bool collided);
 
-    Entity CollidedWith();
-    void SetCollidedWith(Entity newEnt);
+    Vector2 GetCollisionPosition(Entity entity);
+    void SetCollisionPosition(Entity entity, const Vector2& position);
 
 private:
     static BlackboardManager instance;
 
-    bool hasCollided = false;
-    Entity collidedWith = entt::null;
+    std::unordered_map<Entity, bool> collisionMap;
+    std::unordered_map<Entity, Vector2> collisionPositionMap;
 };
 

@@ -1,5 +1,4 @@
 #include "esccape_main.h"
-
 #include "core/core.h"
 #include "core/engine.h"
 #include "core/input/inputs.h"
@@ -17,9 +16,10 @@
 #include "gameplay/common/simple_collisions.h"
 #include "esccape_main.h"
 #include "esccape_controller.h"
-#include "character.h"
+#include "character_system.h"
 #include <random>
 #include <cstdlib>
+#include "blackboard_manager.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -54,7 +54,7 @@ void EsccapeGame::GameplaySystemsSetup()
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
     engine.AddSystem<EsccapeControllerSystem>();
-    //engine.AddSystem<Character>();
+    engine.AddSystem<CharacterSystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -72,12 +72,13 @@ void EsccapeGame::WorldSetup()
 
 void esccape::CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health)
 {
+    // Fix
     auto& healthBarReg = Engine::Registry();
 
-    if (healthBarEntity != entt::null) {
+    /*if (healthBarEntity != entt::null) {
         printf("aaaaaa");
         healthBarReg.destroy(healthBarEntity);
-    }
+    }*/
     
     // Create a new health bar entity
     healthBarEntity = healthBarReg.create();
@@ -144,7 +145,6 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = machineSize;
     col.size.y = machineSize * ratio;
-    
 }
 
 void esccape::CreateObstacles(int zPos)
@@ -245,7 +245,7 @@ void esccape::SetupWorld()
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     //CreateObstacles(zPos);
-
+    
 
     // collisions
     {
@@ -302,20 +302,34 @@ void esccape::SetupWorld()
     }
 
 
+    {
+        {
+            auto mainChar = Character::Create("ASDWSpace",
+                "spritesheets:player_anim:player_idle_front:1",
+                "player:player_idle_front",
+                { 1, 1, 1 }, { 300, 100 }, 0);
+
+            auto entity = reg.create();
+            auto& character = reg.emplace<Character>(entity, mainChar);
+        }
+    }
+    
+
+
+
     // player
     {
         {
-           auto entity = reg.create();
 
-           auto mainChar = new Character(Character::Create("ASDWSpace",
+           /*auto mainChar = Character::Create("ASDWSpace",
                "spritesheets:player_anim:player_idle_front:1",
                "player:player_idle_front",
-               { 1, 1, 1 }, { 100, 100 }, 0));
+               { 1, 1, 1 }, { 100, 100 }, 0);*/
 
-           auto skeletonChar = new Character(Character::Create("skeleton-arrows",
+           /*auto skeletonChar = new Character(Character::Create("skeleton-arrows",
                "spritesheets:skeleton:skeleton_idle_front:1",
                "skeleton:skeleton_idle_front",
-               { 1, 1, 1 }, { -100, 0 }, 1));
+               { 1, 1, 1 }, { -100, 0 }, 1));*/
 
             auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
         }

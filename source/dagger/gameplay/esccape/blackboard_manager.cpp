@@ -13,23 +13,34 @@ BlackboardManager& BlackboardManager::GetInstance() {
 	return instance;
 }
 
+bool BlackboardManager::HasCollided(Entity entity) {
+    auto it = collisionMap.find(entity);
+    if(it == collisionMap.end())
+        collisionMap[entity] = false;
 
-bool BlackboardManager::HasCollided()
-{
-	return hasCollided;
+    if (it != collisionMap.end() && it->second) {
+        // Entity found in map and its value is true
+        return true;
+    }
+
+    return false;
 }
 
-void BlackboardManager::SetCollided(bool colided)
-{
-	hasCollided = colided;
+
+void BlackboardManager::SetCollided(Entity entity, bool collided) {
+    collisionMap[entity] = collided;
 }
 
-Entity BlackboardManager::CollidedWith()
-{
-	return Entity();
+Vector2 BlackboardManager::GetCollisionPosition(Entity entity) {
+    if (collisionPositionMap.find(entity) != collisionPositionMap.end()) {
+        return collisionPositionMap[entity];
+    }
+    else {
+        // Return a default position or handle the absence of collision data
+        return Vector2(0.0f, 0.0f);  // For example, assuming (0, 0) as default position
+    }
 }
 
-void BlackboardManager::SetCollidedWith(Entity newEnt)
-{
-	collidedWith = newEnt;
+void BlackboardManager::SetCollisionPosition(Entity entity, const Vector2& position) {
+    collisionPositionMap[entity] = position;
 }

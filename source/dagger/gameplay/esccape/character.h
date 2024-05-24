@@ -1,65 +1,54 @@
+
 #include "core/system.h"
 #include "core/core.h"
-
 #include <string>
 #include "core/engine.h"
 #include "core/input/inputs.h"
 #include "core/graphics/sprite.h"
 #include "core/graphics/animation.h"
-#include "core/graphics/shaders.h"
-#include "core/graphics/window.h"
 #include "core/game/transforms.h"
-#include "core/graphics/sprite_render.h"
-#include "core/graphics/textures.h"
-#include "core/graphics/animations.h"
-
 #include "gameplay/common/simple_collisions.h"
 #include "esccape_controller.h"
 #include "character_controller.h"
-
 
 using namespace dagger;
 
 namespace esccape
 {
-    class Character
-        : public System
+    class Character 
     {
-        public:
-            Character(Entity entity, Sprite& sprite, Animator& animator, InputReceiver& input, esccape::EsccapeCharacter& character, Transform& transform, SimpleCollision& collision);
-            static Character Get(Entity entity);
-            inline String SystemName() { return "Character Input System"; }
+    public:
+        Character(Entity entity, Sprite* sprite, Animator* animator, InputReceiver* input, esccape::EsccapeCharacter* character, Transform* transform, SimpleCollision* collision);
+        static Character Get(Entity entity);
 
-            static Character Create(
-                const std::string& input_ = "",
-                const std::string& spritesheet_ = "",
-                const std::string& animation_ = "",
-                const ColorRGB& color_ = { 1, 1, 1 },
-                const Vector2& position_ = { 0, 0 },
-                int id = 0
-            );
+        static Character Create(
+            const std::string& input_ = "",
+            const std::string& spritesheet_ = "",
+            const std::string& animation_ = "",
+            const ColorRGB& color_ = { 1, 1, 1 },
+            const Vector2& position_ = { 0, 0 },
+            int id = 0
+        );
 
-            Entity getEntity() const;
-            Sprite& getSprite();
-            Animator& getAnimator();
-            InputReceiver& getInputReceiver();
-            esccape::EsccapeCharacter& getEsccapeCharacter();
+        Entity getEntity() const;
+        Sprite* getSprite();
+        Animator* getAnimator();
+        InputReceiver* getInputReceiver();
+        esccape::EsccapeCharacter* getEsccapeCharacter();
 
-            void Run() override;
 
-            void CheckCollisions();
+        void CheckCollisions();
 
-        private:
-            Entity entity;
-            Sprite& sprite;
-            Animator& animator;
-            InputReceiver& input;
-            esccape::EsccapeCharacter& character;
-            SimpleCollision& collision;
-            Transform& transform;
+    private:
+        Entity entity;
+        Sprite* sprite;
+        Animator* animator;
+        InputReceiver* input;
+        esccape::EsccapeCharacter* character;
+        SimpleCollision* collision;
+        Transform* transform;
     };
 }
-
 
 
 

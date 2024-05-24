@@ -1,17 +1,13 @@
 #include "character.h"
-
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include "core/graphics/sprite.h"
-
-
 #include "blackboard_manager.h"
 #include "esccape_controller.h"
 
 using namespace esccape;
 
-
-Character::Character(Entity entity, Sprite& sprite, Animator& animator, InputReceiver& input, esccape::EsccapeCharacter& character, Transform& transform, SimpleCollision& collision)
+Character::Character(Entity entity, Sprite* sprite, Animator* animator, InputReceiver* input, esccape::EsccapeCharacter* character, Transform* transform, SimpleCollision* collision)
     : entity(entity), sprite(sprite), animator(animator), input(input), character(character), transform(transform), collision(collision)
 {
 }
@@ -26,9 +22,8 @@ Character Character::Get(Entity entity)
     auto& transform = reg.get_or_emplace<Transform>(entity);
     auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
 
-    return Character(entity, sprite, anim, input, character, transform, collision);
+    return Character(entity, &sprite, &anim, &input, &character, &transform, &collision);
 }
-
 
 Character Character::Create(
     const std::string& input_,
@@ -46,23 +41,23 @@ Character Character::Create(
 
     auto chr = Character::Get(entity);
 
-    chr.sprite.scale = { 2.5, 2.5 };
-    chr.sprite.position = { position_, 0.0f };
-    chr.sprite.color = { color_, 1.0f };
-    chr.character.id = id;
-    chr.transform.position = { position_, 0.0f };
-    chr.collision.size.x = chr.sprite.scale.x;
-    chr.collision.size.y = chr.sprite.scale.y;
+    chr.sprite->scale = { 2.5, 2.5 };
+    chr.sprite->position = { position_, 0.0f };
+    chr.sprite->color = { color_, 1.0f };
+    chr.character->id = id;
+    chr.transform->position = { position_, 0.0f };
+    chr.collision->size.x = chr.sprite->scale.x;
+    chr.collision->size.y = chr.sprite->scale.y;
 
-    AssignSprite(chr.sprite, spritesheet_);
-    AnimatorPlay(chr.animator, animation_);
+    AssignSprite(*chr.sprite, spritesheet_);
+    AnimatorPlay(*chr.animator, animation_);
 
     if (!input_.empty())
     {
-        chr.input.contexts.push_back(input_);
+        chr.input->contexts.push_back(input_);
     }
 
-    chr.character.speed = 50;
+    chr.character->speed = 50;
 
     return chr;
 }
@@ -72,48 +67,69 @@ Entity Character::getEntity() const
     return entity;
 }
 
-Sprite& Character::getSprite()
+Sprite* Character::getSprite()
 {
     return sprite;
 }
 
-Animator& Character::getAnimator()
+Animator* Character::getAnimator()
 {
     return animator;
 }
 
-InputReceiver& Character::getInputReceiver()
+InputReceiver* Character::getInputReceiver()
 {
     return input;
 }
 
-esccape::EsccapeCharacter& Character::getEsccapeCharacter()
+esccape::EsccapeCharacter* Character::getEsccapeCharacter()
 {
     return character;
 }
 
-
-void esccape::Character::CheckCollisions()
+void Character::CheckCollisions()
 {
     BlackboardManager& bbManager = BlackboardManager::GetInstance();
     auto& fsmState = Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity);
     CheckCollisionsFSM(fsmState, bbManager);
 }
 
-void esccape::Character::Run()
-{
-    CheckCollisions();
-    if (!BlackboardManager::GetInstance().HasCollided())
-        printf("nistaaa");
-    else
-        printf("yaaaaaaaaaaaaaaaay");
+//void Character::Run()
+//{
+//    CheckCollisions();
+//    if (!BlackboardManager::GetInstance().HasCollided())
+//        printf("nistaaa");
+//    else
+//        printf("yaaaaaaaaaaaaaaaay");
+//
+//    if (BlackboardManager::GetInstance().HasCollided())
+//    {
+//        auto collidedWith = BlackboardManager::GetInstance().CollidedWith();
+//        ResolveCollision(Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity), collidedWith, BlackboardManager::GetInstance());
+//    }
+//}
 
-    if (BlackboardManager::GetInstance().HasCollided())
-    {
-        auto collidedWith = BlackboardManager::GetInstance().CollidedWith();
-        ResolveCollision(Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity), collidedWith, BlackboardManager::GetInstance());
-    }
-}
+
+//void esccape::Character::Run()
+//{
+//    auto& reg = dagger::Engine::Registry();
+//
+//    reg.view<Character>().each([](Character& character) {
+//        character.Run();
+//        });
+//
+//    CheckCollisions();
+//    if (!BlackboardManager::GetInstance().HasCollided())
+//        printf("nistaaa");
+//    else
+//        printf("yaaaaaaaaaaaaaaaay");
+//
+//    if (BlackboardManager::GetInstance().HasCollided())
+//    {
+//        auto collidedWith = BlackboardManager::GetInstance().CollidedWith();
+//        ResolveCollision(Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity), collidedWith, BlackboardManager::GetInstance());
+//    }
+//}
 
 
 
