@@ -8,7 +8,7 @@
 #include "core/system.h"
 #include "esccape_controller.h"
 
-#include "player.h"
+#include "character.h"
 #include "blackboard_manager.h"
 
 using namespace dagger;
@@ -31,7 +31,7 @@ void FaceSpriteLeft(Sprite& sprite) {
 void CharacterControllerFSM::Idle_Front::Enter(CharacterControllerFSM::StateComponent& state_)
 {
 	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
-	if(character.id == 0)
+	if (character.id == 0)
 		AnimatorPlay(animator, "player:player_idle_front");
 	else
 		AnimatorPlay(animator, "skeleton:skeleton_idle_front");
@@ -73,7 +73,7 @@ void CharacterControllerFSM::Idle_Left::Enter(CharacterControllerFSM::StateCompo
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	 
+
 	FaceSpriteLeft(sprite);
 	if (character.id == 0)
 		AnimatorPlay(animator, "player:player_idle_right");
@@ -152,11 +152,11 @@ void CharacterControllerFSM::Idle_Back::Exit(CharacterControllerFSM::StateCompon
 
 void CharacterControllerFSM::Idle_Right::Enter(CharacterControllerFSM::StateComponent& state_)
 {
-	
+
 	auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	
+
 	FaceSpriteRight(sprite);
 
 	if (character.id == 0)
@@ -210,24 +210,27 @@ void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComp
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-	
+	auto& transform = Engine::Registry().get<Transform>(state_.entity);
+
+	//CheckCollisionsFSM(state_, CharacterControllerFSM::blackboardManager);
 	bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
 
-	if(hasCollided)
+	if (hasCollided)
 	{
 		Entity collidedWith = CharacterControllerFSM::blackboardManager.CollidedWith();
 		printf("DAAAAAAAA");
 		ResolveCollision(state_, collidedWith, CharacterControllerFSM::blackboardManager);
 	}
-	
+
 	if (EPSILON_ZERO(input.Get("down")))
 	{
-			GoTo(ECharacterStates::Idle_Front, state_);
+		GoTo(ECharacterStates::Idle_Front, state_);
 	}
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 		sprite.position.y -= 50 * Engine::DeltaTime();
+		transform.position.y = sprite.position.y;
 	}
 }
 
@@ -253,6 +256,7 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
 	bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
 
@@ -270,6 +274,7 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 		sprite.position.x -= 50 * Engine::DeltaTime();
+		transform.position.x = sprite.position.x;
 	}
 }
 
@@ -295,6 +300,7 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
 	bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
 
@@ -312,6 +318,8 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 		sprite.position.x += 50 * Engine::DeltaTime();
+		transform.position.x = sprite.position.x;
+		
 	}
 }
 
@@ -332,6 +340,7 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
+	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
 	bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
 
@@ -349,6 +358,7 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 		sprite.position.y += 50 * Engine::DeltaTime();
+		transform.position.y = sprite.position.y;
 	}
 }
 
@@ -473,7 +483,7 @@ void CharacterControllerFSM::Attack_Up::Run(CharacterControllerFSM::StateCompone
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -=  Engine::DeltaTime();
+		sprite.position.y -= Engine::DeltaTime();
 	}
 }
 
@@ -507,7 +517,7 @@ void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent&
 }
 
 
-void CheckCollisions(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager)
+void CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager)
 {
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
@@ -553,8 +563,6 @@ void ResolveCollision(CharacterControllerFSM::StateComponent& state_, Entity col
 		}
 	}
 
-	//// Reset collision flag after resolution
 	bbManager.SetCollided(false);
 	bbManager.SetCollidedWith(entt::null);
 }
-

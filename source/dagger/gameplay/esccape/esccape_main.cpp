@@ -14,14 +14,10 @@
 #include "core/graphics/gui.h"
 #include "tools/diagnostics.h"
 
-
-#include <unordered_map>
-
 #include "gameplay/common/simple_collisions.h"
 #include "esccape_main.h"
 #include "esccape_controller.h"
-#include "player.h"
-
+#include "character.h"
 #include <random>
 #include <cstdlib>
 
@@ -57,8 +53,8 @@ void EsccapeGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
-    //engine.AddSystem<Player>();
     engine.AddSystem<EsccapeControllerSystem>();
+    //engine.AddSystem<Character>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -136,7 +132,7 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:masina");
     float ratio = sprite.size.y / sprite.size.x;    
-    float machineSize = 80 * machineScale;              // 80 rnd parametar za velicinu
+    float machineSize = 300;              
     sprite.size = { machineSize, machineSize * ratio };
     
     auto& transform = reg.emplace<Transform>(entity); 
@@ -148,6 +144,7 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = machineSize;
     col.size.y = machineSize * ratio;
+    
 }
 
 void esccape::CreateObstacles(int zPos)
@@ -322,8 +319,6 @@ void esccape::SetupWorld()
 
             auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
         }
-
-        
         
     }
 }

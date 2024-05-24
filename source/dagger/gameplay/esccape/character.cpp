@@ -1,13 +1,18 @@
-#include "player.h"
+#include "character.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include "core/graphics/sprite.h"
 
+
+#include "blackboard_manager.h"
+#include "esccape_controller.h"
+
 using namespace esccape;
 
-Character::Character(Entity entity, Sprite& sprite, Animator& animator, InputReceiver& input, esccape::EsccapeCharacter& character)
-    : entity(entity), sprite(sprite), animator(animator), input(input), character(character)
+
+Character::Character(Entity entity, Sprite& sprite, Animator& animator, InputReceiver& input, esccape::EsccapeCharacter& character, Transform& transform, SimpleCollision& collision)
+    : entity(entity), sprite(sprite), animator(animator), input(input), character(character), transform(transform), collision(collision)
 {
 }
 
@@ -18,8 +23,10 @@ Character Character::Get(Entity entity)
     auto& anim = reg.get_or_emplace<Animator>(entity);
     auto& input = reg.get_or_emplace<InputReceiver>(entity);
     auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
+    auto& transform = reg.get_or_emplace<Transform>(entity);
+    auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
 
-    return Character(entity, sprite, anim, input, character);
+    return Character(entity, sprite, anim, input, character, transform, collision);
 }
 
 
@@ -43,6 +50,9 @@ Character Character::Create(
     chr.sprite.position = { position_, 0.0f };
     chr.sprite.color = { color_, 1.0f };
     chr.character.id = id;
+    chr.transform.position = { position_, 0.0f };
+    chr.collision.size.x = chr.sprite.scale.x;
+    chr.collision.size.y = chr.sprite.scale.y;
 
     AssignSprite(chr.sprite, spritesheet_);
     AnimatorPlay(chr.animator, animation_);
@@ -82,49 +92,28 @@ esccape::EsccapeCharacter& Character::getEsccapeCharacter()
     return character;
 }
 
-void esccape::Character::Run()
+
+void esccape::Character::CheckCollisions()
 {
-
-    //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
-    ////auto view = Engine::Registry().view<Transform, ControllerMapping, Player>();
-    //auto view2 = Engine::Registry().view<Character, Transform, SimpleCollision>();
-    
-    //for (auto entity : view)
-    //{
-    //    auto& t = view.get<Transform>(entity);
-    //    auto& player = view.get<Player>(entity);
-    //    auto& col = view2.get<SimpleCollision>(entity);
-
-
-
-    //    // How to have collisions be the same as sprite
-    //    if (col.colided)
-    //    {
-    //        if (Engine::Registry().valid(col.colidedWith))
-    //        {
-    //            SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
-    //            Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
-
-    //            Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
-
-
-    //            while (col.IsCollided(t.position, collision, transform.position))
-    //            {
-    //                if (std::abs(collisionSides.x) > 0 && col.IsCollided(t.position, collision, transform.position))
-    //                {
-    //                    t.position.x -= t.position.x < 0 ? -1 : 1;
-    //                }
-    //                if (std::abs(collisionSides.y) > 0 && col.IsCollided(t.position, collision, transform.position))
-    //                {
-    //                    t.position.y -= t.position.y < 0 ? -1 : 1;
-    //                }
-    //            }
-
-    //        }
-    //    }
-    //}
+    BlackboardManager& bbManager = BlackboardManager::GetInstance();
+    auto& fsmState = Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity);
+    CheckCollisionsFSM(fsmState, bbManager);
 }
 
+void esccape::Character::Run()
+{
+    CheckCollisions();
+    if (!BlackboardManager::GetInstance().HasCollided())
+        printf("nistaaa");
+    else
+        printf("yaaaaaaaaaaaaaaaay");
+
+    if (BlackboardManager::GetInstance().HasCollided())
+    {
+        auto collidedWith = BlackboardManager::GetInstance().CollidedWith();
+        ResolveCollision(Engine::Registry().get<CharacterControllerFSM::StateComponent>(entity), collidedWith, BlackboardManager::GetInstance());
+    }
+}
 
 
 
