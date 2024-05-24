@@ -11,12 +11,12 @@ void CharacterSystem::Run()
     auto& reg = Engine::Registry();
     BlackboardManager& bbManager = BlackboardManager::GetInstance();
 
-    auto characterView = reg.view<esccape::Character>();
+    auto characterView = reg.view<Character>();
     for (auto entity : characterView)
     {
-        auto& character = characterView.get<esccape::Character>(entity);
+        auto& character = characterView.get<Character>(entity);
         character.CheckCollisions();
-        printf("%d", bbManager.HasCollided(entity));
+        //printf("*** %d *** %d ***\n", bbManager.HasCollided(entity), (int)entity);
         // Check if a collision has occurred using the BlackboardManager
         if (bbManager.HasCollided(entity))
         {

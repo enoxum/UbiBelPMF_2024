@@ -531,7 +531,8 @@ void CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, Blackboa
 
 		if (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 			bbManager.SetCollided(state_.entity, true);
-			printf("%d", bbManager.HasCollided(state_.entity));
+			//printf("Collision detected: Entity %d with Entity %d\n", (int)state_.entity, (int)otherEntity);
+			//printf("%d", bbManager.HasCollided(state_.entity));
 			bbManager.SetCollided(otherEntity, true);
 			return;
 		}

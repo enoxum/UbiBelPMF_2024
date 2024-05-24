@@ -245,7 +245,6 @@ void esccape::SetupWorld()
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     //CreateObstacles(zPos);
-    
 
     // collisions
     {
@@ -307,10 +306,15 @@ void esccape::SetupWorld()
             auto mainChar = Character::Create("ASDWSpace",
                 "spritesheets:player_anim:player_idle_front:1",
                 "player:player_idle_front",
-                { 1, 1, 1 }, { 300, 100 }, 0);
+                { 1, 1, 1 }, { 350, 100 }, 0);
 
-            auto entity = reg.create();
+            auto entity = mainChar.getEntity();
             auto& character = reg.emplace<Character>(entity, mainChar);
+
+            printf("MAIN CHR IS Entity %d\n", (int)mainChar.getEntity());
+            printf("CHR IS Entity %d\n", (int)entity);
+
+
         }
     }
     

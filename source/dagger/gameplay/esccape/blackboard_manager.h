@@ -6,11 +6,9 @@
 #include "entt/entt.hpp"
 #include <unordered_map>
 
-
 using namespace dagger;
 
 using Entity = entt::entity;
-
 
 class BlackboardManager {
 public:
