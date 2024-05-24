@@ -51,7 +51,7 @@ void dead_end::DeadEndGame::GameplaySystemsSetup()
     engine.AddPausableSystem<SimpleCollisionsSystem>();
     engine.AddPausableSystem<DeadEndCameraFollowSystem>();
     engine.AddPausableSystem<DeadEndPlayerInputSystem>();
-    //engine.AddPausableSystem<AimSystem>();
+    engine.AddPausableSystem<AimSystem>();
     engine.AddPausableSystem<PlayerSystem>();
     engine.AddPausableSystem<ShootingSystem>();
     engine.AddPausableSystem<DeadEndObstacleSystem>();
@@ -105,7 +105,7 @@ void dead_end::setupWorld()
         transform.position.z = zPos ;
 
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "dead_end:Player:player_pistol");
+        AssignSprite(sprite, "dead_end:Player:player_handgun");
         sprite.size.x = playerSize ;
         sprite.size.y = playerSize ;
 
@@ -114,6 +114,19 @@ void dead_end::setupWorld()
         auto& controller = reg.emplace<ControllerMapping>(entity);
 
         DeadEndPlayerInputSystem::SetupPlayerInput(controller);
+    }
+
+    // crosshair
+    {
+        auto entity = reg.create();
+        auto& transform = reg.emplace<Transform>(entity);
+
+        auto& crosshair = reg.emplace<Aim>(entity);
+
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "dead_end:Crosshair:crosshair");
+        sprite.size.x = playerSize / 2;
+        sprite.size.y = playerSize / 2;
     }
 
 }

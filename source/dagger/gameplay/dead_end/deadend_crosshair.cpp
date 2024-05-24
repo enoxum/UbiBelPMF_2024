@@ -6,27 +6,30 @@
 #include "core/graphics/window.h"
 #include "core/graphics/sprite.h"
 #include "core/input/inputs.h"
+#include <core/game/transforms.h>
 
 
 void dead_end::AimSystem::Run()
 {
 
-	auto view = Engine::Registry().view<Aim>();
-	auto cursorPos = dagger::Input::CursorPositionInWorld();
+    auto* camera = Engine::GetDefaultResource<Camera>();
+    auto cursor = dagger::Input::CursorPositionInWindow();
+    Vector2 screenCenter{ camera->size.x / 2, camera->size.y / 2 };
 
-	for (auto entity : view)
-	{
-		auto& a = view.get<Aim>(entity);
+    Vector2 relativePosition = cursor - screenCenter;
 
-		auto& sprite = Engine::Registry().get<Sprite>(a.crosshairSprite);
+    Vector2 crosshairPosition;
+    crosshairPosition.x = camera->position.x + relativePosition.x;
+    crosshairPosition.y = camera->position.y - relativePosition.y;
 
-		sprite.position.x = cursorPos.x + a.playerDistance;
-		sprite.position.y = cursorPos.y + a.playerDistance;
-
-		sprite.scale = { 1,1 };
-	}
-
+    auto view = Engine::Registry().view<Transform, Sprite, Aim>();
+    for (auto entity : view)
+    {
+        auto& transform = view.get<Transform>(entity);
+        transform.position = { crosshairPosition.x, crosshairPosition.y, 0.0f };
+    }
 }
+
 
 
 
