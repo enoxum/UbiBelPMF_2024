@@ -176,7 +176,7 @@ void OurMap::make_wall_matrix()
 		}
 	}
 
-	//print_matrix_in_console(matrix_);
+	print_matrix_in_console(matrix_);
 	//print_matrix_in_console(horizontal_restriction_matrix);
 	//print_matrix_in_console(vertical_restriction_matrix);
 	//for (int i = 0; i < all_doors_coords_.size(); i++) {
@@ -233,7 +233,6 @@ void OurMap::rearange_interior()
 				for (int k = 0; k < door_number; k++) {
 					int distance = calculate_distance(middles[k], std::pair<int, int>(j, i));
 					int door_distance = calculate_distance(middles[k], doors_coords[k]);
-					int dot_door_distance = calculate_distance(std::pair<int, int>(j, i), doors_coords[k]);
 					if (distance <= door_distance)
 						matrix_[j][i] = 0;
 					else if (matrix_[j][i] != 0)
@@ -298,7 +297,7 @@ void OurMap::paint_map()
 
 void OurMap::fill(int x, int y, int *min_x, int *min_y, int *max_x, int *max_y, std::vector<std::pair<int, int>> *doors_coords) {
 	if (matrix_[y][x] == 0) {
-		matrix_[y][x] = -1;
+		matrix_[y][x] = 1;
 		*min_x = x < *min_x ? x : *min_x;
 		*min_y = y < *min_y ? y : *min_y;
 		*max_x = x > *max_x ? x : *max_x;

@@ -34,7 +34,7 @@ void BoberGame::GameplaySystemsSetup()
 
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
-    engine.AddPausableSystem<SimpleCollisionsSystem>();
+    engine.AddSystem<SimpleCollisionsSystem>();
 }
 
 void BoberGame::SetCamera()
@@ -42,7 +42,8 @@ void BoberGame::SetCamera()
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };
-    camera->zoom = 0.2;
+    //put it on 3 to simulate how the game will look
+    camera->zoom = 3;
     camera->position = { 0, 0, 0 };
     camera->Update();
 }
@@ -52,8 +53,8 @@ void BoberGame::WorldSetup()
     SetCamera();
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
 
-    int map_size = 40;
-    int room_size = 6;
+    int map_size = 20;
+    int room_size = 4;
     OurMap* map = new OurMap(map_size, room_size);
     int n = map->get_n();
     std::vector<std::vector<int>> matrix = map->get_matrix();
