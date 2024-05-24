@@ -10,6 +10,7 @@
 
 
 #include "gameplay/dead_end/deadend_obstacle.h"
+#include "deadend_player.h"
 
 using namespace dagger;
 using namespace dead_end;
@@ -21,6 +22,7 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
 	auto entity = reg.create();
 
 	auto& bullet = reg.emplace<Bullet>(entity);
+
 	auto& sprite = reg.emplace<Sprite>(entity);
     // assign a sprite for bullets when found and according to a weapon type.
     AssignSprite(sprite, "dead_end:Bullet:bullet_pistol");
@@ -58,8 +60,8 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
     bullet.direction.y = distanceY / norm;
 
 
-    transform.position.x = position_.x ;
-    transform.position.y = position_.y ;
+    transform.position.x = position_.x  ;
+    transform.position.y = position_.y  ;
     transform.position.z = 0.0f;
 
     
@@ -70,6 +72,7 @@ void dead_end::ShootingSystem::Run()
 {
     auto view = Engine::Registry().view<Transform, Bullet, Sprite, SimpleCollision>();
     auto viewCollisions = Engine::Registry().view<Transform, DeadEndObstacle>();
+    auto playerView = Engine::Registry().view<Player>();
 
     for (auto entity : view)
     {
@@ -86,6 +89,10 @@ void dead_end::ShootingSystem::Run()
         if (col.colided)
         {
 
+            if (Engine::Registry().valid(col.colidedWith) && playerView.contains(col.colidedWith)) {
+                continue;
+            }
+
             if (Engine::Registry().valid(col.colidedWith) && viewCollisions.contains(col.colidedWith))
             {
 
@@ -93,6 +100,9 @@ void dead_end::ShootingSystem::Run()
               
             }
 
+
         }
     }
+
+    
 }

@@ -8,6 +8,7 @@
 #include "gameplay/common/simple_collisions.h"
 
 #include <algorithm>
+#include "deadend_bullet.h"
 
 using namespace dagger;
 using namespace dead_end;
@@ -16,6 +17,7 @@ void dead_end::PlayerSystem::Run()
 {
 	auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
 	auto view = Engine::Registry().view<Player, Transform, SimpleCollision>();
+    auto viewBullet = Engine::Registry().view<Bullet, SimpleCollision>();
 	//auto viewText = Engine::Registry().view<Text>();
 
 	for (auto entity : view)
@@ -24,16 +26,26 @@ void dead_end::PlayerSystem::Run()
 		auto& player = view.get<Player>(entity);
 		auto& col = view.get<SimpleCollision>(entity);
 
+        
+
 		//auto& text = viewText.get<Text>(entity); add gameover later.
+
 
 		if (col.colided)
 		{
             // later : collision w/ enemies and collectables.
+
+            if (viewBullet.contains(col.colidedWith)) {
+                col.colided = false;
+                continue;
+            }
             
 			if (Engine::Registry().valid(col.colidedWith))
 			{
 				SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
 				Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
+
+                
 
 				Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
 
