@@ -1,12 +1,27 @@
 {
   "version": 2,
-  "dgSpecHash": "X3eaA9+NRxAdrYDNfbJsWcH13fb3OKv7/4HhRhcJDPzbmuDRqbDh6yo9mnIJ5ZvDbhTjdrlgW3AdylZXMT0RDw==",
+  "dgSpecHash": "fRSjLtMBzo6MI1M13C6naG6ZleTacw6rJzHeDvAsqwq6ezwTU7fL8dzLyZqTKVrW5txlrZ11lxirsbKqsH8IwA==",
   "success": true,
-  "projectFilePath": "D:\\dagger\\tools\\TextKnife\\TextKnife.csproj",
+  "projectFilePath": "C:\\Users\\tstoj\\Desktop\\Ubi-Projekat\\UbiBelPMF_2024\\tools\\TextKnife\\TextKnife.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\gavab\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
-    "C:\\Users\\gavab\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
-    "C:\\Users\\gavab\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512"
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\tstoj\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.32\\microsoft.netcore.app.host.win-x64.3.1.32.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1904",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Drawing.Common' 5.0.0 has a known critical severity vulnerability, https://github.com/advisories/GHSA-rxg9-xrhp-64gj",
+      "libraryId": "System.Drawing.Common",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }
