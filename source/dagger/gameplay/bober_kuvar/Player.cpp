@@ -1,4 +1,4 @@
-#include "Player.h"
+/*#include "Player.h"
 
 using namespace bober_game;
 
@@ -39,4 +39,4 @@ void Player::levelUp()
 int Player::getLevel()
 {
 	return level_;
-}
+}*/

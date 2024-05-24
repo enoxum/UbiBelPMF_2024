@@ -1,4 +1,4 @@
-#include "Character.h"
+/*#include "Character.h"
 
 Character::Character() : OurEntity() {
 
@@ -19,4 +19,4 @@ void Character::die()
 
 void Character::collision()
 {
-}
+}*/

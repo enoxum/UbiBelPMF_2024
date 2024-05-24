@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "OurEntity.h"
 
 class Character :
@@ -15,4 +15,4 @@ private:
     double hp;
     double speed;
     double strength;
-};
+};*/

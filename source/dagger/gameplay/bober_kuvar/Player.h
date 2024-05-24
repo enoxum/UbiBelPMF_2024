@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Character.h"
 #include "PlayerController.h"
 #include "Weapon.h"
@@ -25,4 +25,4 @@ private:
     double xp_;
     int level_;
     ControllerMapping* controller_;
-};
+};*/

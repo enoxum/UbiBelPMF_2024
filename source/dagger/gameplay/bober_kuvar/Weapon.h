@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "OurEntity.h"
 #include "PlayerController.h"
 
@@ -9,5 +9,5 @@ public:
     Weapon(double damage);
 private:
     double damage_;
-};
+};*/
 

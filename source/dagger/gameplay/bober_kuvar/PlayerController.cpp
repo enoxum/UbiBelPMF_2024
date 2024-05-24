@@ -15,6 +15,7 @@ using namespace bober_game;
 
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
+std::vector<Bullet*> PlayerController::bullets;
 
 void PlayerController::SpinUp()
 {
@@ -119,6 +120,7 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
 
 void PlayerController::Run()
 {
+    //std::vector<Bullet*> bulletsToDelete;
     bool focusRanged=true;
     double cos_, sin_;
     Vector2 dir{ 0,0 };
@@ -204,15 +206,15 @@ void PlayerController::Run()
         auto& b = viewBullet.get<BulletSystem>(entity);
                            //get<SimpleCollision>
         //Privremeni TimeToLive sistem za metke.
-        /*if ((--b.ttl) == 0) {
-            Bullet* bullet= bullets[b.index];
-            bullets.erase(bullets.begin() + b.index);
+        if ((--b.ttl) == 0) {
+            delete bullets[b.index];
+            /*bullets.erase(bullets.begin() + b.index);
             for (int i=b.index;i<bullets.size();i++) {
                 bullets[i]->bullet_system->index--;
             }
-            delete bullet;
+            delete bullet;*/
             continue;
-        }*/
+        }
         if (b.firstTime) {
             b.dir = dir;
             float length = sqrt(b.dir.x * b.dir.x + b.dir.y * b.dir.y);

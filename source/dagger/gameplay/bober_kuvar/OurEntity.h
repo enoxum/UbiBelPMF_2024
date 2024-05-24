@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "core/core.h"
 
 #include "core/core.h"
@@ -29,4 +29,4 @@ public:
 	Sprite* sprite;
 	Animator* animator;
 private:
-};
+};*/

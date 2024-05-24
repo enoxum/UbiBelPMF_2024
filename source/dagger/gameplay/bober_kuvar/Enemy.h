@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Character.h"
 class Enemy :
     public Character
@@ -12,4 +12,4 @@ private:
     void spawn() override;
     void die() override;
     void collision() override;
-};
+};*/

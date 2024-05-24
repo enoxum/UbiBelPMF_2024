@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Weapon.h"
 
 using namespace bober_game;
@@ -13,5 +13,5 @@ private:
     MeleeWeaponSystem* melee;
     double cooldown;
     double reach;
-};
+};*/
 

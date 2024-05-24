@@ -1,4 +1,4 @@
-#include "OurEntity.h"
+/*#include "OurEntity.h"
 
 OurEntity::OurEntity()
 {
@@ -18,4 +18,4 @@ OurEntity::~OurEntity()
 	delete sprite;
 	delete animator;
 	Engine::Instance().Registry().destroy(instance);
-}
+}*/

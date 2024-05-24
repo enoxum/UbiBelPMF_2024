@@ -1,4 +1,4 @@
-#pragma once
+/*ragma once
 #include "OurEntity.h"
 
 class Tile :
@@ -6,5 +6,5 @@ class Tile :
 {
 private:
     bool collidable_;
-};
+};*/
 

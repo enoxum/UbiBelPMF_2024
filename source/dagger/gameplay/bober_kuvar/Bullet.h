@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "OurEntity.h"
 #include "PlayerController.h"
 
@@ -13,5 +13,5 @@ public:
 	BulletSystem* bullet_system;
 private:
 	float speed_;
-};
+};*/
 

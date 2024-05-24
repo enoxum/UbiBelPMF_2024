@@ -1,4 +1,4 @@
-#include "Bullet.h"
+/*#include "Bullet.h"
 
 Bullet::Bullet(float speed) : OurEntity(), speed_(speed)
 {
@@ -9,4 +9,4 @@ Bullet::Bullet(float speed) : OurEntity(), speed_(speed)
 Bullet::~Bullet()
 {
 	delete bullet_system;
-}
+}*/

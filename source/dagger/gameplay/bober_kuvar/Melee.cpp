@@ -1,4 +1,4 @@
-#include "Melee.h"
+/*#include "Melee.h"
 
 Melee::Melee() : Weapon(20.0)
 {
@@ -7,9 +7,9 @@ Melee::Melee() : Weapon(20.0)
 
 	Engine::Registry().emplace<SlashEvent>(instance);
 	Engine::Dispatcher().sink<SlashEvent>().connect<&Melee::slash>(this);
-};
+}
 
 void Melee::slash(SlashEvent slash_)
 {
 
-};
+}*/

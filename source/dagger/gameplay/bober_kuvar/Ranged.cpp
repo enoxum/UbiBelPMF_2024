@@ -1,4 +1,4 @@
-#include "Ranged.h"
+/*#include "Ranged.h"
 
 Ranged::Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon(5.0), currentAmmo_(currentAmmo), magSize_(magSize), reloadSpeed_(reloadSpeed)
 {
@@ -13,8 +13,8 @@ Ranged::Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon(5.0), c
 {	
 	 if (currentAmmo_ != 0) {
 		 Bullet* bullet = new Bullet(shoot_.speed);
-		/* bullet->bullet_system->index = bullets.size();
-		 bullets.push_back(bullet);*/
+		bullet->bullet_system->index = bullets.size();
+		 bullets.push_back(bullet);
 		 Vector2 scale(1, 1);
 		 constexpr float tileSize = 20.f;
 		 (*bullet->transform).position.x = shoot_.position.x;
@@ -32,4 +32,4 @@ void Ranged::reload()
 {
 	currentAmmo_ = magSize_;
 	return;
-};
+};*/
