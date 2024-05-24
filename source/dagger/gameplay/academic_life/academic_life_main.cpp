@@ -21,6 +21,9 @@
 #include "gameplay/academic_life/health.h"
 #include "gameplay/academic_life/espb.h"
 
+#include "gameplay/academic_life/main_menu.h"
+
+
 #include "enumi.h"
 
 #include <cmath>
@@ -38,6 +41,8 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<SimpleCollisionsSystem>();
     engine.AddSystem<common_res::ParticleSystem>();
     engine.AddSystem<ScoreEntitySystem>();
+    engine.AddSystem<MainMenuInputSystem>();
+
 }
 
 constexpr int HEALTH_MARKER = 1;
@@ -55,8 +60,54 @@ void AcademicLife::WorldSetup()
     camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
+    academic_life::SetupMainMenu();
+    //academic_life::SetupWorld();
+}
 
-    academic_life::SetupWorld();
+void academic_life::SetupMainMenu()
+{
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
+
+    constexpr Vector2 scale(1, 1);
+
+    {
+        auto entity = reg.create();
+        auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
+        fieldSettings.fieldWidth = width;
+        fieldSettings.fieldHeight = height;
+        fieldSettings.fieldTileSize = tileSize;
+
+        Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
+    }
+
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "AcademicLife:background");
+        //   float ratio = sprite.size.y / sprite.size.x;
+        sprite.size = { 850.0f, 600.0f };
+
+        auto& transform = reg.emplace<Transform>(entity);
+        transform.position = { 0.0f, 0.0f, zPos };
+
+        auto& menu = reg.emplace<MainMenu>(entity);
+
+        reg.emplace<MenuControllerMapping>(entity);
+
+        auto logoEntity = reg.create();
+        auto& logoText = reg.emplace<Text>(logoEntity);
+        logoText.Set("pixel-font", menu.logoTxt, glm::vec3(tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
+        //auto& transformLogo = reg.emplace<Transform>(logoEntity);
+
+        auto startEntity = reg.create();
+        auto& startText = reg.emplace<Text>(startEntity);
+        startText.scale = Vector2{ 1.0f, 0.5f };
+        startText.Set("pixel-font", menu.playGameTxt, glm::vec3(tileSize / 2.0f, -300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
+
+        //auto& transformStart = reg.emplace<Transform>(startEntity);
+
+    }
 }
 
 

@@ -11,6 +11,7 @@ using namespace dagger;
 namespace academic_life
 {
     void SetupWorld();
+    void SetupMainMenu();
 
     class AcademicLife : public Game
     {
