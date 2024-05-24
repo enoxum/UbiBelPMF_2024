@@ -6,6 +6,7 @@
 
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "gameplay/academic_life/academic_life_main.h"
+#include <core/audio.h>
 
 using namespace dagger;
 using namespace academic_life;
@@ -31,6 +32,10 @@ void MainMenuInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
             }
             else if (kEvent_.key == ctrl_.muteKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
             {
+                if (ctrl_.input.y == 1)
+                    Engine::GetDefaultResource<Audio>()->Stop();
+                else
+                    Engine::GetDefaultResource<Audio>()->PlayLoop("music");
                 ctrl_.input.y *= -1;
             }
             else if (kEvent_.key == ctrl_.quitKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
@@ -46,14 +51,14 @@ void MainMenuInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 
 void MainMenuInputSystem::Run()
 {
-    AcademicLifeFieldSettings fieldSettings;
+  /*  AcademicLifeFieldSettings fieldSettings;
     if (auto* ptr = Engine::GetDefaultResource<AcademicLifeFieldSettings>())
     {
         fieldSettings = *ptr;
     }
 
     Float32 bottomBorderY = -fieldSettings.GetYBoarder();
-    Float32 borderX = fieldSettings.GetXBoarder();
+    Float32 borderX = fieldSettings.GetXBoarder();*/
 
     auto view = Engine::Registry().view<Transform, MenuControllerMapping, MainMenu>();
     for (auto entity : view)
@@ -71,6 +76,7 @@ void MainMenuInputSystem::Run()
             Engine::Registry().clear();
             academic_life::SetupWorld();
         }
+     
     }
 
 

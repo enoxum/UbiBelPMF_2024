@@ -10,6 +10,7 @@
 #include "core/graphics/gui.h"
 #include "core/graphics/text.h"
 #include "core/game/transforms.h"
+#include "core/audio.h"
 
 #include "gameplay/common/simple_collisions.h"
 #include "gameplay/common/particles.h"
@@ -71,7 +72,7 @@ void academic_life::SetupMainMenu()
 
     constexpr Vector2 scale(1, 1);
 
-    {
+    /*{
         auto entity = reg.create();
         auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
         fieldSettings.fieldWidth = width;
@@ -79,7 +80,7 @@ void academic_life::SetupMainMenu()
         fieldSettings.fieldTileSize = tileSize;
 
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
-    }
+    }*/
 
     {
         auto entity = reg.create();
@@ -106,6 +107,9 @@ void academic_life::SetupMainMenu()
         startText.Set("pixel-font", menu.playGameTxt, glm::vec3(tileSize / 2.0f, -300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
 
         //auto& transformStart = reg.emplace<Transform>(startEntity);
+        
+        Engine::GetDefaultResource<Audio>()->PlayLoop("music");
+            
 
     }
 }
