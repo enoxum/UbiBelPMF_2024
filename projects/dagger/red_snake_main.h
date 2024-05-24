@@ -9,6 +9,8 @@ using namespace dagger;
 
 namespace red_snake
 {
+	void CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_);
+	void CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_);
 	void SetUpWorld();
 	class RedSnakeGame : public Game
 	{
@@ -20,5 +22,6 @@ namespace red_snake
 		void CoreSystemsSetup() override;
 		void GameplaySystemsSetup() override;
 		void WorldSetup() override;
+		
 	};
 }

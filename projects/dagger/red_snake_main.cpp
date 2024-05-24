@@ -1,4 +1,5 @@
 #include "red_snake_main.h"
+#include "snake.h"
 #include "core/core.h"
 #include "core/engine.h"
 #include "core/input/inputs.h"
@@ -14,8 +15,10 @@
 #include "tools/diagnostics.h"
 
 #include "gameplay/common/simple_collisions.h"
+#include "snake_playerinput.h"
+#include <iostream>
 
-
+using namespace red_snake;
 
 void red_snake::RedSnakeGame::CoreSystemsSetup()
 {
@@ -40,6 +43,8 @@ void red_snake::RedSnakeGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
+    engine.AddPausableSystem<RedSnakeSystem>();
+    engine.AddPausableSystem<SnakePlayerInputSystem>();
 }
 
 void red_snake::RedSnakeGame::WorldSetup()
@@ -54,38 +59,110 @@ void red_snake::RedSnakeGame::WorldSetup()
     SetUpWorld();
 }
 
-void red_snake::SetUpWorld()
+void red_snake::CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_)
 {
-    Vector2 scale(1, 1);
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
 
-    auto& engine = Engine::Instance();
-    auto& reg = engine.Registry();
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "RedSnake:head");
+    sprite.size = Vector2(1, 1) * tileSize_;
+    //sprite.color = color_;
 
-    // field
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position.x = (pos_.x + 0.5f) * tileSize_;
+    transform.position.y = (pos_.y + 0.5f) * tileSize_;
+    transform.position.z = pos_.z;
 
-    constexpr int height = 20;
-    constexpr int width = 26;
-    constexpr float tileSize = 20.f;// / static_cast<float>(Width);
+    auto& snake = reg.emplace<SnakeSegment>(entity);
+    snake.alive = true;
 
-    float zPos = 1.f;
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size.x = tileSize_;
+    col.size.y = tileSize_;
 
-    {
-        auto entity = reg.create();
-        auto& col = reg.emplace<SimpleCollision>(entity);
-        col.size.x = tileSize;
-        col.size.y = tileSize;
+    reg.emplace<SnakeHead>(entity);
 
-        auto& transform = reg.emplace<Transform>(entity);
-        transform.position.x = 0;
-        transform.position.y = 0;
-        transform.position.z = zPos;
-
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "EmptyWhitePixel");
-        sprite.size.x = tileSize;
-        sprite.size.y = tileSize;
-    }
+    auto& controller = reg.emplace<SnakeControllerMapping>(entity);
+    SnakePlayerInputSystem::SetupPlayerInput(controller);
 }
 
+void red_snake::CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_)
+{
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "RedSnake:food");
+    sprite.size = Vector2(1, 1) * tileSize_;
+    sprite.color = color_;
+
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position.x = (pos_.x + 0.5f) * tileSize_;
+    transform.position.y = (pos_.y + 0.5f) * tileSize_;
+    transform.position.z = pos_.z;
+
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size.x = tileSize_;
+    col.size.y = tileSize_;
+
+    reg.emplace<Food>(entity);
+}
+
+void red_snake::SetUpWorld()
+{
+    constexpr int screenWidth = 800;
+    constexpr int screenHeight = 600;
+    constexpr int height = 20;
+    constexpr int width = 26;
+    constexpr float tileSize = 20.f;
+    constexpr float Space = 0.1f;
+
+    auto& reg = Engine::Registry();
+    float zPos = 1.f;
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            auto entity = reg.create();
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "EmptyWhitePixel");
+            sprite.size = Vector2(1, 1) * tileSize;
+
+            if (i % 2 != j % 2)
+            {
+                sprite.color.r = 0.4f;
+                sprite.color.g = 0.4f;
+                sprite.color.b = 0.4f;
+            }
+            else
+            {
+                sprite.color.r = 0.6f;
+                sprite.color.g = 0.6f;
+                sprite.color.b = 0.6f;
+            }
+
+            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+            {
+                sprite.color.r = 0.0f;
+                sprite.color.g = 0.0f;
+                sprite.color.b = 0.0f;
+            }
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+            transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
+            transform.position.z = zPos;
+        }
+    }
+
+    std::cout << "Creating snake..." << std::endl;
+    CreateSnake(tileSize, ColorRGBA(0, 1, 0, 1), { width / 2, height / 2, zPos });
+
+    std::cout << "Creating food..." << std::endl;
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    int foodX = (std::rand()) % 24 + 1;
+    int foodY = (std::rand()) % 18 + 1;
+    CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
+}
