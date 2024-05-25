@@ -10,6 +10,7 @@ public:
 
     void Update(int amount) override;
     int GetValue() const override;
+    void Reset() override;
 
 private:
     Health() : value(50) {}

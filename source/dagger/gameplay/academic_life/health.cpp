@@ -9,3 +9,7 @@ void Health::Update(int amount) {
 int Health::GetValue() const {
     return value;
 }
+
+void Health::Reset() {
+    value = 50;
+}

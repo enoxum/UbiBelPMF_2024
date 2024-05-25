@@ -9,3 +9,8 @@ void ESPB::Update(int amount) {
 int ESPB::GetValue() const {
     return value;
 }
+
+void ESPB::Reset()
+{
+    value = 0;
+}

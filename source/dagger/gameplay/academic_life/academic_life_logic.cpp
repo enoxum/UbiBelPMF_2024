@@ -9,6 +9,7 @@
 #include "academic_player.h"
 #include "academic_life_main.h"
 #include "falling_entity.h"
+#include "game_state.h"
 
 #include "health.h"
 #include "espb.h"
@@ -62,11 +63,20 @@ void AcademicLifeCollisionsLogicSystem::Run()
                 for (auto entityEntity : viewEntities)
                 {
                     auto lifestyleChange = static_cast<int>(Engine::Registry().get<LifestyleChange>(entityEntity));
-
                     if (entityEntity == col.colidedWith)
                     {
+                        ESPB& espb = ESPB::Instance();
                         Health& health = Health::Instance();
                         health.Update(lifestyleChange);             //TO DO: smanjiti proteklim vremenom 
+                          if (health.GetValue() <= 0) {
+
+                            Engine::Registry().clear();
+                            academic_life::GameOverScreen();
+                            health.Reset();
+                            espb.Reset();
+                            return;
+
+                        }
                         Engine::Registry().destroy(entityEntity);  // delete current entity
                         createRandomEntity();  // create new random entity
                         break;
@@ -82,8 +92,18 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         auto& falling_text = viewEntities2.get<FallingText>(entityEntity);
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
 
+                        Health& health = Health::Instance();
                         ESPB& espb = ESPB::Instance();
                         espb.Update(falling_text.text.value);
+                        if (espb.GetValue() >= 240) {
+
+                            Engine::Registry().clear();
+                            academic_life::WinScreen();
+                            espb.Reset();
+                            health.Reset();
+                            return;
+
+                        }
                         std::cout << falling_text.text.value << std::endl;
                
                         Engine::Registry().destroy(entityEntity);  // delete current entity
