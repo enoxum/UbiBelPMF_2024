@@ -26,8 +26,6 @@ void FaceSpriteLeft(Sprite& sprite) {
 	sprite.scale.x = -std::abs(sprite.scale.x); // Ensure the sprite faces left
 }
 
-
-
 void CharacterControllerFSM::Idle_Front::Enter(CharacterControllerFSM::StateComponent& state_)
 {
 	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
@@ -517,10 +515,34 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 	auto& collision = Engine::Registry().get<SimpleCollision>(entity1);
 	auto& otherTransform = Engine::Registry().get<Transform>(collidedWith);
 	auto& otherCollision = Engine::Registry().get<SimpleCollision>(collidedWith);
+	bool otherIsCharacter = Engine::Registry().has<Character>(collidedWith);
 	
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
 
 	while (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
+
+		if (otherIsCharacter)
+		{
+			Vector2 otherCollisionSides = otherCollision.GetCollisionSides(otherTransform.position, collision, transform.position);
+
+			if (std::abs(collisionSides.x) > 0 || std::abs(otherCollisionSides.x) > 0) {
+				float moveAmountX = (transform.position.x < otherTransform.position.x) ? -0.5f : 0.5f;
+				transform.position.x += moveAmountX;
+				otherTransform.position.x -= moveAmountX;
+
+				collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
+				otherCollisionSides = otherCollision.GetCollisionSides(otherTransform.position, collision, transform.position);
+			}
+
+			if (std::abs(collisionSides.y) > 0 || std::abs(otherCollisionSides.y) > 0) {
+				float moveAmountY = (transform.position.y < otherTransform.position.y) ? -0.5f : 0.5f;
+				transform.position.y += moveAmountY;
+				otherTransform.position.y -= moveAmountY;
+			}
+
+			break;
+		}
+
 		if (std::abs(collisionSides.x) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 			transform.position.x -= transform.position.x < 0 ? -1 : 1;
 		}

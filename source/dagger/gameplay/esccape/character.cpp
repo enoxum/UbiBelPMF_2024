@@ -41,13 +41,18 @@ Character Character::Create(
 
     auto chr = Character::Get(entity);
 
-    chr.sprite->scale = { 2.5, 2.5 };
+    float ratio = chr.sprite->size.y / chr.sprite->size.y;
+    float size = 50;
+
+    chr.sprite->size = { size, size * ratio };
+
+    chr.sprite->scale = { 3, 3 };
     chr.sprite->position = { position_, 0.0f };
     chr.sprite->color = { color_, 1.0f };
     chr.character->id = id;
     chr.transform->position = { position_, 0.0f };
-    chr.collision->size.x = chr.sprite->scale.x;
-    chr.collision->size.y = chr.sprite->scale.y;
+    chr.collision->size.x = chr.sprite->size.x;
+    chr.collision->size.y = chr.sprite->size.y;
 
     AssignSprite(*chr.sprite, spritesheet_);
     AnimatorPlay(*chr.animator, animation_);
@@ -57,7 +62,7 @@ Character Character::Create(
         chr.input->contexts.push_back(input_);
     }
 
-    chr.character->speed = 50;
+    chr.character->speed = 80;
 
     return chr;
 }
