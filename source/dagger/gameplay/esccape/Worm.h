@@ -17,8 +17,21 @@ namespace esccape
 
     struct Worm {
         Vector3 speed{0, 0, 0};
-        Vector3 startingPos;
+        int startingYTop;
+        int startingXRight;
+        int startingYBottom;
+        int startingXLeft;
+        int minimumX;
+        int maximumX;
+        int minimumY;
+        int maximumY;
+        int spawnEdge;
+        int scaleX;
+        int scaleY;
     };
+
+    int generateSpawnPoint(int edge, Worm& worm);
+    void setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite);
 
 	class WormSystem
         : public System

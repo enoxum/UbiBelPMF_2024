@@ -188,9 +188,10 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     sprite.size = { wormSize, wormSize * ratio };
 
     auto& worm = reg.emplace<Worm>(entity);
-    worm.speed = { 0, -35, 0 };
+    worm.speed = { 0, -100, 0 };
 
     auto& transform = reg.emplace<Transform>(entity);
+    worm.spawnEdge = 0;
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -198,7 +199,20 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     int x_pos = dis(gen);
     transform.position.x = x_pos;
     transform.position.y = screenHeight / 2 + 50;
-    worm.startingPos = transform.position;
+    worm.startingYTop = screenHeight / 2 + 50;
+    worm.startingXRight = screenWidth / 2 + 30;
+    worm.startingYBottom = -(screenHeight / 2 + 50);
+    worm.startingXLeft = -(screenWidth / 2 + 30);
+    worm.minimumX = -(screenWidth / 2 - 50); // 30
+    worm.maximumX = screenWidth / 2 - 50;
+    worm.minimumY = -(screenHeight / 2 + 10);
+    worm.maximumY = screenHeight / 2 + 10;
+    //worm.minimumX = -50;
+    //worm.maximumX = 50;
+    //worm.minimumY = -50;
+    //worm.maximumY = 50;
+    worm.scaleX = sprite.scale.x;
+    worm.scaleY = sprite.scale.y;
 }
 
 //// CreatingEnemy
