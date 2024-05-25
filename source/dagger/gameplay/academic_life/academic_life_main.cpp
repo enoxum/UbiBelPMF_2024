@@ -107,8 +107,11 @@ void academic_life::SetupMainMenu()
     //logo
     {
         auto logoEntity = reg.create();
-        auto& logoText = reg.emplace<Text>(logoEntity);
-        logoText.Set("pixel-font","Academic Life", glm::vec3(tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
+        auto& sprite = reg.emplace<Sprite>(logoEntity);
+        AssignSprite(sprite, "AcademicLife:logo");
+        sprite.size = { 600.0f, 300.0f };
+        sprite.position = { tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f };
+        //logoText.Set("pixel-font","Academic Life", glm::vec3(tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
     }
 
 
