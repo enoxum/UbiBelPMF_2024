@@ -17,6 +17,7 @@ namespace esccape
 
     struct Worm {
         Vector3 speed{0, 0, 0};
+        Vector3 startingPos;
     };
 
 	class WormSystem

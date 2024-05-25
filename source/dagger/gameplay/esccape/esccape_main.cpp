@@ -191,8 +191,14 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     worm.speed = { 0, -35, 0 };
 
     auto& transform = reg.emplace<Transform>(entity);
-    transform.position.x = 0;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(-(screenWidth / 2 - 30), screenWidth / 2 - 30);
+    int x_pos = dis(gen);
+    transform.position.x = x_pos;
     transform.position.y = screenHeight / 2 + 50;
+    worm.startingPos = transform.position;
 }
 
 //// CreatingEnemy
