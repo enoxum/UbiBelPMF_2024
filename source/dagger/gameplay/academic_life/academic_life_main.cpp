@@ -67,20 +67,12 @@ void AcademicLife::WorldSetup()
 
 void academic_life::SetupMainMenu()
 {
+    Engine::GetDefaultResource<Audio>()->PlayLoop("music");
+
     auto& engine = Engine::Instance();
     auto& reg = engine.Registry();
 
     constexpr Vector2 scale(1, 1);
-
-    /*{
-        auto entity = reg.create();
-        auto& fieldSettings = reg.emplace<AcademicLifeFieldSettings>(entity);
-        fieldSettings.fieldWidth = width;
-        fieldSettings.fieldHeight = height;
-        fieldSettings.fieldTileSize = tileSize;
-
-        Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
-    }*/
 
     {
         auto entity = reg.create();
@@ -94,26 +86,82 @@ void academic_life::SetupMainMenu()
 
         auto& menu = reg.emplace<MainMenu>(entity);
 
-        reg.emplace<MenuControllerMapping>(entity);
+        reg.emplace<MenuControllerMapping>(entity); //TO DO: srediti ovo 
+        
+       /* auto muteBtn = MuteButton::Create({ 350.0f,350.0f }, "AcademicLife:student");
+        menu.muteBtn = &muteBtn;*/
 
-        auto logoEntity = reg.create();
-        auto& logoText = reg.emplace<Text>(logoEntity);
-        logoText.Set("pixel-font", menu.logoTxt, glm::vec3(tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
-        //auto& transformLogo = reg.emplace<Transform>(logoEntity);
-
+    }
+    //start
+    {
+        
         auto startEntity = reg.create();
         auto& startText = reg.emplace<Text>(startEntity);
         startText.scale = Vector2{ 1.0f, 0.5f };
-        startText.Set("pixel-font", menu.playGameTxt, glm::vec3(tileSize / 2.0f, -300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
-
-        //auto& transformStart = reg.emplace<Transform>(startEntity);
-        
-        Engine::GetDefaultResource<Audio>()->PlayLoop("music");
-            
+        startText.Set("pixel-font", "press space to start", glm::vec3(tileSize / 2.0f, -300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
 
     }
+    //logo
+    {
+        auto logoEntity = reg.create();
+        auto& logoText = reg.emplace<Text>(logoEntity);
+        logoText.Set("pixel-font","Academic Life", glm::vec3(tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos + 0.1f);
+    }
+
+
 }
 
+void academic_life::CreateBackdrop()
+{
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
+    Float32 xBorder = 850.0f;
+    Float32 yBorder = 600.0f;
+
+    //background 
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:0_sky");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+    }
+    //clouds
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:2_clouds");
+        sprite.size = { xBorder, yBorder };
+        sprite.scale = { 2, 1 };
+        sprite.position = { 0,0,0.5f };
+        sprite.color.a = 0.5f;
+    }
+    //city
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:3_city");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+    
+    }
+    //grass
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:4_ground");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+
+        
+    }
+    
+
+}
 
 void academic_life::SetupWorld()
 {
@@ -134,6 +182,8 @@ void academic_life::SetupWorld()
 
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
     }
+
+    CreateBackdrop();
 
     // ESPB
     {

@@ -66,7 +66,7 @@ void generate_lifestyle_entity(const int randomX, const int randomY)
     sprite.size = { 2 * tileSize, 2 * tileSize * ratio };
 
     auto& transform = reg.emplace<Transform>(entity);
-    transform.position = { randomX, randomY, zPos };
+    transform.position = { randomX, randomY, zPos + 0.1f };
 
     auto& falling_entity = reg.emplace<FallingEntity>(entity);
     falling_entity.speed = tileSize * (rand() % 5 + 3);
@@ -167,7 +167,7 @@ void FallingEntitySystem::Run()
 void academic_life::setLifestyleEntity_byProbability(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite)
 {
     if (lifestyle_prob == 0) {
-        AssignSprite(sprite, "AcademicLife:cigarette");
+        AssignSprite(sprite, "AcademicLife:cigarette2");
 
         reg.emplace<LifestyleChange>(entity, LifestyleChange::Cigarette);
 
@@ -178,19 +178,19 @@ void academic_life::setLifestyleEntity_byProbability(int lifestyle_prob, Registr
         common_res::ParticleSystem::SetupParticleSystem(entity, settings);
     }
     else if (lifestyle_prob == 1) {
-        AssignSprite(sprite, "AcademicLife:beer");
+        AssignSprite(sprite, "AcademicLife:Beer2");
         reg.emplace<LifestyleChange>(entity, LifestyleChange::Beer);
     }
     else if (lifestyle_prob == 2) {
-        AssignSprite(sprite, "AcademicLife:whey-protein");
+        AssignSprite(sprite, "AcademicLife:whey");
         reg.emplace<LifestyleChange>(entity, LifestyleChange::WheyProtein);
     }
     else if (lifestyle_prob == 3) {
-        AssignSprite(sprite, "AcademicLife:fishMeal");
+        AssignSprite(sprite, "AcademicLife:Steak");
         reg.emplace<LifestyleChange>(entity, LifestyleChange::fishMeal);
     }
     else {
-        AssignSprite(sprite, "AcademicLife:apple");
+        AssignSprite(sprite, "AcademicLife:Apple2");
         reg.emplace<LifestyleChange>(entity, LifestyleChange::Apple);
     }
 }

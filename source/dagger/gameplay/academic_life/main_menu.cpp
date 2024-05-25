@@ -66,7 +66,7 @@ void MainMenuInputSystem::Run()
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<MenuControllerMapping>(entity);
         auto& mainMenu = view.get<MainMenu>(entity);
-
+   
         //ubaciti pozicije za logo i playgame tekst 
         mainMenu.play = ctrl.input.x;
         mainMenu.mute = ctrl.input.y;
@@ -76,6 +76,12 @@ void MainMenuInputSystem::Run()
             Engine::Registry().clear();
             academic_life::SetupWorld();
         }
+        if (mainMenu.mute == -1)
+        {
+            
+        }
+
+     
      
     }
 
