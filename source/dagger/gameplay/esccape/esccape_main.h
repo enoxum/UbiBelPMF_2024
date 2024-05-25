@@ -14,6 +14,7 @@ namespace esccape
     void onHealthChanged(int newHealth);
     void CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health);
     void CreateMachineRandom(int screenWidth, int screenHeight, int zPos, int machineScale);
+    void CreateWorm(int zPos, int screenWidth, int screenHeight);
     void CreateObstacles(int zPos);
     void SetupWorld();
 

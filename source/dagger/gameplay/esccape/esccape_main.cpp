@@ -20,6 +20,7 @@
 #include <random>
 #include <cstdlib>
 #include "blackboard_manager.h"
+#include "Worm.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -53,6 +54,7 @@ void EsccapeGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
+    engine.AddSystem<WormSystem>();
     engine.AddSystem<EsccapeControllerSystem>();
     engine.AddSystem<CharacterSystem>();
 }
@@ -176,6 +178,23 @@ void esccape::CreateObstacles(int zPos)
     }
 }
 
+void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "Esccape:crv");
+    int wormSize = 50;
+    float ratio = sprite.size.y / sprite.size.x;
+    sprite.size = { wormSize, wormSize * ratio };
+
+    auto& worm = reg.emplace<Worm>(entity);
+    worm.speed = { 0, -35, 0 };
+
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position.x = 0;
+    transform.position.y = screenHeight / 2 + 50;
+}
+
 //// CreatingEnemy
 struct EnemyCharachter
 {
@@ -244,6 +263,7 @@ void esccape::SetupWorld()
     
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
+    CreateWorm(zPos, screenWidth, screenHeight);
     //CreateObstacles(zPos);
     
 
