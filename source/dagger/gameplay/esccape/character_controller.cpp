@@ -26,6 +26,7 @@ void FaceSpriteLeft(Sprite& sprite) {
 	sprite.scale.x = -std::abs(sprite.scale.x); // Ensure the sprite faces left
 }
 
+
 void CharacterControllerFSM::Idle_Front::Enter(CharacterControllerFSM::StateComponent& state_)
 {
 	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
@@ -39,7 +40,11 @@ void CharacterControllerFSM::Idle_Front::Enter(CharacterControllerFSM::StateComp
 void CharacterControllerFSM::Idle_Front::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	if (character.health <= 0)
+	{
+		GoTo(ECharacterStates::Death, state_);
+	}
 	if (EPSILON_NOT_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Attack_Down, state_);
@@ -82,7 +87,11 @@ void CharacterControllerFSM::Idle_Left::Enter(CharacterControllerFSM::StateCompo
 void CharacterControllerFSM::Idle_Left::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	if (character.health <= 0)
+	{
+		GoTo(ECharacterStates::Death, state_);
+	}
 	if (EPSILON_NOT_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Attack_Left, state_);
@@ -121,7 +130,11 @@ void CharacterControllerFSM::Idle_Back::Enter(CharacterControllerFSM::StateCompo
 void CharacterControllerFSM::Idle_Back::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	if (character.health <= 0)
+	{
+		GoTo(ECharacterStates::Death, state_);
+	}
 	if (EPSILON_NOT_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Attack_Up, state_);
@@ -167,7 +180,11 @@ void CharacterControllerFSM::Idle_Right::Enter(CharacterControllerFSM::StateComp
 void CharacterControllerFSM::Idle_Right::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	if (character.health <= 0)
+	{
+		GoTo(ECharacterStates::Death, state_);
+	}
 	if (EPSILON_NOT_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Attack_Right, state_);
@@ -209,6 +226,7 @@ void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComp
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	if (EPSILON_ZERO(input.Get("down")))
 	{
@@ -217,7 +235,7 @@ void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComp
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= 50 * Engine::DeltaTime();
+		sprite.position.y -= character.speed * Engine::DeltaTime();
 		transform.position.y = sprite.position.y;
 	}
 }
@@ -245,6 +263,7 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	if (EPSILON_ZERO(input.Get("left")))
 	{
@@ -253,8 +272,11 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.x -= 50 * Engine::DeltaTime();
-		transform.position.x = sprite.position.x;
+		sprite.position.x -= character.speed * Engine::DeltaTime();
+		transform.position.x = sprite.position.x; 
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
+
 	}
 }
 
@@ -281,6 +303,7 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 
 	if (EPSILON_ZERO(input.Get("right")))
 	{
@@ -289,8 +312,10 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.x += 50 * Engine::DeltaTime();
+		sprite.position.x += character.speed * Engine::DeltaTime();
 		transform.position.x = sprite.position.x;
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
 		
 	}
 }
@@ -313,7 +338,8 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
-
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	auto& characterEntity = Engine::Registry().get<Character>(state_.entity);
 
 	if (EPSILON_ZERO(input.Get("up")))
 	{
@@ -322,8 +348,10 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y += 50 * Engine::DeltaTime();
+		sprite.position.y += character.speed * Engine::DeltaTime();
 		transform.position.y = sprite.position.y;
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
 	}
 }
 
@@ -331,6 +359,7 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 void CharacterControllerFSM::Running_Up::Exit(CharacterControllerFSM::StateComponent& state_)
 {
 }
+
 
 void CharacterControllerFSM::Attack_Down::Enter(CharacterControllerFSM::StateComponent& state_)
 {
@@ -345,6 +374,9 @@ void CharacterControllerFSM::Attack_Down::Enter(CharacterControllerFSM::StateCom
 void CharacterControllerFSM::Attack_Down::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	auto& characterEntity = Engine::Registry().get<Character>(state_.entity);
+
 	if (EPSILON_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Idle_Front, state_);
@@ -352,7 +384,9 @@ void CharacterControllerFSM::Attack_Down::Run(CharacterControllerFSM::StateCompo
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= Engine::DeltaTime();
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
+
 	}
 
 }
@@ -379,6 +413,7 @@ void CharacterControllerFSM::Attack_Left::Enter(CharacterControllerFSM::StateCom
 void CharacterControllerFSM::Attack_Left::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 	if (EPSILON_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Idle_Left, state_);
@@ -386,7 +421,8 @@ void CharacterControllerFSM::Attack_Left::Run(CharacterControllerFSM::StateCompo
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= Engine::DeltaTime();
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
 	}
 }
 
@@ -412,6 +448,7 @@ void CharacterControllerFSM::Attack_Right::Enter(CharacterControllerFSM::StateCo
 void CharacterControllerFSM::Attack_Right::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 	if (EPSILON_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Idle_Right, state_);
@@ -419,7 +456,8 @@ void CharacterControllerFSM::Attack_Right::Run(CharacterControllerFSM::StateComp
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= Engine::DeltaTime();
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
 	}
 
 }
@@ -441,6 +479,7 @@ void CharacterControllerFSM::Attack_Up::Enter(CharacterControllerFSM::StateCompo
 void CharacterControllerFSM::Attack_Up::Run(CharacterControllerFSM::StateComponent& state_)
 {
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
+	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 	if (EPSILON_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Idle_Back, state_);
@@ -448,7 +487,8 @@ void CharacterControllerFSM::Attack_Up::Run(CharacterControllerFSM::StateCompone
 	else
 	{
 		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		sprite.position.y -= Engine::DeltaTime();
+		if (character.health <= 0)
+			GoTo(ECharacterStates::Death, state_);
 	}
 }
 
@@ -475,10 +515,12 @@ void CharacterControllerFSM::Death::Run(CharacterControllerFSM::StateComponent& 
 		AnimatorPlay(animator, "player:player_death");
 	else
 		AnimatorPlay(animator, "skeleton:skeleton_death");
+	//AnimatorStop(animator);
 }
 
 void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent& state_)
 {
+
 }
 
 std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager)
@@ -498,6 +540,19 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 			bbManager.SetCollided(state_.entity, true);
 			bbManager.SetCollided(otherEntity, true);
 			bbManager.RecordCollision(state_.entity, otherEntity);
+
+			auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
+			if (EPSILON_NOT_ZERO(input.Get("attack"))) {
+
+				printf("ATTACK!!!!\n");
+				bool isCharacter = Engine::Registry().has<Character>(otherEntity);
+				if (isCharacter) {
+					auto& otherCharacter = Engine::Registry().get<Character>(otherEntity);
+					otherCharacter.character->health -= 0.5f;
+					printf("Character %d health = %f\n", otherCharacter.character->id, otherCharacter.character->health);
+					
+				}
+			}
 			return std::make_pair(state_.entity, otherEntity);
 		}
 	}
@@ -532,6 +587,7 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 
 				collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
 				otherCollisionSides = otherCollision.GetCollisionSides(otherTransform.position, collision, transform.position);
+				
 			}
 
 			if (std::abs(collisionSides.y) > 0 || std::abs(otherCollisionSides.y) > 0) {

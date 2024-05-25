@@ -15,6 +15,7 @@ namespace esccape
 	{
 		int id = 0;
 		int speed{ 1 };
+		float health = 10;
 		//HealthSystem& healthSystem;
 	};
 

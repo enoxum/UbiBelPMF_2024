@@ -7,6 +7,7 @@
 #include "core/graphics/animation.h"
 
 #include "blackboard_manager.h"
+#include <ctime>
 
 
 enum struct ECharacterStates

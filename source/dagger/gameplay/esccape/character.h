@@ -38,13 +38,13 @@ namespace esccape
 
 
         std::pair<Entity, Entity> CheckCollisions();
+        esccape::EsccapeCharacter* character;
 
     private:
         Entity entity;
         Sprite* sprite;
         Animator* animator;
         InputReceiver* input;
-        esccape::EsccapeCharacter* character;
         SimpleCollision* collision;
         Transform* transform;
     };

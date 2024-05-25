@@ -37,7 +37,6 @@ Character Character::Create(
     auto& reg = Engine::Registry();
     auto entity = reg.create();
 
-    ATTACH_TO_FSM(CharacterControllerFSM, entity);
 
     auto chr = Character::Get(entity);
 
@@ -53,6 +52,8 @@ Character Character::Create(
     chr.transform->position = { position_, 0.0f };
     chr.collision->size.x = chr.sprite->size.x;
     chr.collision->size.y = chr.sprite->size.y;
+    chr.character->speed = 100;
+    ATTACH_TO_FSM(CharacterControllerFSM, entity);
 
     AssignSprite(*chr.sprite, spritesheet_);
     AnimatorPlay(*chr.animator, animation_);
@@ -62,7 +63,6 @@ Character Character::Create(
         chr.input->contexts.push_back(input_);
     }
 
-    chr.character->speed = 80;
 
     return chr;
 }
