@@ -70,6 +70,24 @@ void SnakePlayerInputSystem::Run()
         auto& ctrl = view.get<SnakeControllerMapping>(entity);
 
         Vector3 direction{ ctrl.input.x, ctrl.input.y, 0 };
-        t.position += direction * SnakePlayerInputSystem::s_SnakeSpeed * 5.0f * Engine::DeltaTime(); 
+        
+
+        if (t.position.x >= (26 / 2 + 0.5f) * 20.f  + 5 ||
+            t.position.x <= -(26 / 2 + 0.5f) * 20.f -5 ||
+            t.position.y >= (20 / 2 + 0.5f) * 20.f + 5 ||
+            t.position.y <= -(20 / 2 + 0.5f) * 20.f - 5
+            ) {
+            HWND hwnd = CreateWindow("myWindowClass", "Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                100, 100, 500, 400, NULL, NULL, NULL, NULL);
+            int result = MessageBox(hwnd, "Game Over!", "RedSnake", MB_OK);
+
+            if (result == IDOK)
+            {
+                PostQuitMessage(0);
+            }
+        }
+
+        
+        t.position += direction * SnakePlayerInputSystem::s_SnakeSpeed * 30.0f * Engine::DeltaTime(); 
     }
 }

@@ -79,7 +79,7 @@ void RedSnakeSystem::Run()
         }
         else
         {
-            t.position += segment.speed * Engine::DeltaTime();
+            t.position += segment.speed * Engine::DeltaTime() ;
         }
     }
 

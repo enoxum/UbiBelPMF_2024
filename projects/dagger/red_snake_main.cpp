@@ -74,6 +74,7 @@ void red_snake::CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_)
     //sprite.color = color_;
 
     auto& transform = reg.emplace<Transform>(entity);
+    
     transform.position.x = (pos_.x + 0.5f) * tileSize_;
     transform.position.y = (pos_.y + 0.5f) * tileSize_;
     transform.position.z = pos_.z;
@@ -107,11 +108,13 @@ void red_snake::CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_)
     float gameHeight= camera->size.y;
     
     // mora ovo pametnije al neka stoji ovako za sad
-    float randomX = RandomFloat(-(gameWidth / tileSize_ - 1), gameWidth / tileSize_ - 1) / 2.7;
-    float randomY = RandomFloat(-(gameHeight / tileSize_ - 1), gameHeight / tileSize_ - 1) / 2.7;
 
-    transform.position.x = (randomX + 0.5f) * tileSize_;
-    transform.position.y = (randomY + 0.5f) * tileSize_;
+
+    float randomX = RandomFloat(-(26 / 2 + 0.5f) * 20.f, (26 / 2 + 0.5f) * 20.f );
+    float randomY = RandomFloat(-(20 / 2 + 0.5f) * 20.f, (20 / 2 + 0.5f) * 20.f );
+
+    transform.position.x = randomX;
+    transform.position.y = randomY;
     transform.position.z = pos_.z;
 
     auto& col = reg.emplace<SimpleCollision>(entity);
