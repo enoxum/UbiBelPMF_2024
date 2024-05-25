@@ -44,3 +44,16 @@ Vector2 BlackboardManager::GetCollisionPosition(Entity entity) {
 void BlackboardManager::SetCollisionPosition(Entity entity, const Vector2& position) {
     collisionPositionMap[entity] = position;
 }
+
+CollidedEntitiesSet BlackboardManager::GetCollidedEntities(Entity entity)
+{
+    auto it = collidedEntities.find(entity);
+    return it != collidedEntities.end() ? it->second : CollidedEntitiesSet();
+}
+
+void BlackboardManager::RecordCollision(Entity entityA, Entity entityB)
+{
+    collidedEntities[entityA].insert(entityB);
+    collidedEntities[entityB].insert(entityA);
+}
+

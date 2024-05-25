@@ -257,7 +257,7 @@ void esccape::SetupWorld()
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = 0;
-            transform.position.y = screenHeight / 2;
+            transform.position.y = screenHeight / 2 - 50;
             transform.position.z = zPos;
         }
 
@@ -270,7 +270,7 @@ void esccape::SetupWorld()
 
             auto& transform = reg.emplace<Transform>(entity);
             transform.position.x = 0;
-            transform.position.y = -screenHeight / 2;
+            transform.position.y = -screenHeight / 2 + 50;
             transform.position.z = zPos;
         }
 
@@ -282,7 +282,7 @@ void esccape::SetupWorld()
             col.size.y = screenHeight;
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = -screenWidth / 2;
+            transform.position.x = -screenWidth / 2 + 30;
             transform.position.y = 0;
             transform.position.z = zPos;
         }
@@ -294,50 +294,38 @@ void esccape::SetupWorld()
             col.size.y = screenHeight;
 
             auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = screenWidth / 2;
+            transform.position.x = screenWidth / 2 - 30;
             transform.position.y = 0;
             transform.position.z = zPos;
         }
     }
 
 
+    // main character
     {
         {
             auto mainChar = Character::Create("ASDWSpace",
                 "spritesheets:player_anim:player_idle_front:1",
                 "player:player_idle_front",
-                { 1, 1, 1 }, { 350, 100 }, 0);
+                { 1, 1, 1 }, { 0, 100 }, 0);
 
             auto entity = mainChar.getEntity();
             auto& character = reg.emplace<Character>(entity, mainChar);
+        }
+    }
 
-            printf("MAIN CHR IS Entity %d\n", (int)mainChar.getEntity());
-            printf("CHR IS Entity %d\n", (int)entity);
+    // skeleton character
+    {
+        {
+            auto skeletonChar = Character::Create("skeleton-arrows",
+                "spritesheets:skeleton:skeleton_idle_front:1",
+                "skeleton:skeleton_idle_front",
+                { 1, 1, 1 }, { -100, 0 }, 1);
 
-
+            auto entity = skeletonChar.getEntity();
+            auto& character = reg.emplace<Character>(entity, skeletonChar);
         }
     }
     
-
-
-
-    // player
-    {
-        {
-
-           /*auto mainChar = Character::Create("ASDWSpace",
-               "spritesheets:player_anim:player_idle_front:1",
-               "player:player_idle_front",
-               { 1, 1, 1 }, { 100, 100 }, 0);*/
-
-           /*auto skeletonChar = new Character(Character::Create("skeleton-arrows",
-               "spritesheets:skeleton:skeleton_idle_front:1",
-               "skeleton:skeleton_idle_front",
-               { 1, 1, 1 }, { -100, 0 }, 1));*/
-
-            auto enemyChar = EnemyCharachter::Create({ 1, 1, 1 }, { -100, 0 });
-        }
-        
-    }
 }
 

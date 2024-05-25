@@ -15,15 +15,16 @@ void CharacterSystem::Run()
     for (auto entity : characterView)
     {
         auto& character = characterView.get<Character>(entity);
-        character.CheckCollisions();
-        //printf("*** %d *** %d ***\n", bbManager.HasCollided(entity), (int)entity);
-        // Check if a collision has occurred using the BlackboardManager
-        if (bbManager.HasCollided(entity))
+        auto collidedPair = character.CheckCollisions();  
+
+        Entity entityA = collidedPair.first;
+        Entity entityB = collidedPair.second;
+
+        if (entityA != entt::null && entityB != entt::null)
         {
-            // Resolve collision and perform additional actions if needed
-            // Example: auto& fsmState = reg.get<CharacterControllerFSM::StateComponent>(entity);
-            // ResolveCollision(character, collidedWith, bbManager, fsmState);
-            printf("Collision detected for entity %d\n", (int)entity);
+            //printf("Collision detected between entity %d and entity %d\n", static_cast<int>(entityA), static_cast<int>(entityB));
+            ResolveCollision(entityA, entityB, bbManager);
         }
+
     }
 }           

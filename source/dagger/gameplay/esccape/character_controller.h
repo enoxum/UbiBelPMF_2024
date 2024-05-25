@@ -63,5 +63,5 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 	static BlackboardManager& blackboardManager;
 };
 
-void CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager);
-void ResolveCollision(CharacterControllerFSM::StateComponent& state_, Entity collidedWith, BlackboardManager& bbManager);
+std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager);
+void ResolveCollision(Entity e1, Entity collidedWith, BlackboardManager bbManager);

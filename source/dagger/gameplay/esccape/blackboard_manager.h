@@ -9,6 +9,7 @@
 using namespace dagger;
 
 using Entity = entt::entity;
+using CollidedEntitiesSet = std::unordered_set<Entity>;
 
 class BlackboardManager {
 public:
@@ -20,10 +21,14 @@ public:
     Vector2 GetCollisionPosition(Entity entity);
     void SetCollisionPosition(Entity entity, const Vector2& position);
 
+    CollidedEntitiesSet GetCollidedEntities(Entity entity);
+    void RecordCollision(Entity entityA, Entity entityB);
+
 private:
     static BlackboardManager instance;
 
     std::unordered_map<Entity, bool> collisionMap;
     std::unordered_map<Entity, Vector2> collisionPositionMap;
+    std::unordered_map<Entity, CollidedEntitiesSet> collidedEntities;
 };
 

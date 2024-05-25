@@ -212,16 +212,6 @@ void CharacterControllerFSM::Running_Down::Run(CharacterControllerFSM::StateComp
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
-	//CheckCollisionsFSM(state_, CharacterControllerFSM::blackboardManager);
-	/*bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
-
-	if (hasCollided)
-	{
-		Entity collidedWith = CharacterControllerFSM::blackboardManager.CollidedWith();
-		printf("DAAAAAAAA");
-		ResolveCollision(state_, collidedWith, CharacterControllerFSM::blackboardManager);
-	}*/
-
 	if (EPSILON_ZERO(input.Get("down")))
 	{
 		GoTo(ECharacterStates::Idle_Front, state_);
@@ -257,14 +247,6 @@ void CharacterControllerFSM::Running_Left::Run(CharacterControllerFSM::StateComp
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
-
-	/*bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
-
-	if (hasCollided)
-	{
-		Entity collidedWith = CharacterControllerFSM::blackboardManager.CollidedWith();
-		ResolveCollision(state_, collidedWith, CharacterControllerFSM::blackboardManager);
-	}*/
 
 	if (EPSILON_ZERO(input.Get("left")))
 	{
@@ -302,14 +284,6 @@ void CharacterControllerFSM::Running_Right::Run(CharacterControllerFSM::StateCom
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
-	/*bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
-
-	if (hasCollided)
-	{
-		Entity collidedWith = CharacterControllerFSM::blackboardManager.CollidedWith();
-		ResolveCollision(state_, collidedWith, CharacterControllerFSM::blackboardManager);
-	}*/
-
 	if (EPSILON_ZERO(input.Get("right")))
 	{
 		GoTo(ECharacterStates::Idle_Right, state_);
@@ -342,13 +316,6 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 
-	/*bool hasCollided = CharacterControllerFSM::blackboardManager.HasCollided();
-
-	if (hasCollided)
-	{
-		Entity collidedWith = CharacterControllerFSM::blackboardManager.CollidedWith();
-		ResolveCollision(state_, collidedWith, CharacterControllerFSM::blackboardManager);
-	}*/
 
 	if (EPSILON_ZERO(input.Get("up")))
 	{
@@ -516,7 +483,7 @@ void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent&
 {
 }
 
-void CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager)
+std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, BlackboardManager& bbManager)
 {
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 	auto& collision = Engine::Registry().get<SimpleCollision>(state_.entity);
@@ -531,27 +498,26 @@ void CheckCollisionsFSM(CharacterControllerFSM::StateComponent& state_, Blackboa
 
 		if (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 			bbManager.SetCollided(state_.entity, true);
-			//printf("Collision detected: Entity %d with Entity %d\n", (int)state_.entity, (int)otherEntity);
-			//printf("%d", bbManager.HasCollided(state_.entity));
 			bbManager.SetCollided(otherEntity, true);
-			return;
+			bbManager.RecordCollision(state_.entity, otherEntity);
+			return std::make_pair(state_.entity, otherEntity);
 		}
 	}
 
-	//bbManager.SetCollided(state_.entity, false);
+	bbManager.SetCollided(state_.entity, false);
+	return std::make_pair(entt::null, entt::null);
 }
 
 
-void ResolveCollision(CharacterControllerFSM::StateComponent& state_, Entity collidedWith, BlackboardManager& bbManager)
+void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbManager)
 {
-	printf("tuuuuuuuuu");
 	if (!Engine::Registry().valid(collidedWith)) return;
 
-	auto& transform = Engine::Registry().get<Transform>(state_.entity);
-	auto& collision = Engine::Registry().get<SimpleCollision>(state_.entity);
+	auto& transform = Engine::Registry().get<Transform>(entity1);
+	auto& collision = Engine::Registry().get<SimpleCollision>(entity1);
 	auto& otherTransform = Engine::Registry().get<Transform>(collidedWith);
 	auto& otherCollision = Engine::Registry().get<SimpleCollision>(collidedWith);
-	/*
+	
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
 
 	while (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
@@ -561,8 +527,7 @@ void ResolveCollision(CharacterControllerFSM::StateComponent& state_, Entity col
 		if (std::abs(collisionSides.y) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 			transform.position.y -= transform.position.y < 0 ? -1 : 1;
 		}
-	}*/
+	}
 
-	/*bbManager.SetCollided(state_.entity, false);
-	bbManager.SetCollisionPosition(state_.entity, Vector2(0.0f, 0.0f));*/
+	bbManager.SetCollided(entity1, false);
 }
