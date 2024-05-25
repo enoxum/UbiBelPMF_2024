@@ -14,6 +14,7 @@ namespace dead_end
 		Float32 speed {300.f};
 		int weaponType{ 1 }; // 1 - pistol, 2 - gun
 		bool isPlayer{ true };
+		bool stopMoving = false;
 	};
 
 	class PlayerSystem
