@@ -20,6 +20,7 @@
 #include "gameplay/academic_life/falling_entity.h"
 #include "gameplay/academic_life/score_entity.h"
 #include "gameplay/academic_life/health.h"
+#include "gameplay/academic_life/game_state.h"
 #include "gameplay/academic_life/espb.h"
 
 #include "gameplay/academic_life/main_menu.h"
@@ -43,7 +44,7 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<common_res::ParticleSystem>();
     engine.AddSystem<ScoreEntitySystem>();
     engine.AddSystem<MainMenuInputSystem>();
-
+    engine.AddSystem<GameStateInputSystem>();
 }
 
 constexpr int HEALTH_MARKER = 1;
