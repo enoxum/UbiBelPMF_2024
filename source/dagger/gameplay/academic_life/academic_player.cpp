@@ -2,6 +2,8 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "core/graphics/animation.h"
+#include "core/graphics/animations.h"
 
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "health.h"
@@ -22,24 +24,43 @@ void AcademicPlayerInputSystem::WindDown()
 }
 
 void AcademicPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
-{
+{ 
+  
+    
     Engine::Registry().view<ControllerMapping>().each([&](ControllerMapping& ctrl_)
         {
             if (kEvent_.key == ctrl_.leftKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
             {
                 ctrl_.input.x = -1;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:RUN_LEFT");
+                    });
             }
             else if (kEvent_.key == ctrl_.leftKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
             {
                 ctrl_.input.x = 0;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:IDLE");
+                        
+                    });
             }
             else if (kEvent_.key == ctrl_.rightKey && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
             {
                 ctrl_.input.x = 1;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:RUN_RIGHT");
+                    });
             }
             else if (kEvent_.key == ctrl_.rightKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
             {
                 ctrl_.input.x = 0;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:IDLE");
+                    });
             }
         });
 }

@@ -5,6 +5,7 @@
 #include "core/input/inputs.h"
 #include "core/graphics/sprite.h"
 #include "core/graphics/animation.h"
+#include "core/graphics/animations.h"
 #include "core/graphics/shaders.h"
 #include "core/graphics/window.h"
 #include "core/graphics/gui.h"
@@ -88,8 +89,9 @@ void academic_life::SetupMainMenu()
 
         reg.emplace<MenuControllerMapping>(entity); //TO DO: srediti ovo 
         
-       /* auto muteBtn = MuteButton::Create({ 350.0f,350.0f }, "AcademicLife:student");
-        menu.muteBtn = &muteBtn;*/
+       /*auto muteBtn = MuteButton::Create({ 350.0f,350.0f }, "AcademicLife:student");
+       muteBtn.sprite.UseAsUI();
+       menu.muteBtn = &muteBtn;*/
 
     }
     //start
@@ -259,10 +261,14 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "AcademicLife:student");
-        float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 3 * tileSize, 3 * tileSize * ratio };
+        auto& animator = reg.emplace<Animator>(entity);
+        //AssignSprite(sprite, "AcademicLife:student");
+        AssignSprite(sprite, "AcademicLife:IDLE:idle1"); 
+        AnimatorPlay(animator, "AcademicLife:IDLE");
 
+        /*float ratio = sprite.size.y / sprite.size.x;
+        sprite.size = { 3 * tileSize, 3 * tileSize * ratio };*/
+       
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -tileSize * 4, -tileSize * 4, zPos };
 

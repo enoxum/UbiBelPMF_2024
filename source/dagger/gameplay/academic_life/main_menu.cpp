@@ -33,7 +33,10 @@ void MainMenuInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
             else if (kEvent_.key == ctrl_.muteKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
             {
                 if (ctrl_.input.y == 1)
+                {
                     Engine::GetDefaultResource<Audio>()->Stop();
+                
+                }
                 else
                     Engine::GetDefaultResource<Audio>()->PlayLoop("music");
                 ctrl_.input.y *= -1;
@@ -51,14 +54,7 @@ void MainMenuInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 
 void MainMenuInputSystem::Run()
 {
-  /*  AcademicLifeFieldSettings fieldSettings;
-    if (auto* ptr = Engine::GetDefaultResource<AcademicLifeFieldSettings>())
-    {
-        fieldSettings = *ptr;
-    }
 
-    Float32 bottomBorderY = -fieldSettings.GetYBoarder();
-    Float32 borderX = fieldSettings.GetXBoarder();*/
 
     auto view = Engine::Registry().view<Transform, MenuControllerMapping, MainMenu>();
     for (auto entity : view)
@@ -67,7 +63,6 @@ void MainMenuInputSystem::Run()
         auto& ctrl = view.get<MenuControllerMapping>(entity);
         auto& mainMenu = view.get<MainMenu>(entity);
    
-        //ubaciti pozicije za logo i playgame tekst 
         mainMenu.play = ctrl.input.x;
         mainMenu.mute = ctrl.input.y;
         mainMenu.quit = ctrl.input.z;
@@ -78,7 +73,18 @@ void MainMenuInputSystem::Run()
         }
         if (mainMenu.mute == -1)
         {
-            
+          /*  Engine::Registry().view<Sprite>().each([&](Sprite& sprite_)
+                {
+                    if (sprite_.position.x == 350.0f && sprite_.position.y == 350.0f && sprite_.position.z == 0.6f)
+                    {
+                        
+                        printf("found sprite!!!");
+                        mainMenu.mute = 1;
+                    }
+                    
+
+                });*/
+           
         }
 
      
