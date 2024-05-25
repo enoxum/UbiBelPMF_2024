@@ -1,6 +1,7 @@
 //
 // Created by igor on 4/18/24.
 //
+#define _USE_MATH_DEFINES
 #include "gameplay/common/simple_collisions.h"
 #include "bullethell_bullet.h"
 #include "bullethell_eye.h"
