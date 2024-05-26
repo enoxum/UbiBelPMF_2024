@@ -9,7 +9,7 @@
 namespace esccape
 {
     struct HealthChanged {
-        int newHealth;
+        float newHealth;
     };
 
     class HealthSystem {
@@ -17,20 +17,20 @@ namespace esccape
         HealthSystem(); // Constructor
         ~HealthSystem(); // Destructor
 
-        void SetMaxHealth(int maxHealth);
-        int GetMaxHealth() const;
+        void SetMaxHealth(float maxHealth);
+        float GetMaxHealth() const;
 
-        void SetCurrentHealth(int currentHealth);
-        int GetCurrentHealth() const;
+        void SetCurrentHealth(float currentHealth);
+        float GetCurrentHealth() const;
 
-        void Heal(int amount);
-        void TakeDamage(int amount);
+        void Heal(float amount);
+        void TakeDamage(float amount);
 
         bool IsAlive() const;
 
     private:
-        int m_MaxHealth;
-        int m_CurrentHealth;
+        float m_MaxHealth;
+        float m_CurrentHealth;
     };
 }
 

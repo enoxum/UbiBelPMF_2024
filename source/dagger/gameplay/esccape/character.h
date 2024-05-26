@@ -19,6 +19,10 @@ namespace esccape
     {
     public:
         Character(Entity entity, Sprite* sprite, Animator* animator, InputReceiver* input, esccape::EsccapeCharacter* character, Transform* transform, SimpleCollision* collision);
+        Character(Entity entity, const std::string& input_, const std::string& spritesheet_, const std::string& animation_, const ColorRGB& color_, const Vector2& position_, int id);
+        
+
+        
         static Character Get(Entity entity);
 
         static Character Create(

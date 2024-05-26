@@ -385,7 +385,34 @@ void esccape::SetupWorld()
                 { 1, 1, 1 }, { 0, 100 }, 0);
 
             auto entity = mainChar.getEntity();
-            auto& character = reg.emplace<Character>(entity, mainChar);
+            //auto& character = reg.emplace<Character>(entity, mainChar);
+            auto& character = reg.emplace<Character>(entity, std::move(mainChar));
+
+
+            // ovih 6 linija ispod su mi bile samo da proverim da li se poklapaju entiteti za karaktera koji je ovde i onog koji je u character_controller u CheckCollisions
+            
+            /*if (Engine::Registry().has<Character>(entity))
+                printf("Character %d health = %f\n", character.character->id, character.character->health);
+
+            auto& chr2 = Engine::Registry().get<Character>(entity);
+            if (Engine::Registry().has<Character>(entity))
+                printf("Character %d, entity %d health = %f\n", chr2.character->id, (int)entity, chr2.character->health);*/
+            
+            // ***************
+
+
+
+
+            // ovo sam pokusala da direktno preko konstruktora kreiramo karaktera ali puca kad dodje do kolizije sa drugim karakterom nzm sto
+           
+            /* auto entity = reg.create();
+            auto mainChar = new Character(entity, "ASDWSpace",
+                "spritesheets:player_anim:player_idle_front:1",
+                "player:player_idle_front",
+                { 1, 1, 1 }, { 0, 100 }, 0);*/
+
+            /*printf("%f\n", mainChar->character->healthSystem.GetCurrentHealth());
+            printf("%d\n", mainChar->character->id);*/
         }
     }
 
@@ -399,6 +426,7 @@ void esccape::SetupWorld()
 
             auto entity = skeletonChar.getEntity();
             auto& character = reg.emplace<Character>(entity, skeletonChar);
+            //printf("Character %d health = %f healthEnt = %f\n", character.character->id, character.character->health, character.character->healthSystem.GetCurrentHealth());
         }
     }
     
