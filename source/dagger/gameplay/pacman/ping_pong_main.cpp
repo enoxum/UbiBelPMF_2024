@@ -174,8 +174,8 @@ void pacman::SetupWorld()
         auto& controller = reg.emplace<ControllerMapping>(entity);
 
         auto& mov = reg.emplace<MovementData>(entity);
-        mov.acceleration = 1000;
-        mov.maxSpeed = 100;
+        //mov.acceleration = 1000;
+        mov.maxSpeed = 1;
         mov.isFrictionOn = true;
 
         PingPongPlayerInputSystem::SetupPlayerOneInput(controller);

@@ -40,7 +40,7 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
         }
         else if (kEvent_.key == ctrl_.up_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y > 0)
         {
-            ctrl_.input.y = 0;
+            ctrl_.input.y = 1;
         }
         else if (kEvent_.key == ctrl_.down_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
         {
@@ -48,7 +48,7 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
         }
         else if (kEvent_.key == ctrl_.down_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y < 0)
         {
-            ctrl_.input.y = 0;
+            ctrl_.input.y =-1;
         }
 
         //X
@@ -58,7 +58,7 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
         }
         else if (kEvent_.key == ctrl_.right_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
         {
-            ctrl_.input.x = 0;
+            ctrl_.input.x = 1;
         }
         else if (kEvent_.key == ctrl_.left_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
         {
@@ -66,7 +66,7 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
         }
         else if (kEvent_.key == ctrl_.left_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
         {
-            ctrl_.input.x = 0;
+            ctrl_.input.x = -1;
         }
     });
 }
@@ -117,7 +117,7 @@ void PingPongPlayerInputSystem::Run()
 {
     Vector3 playerPosition{ 0, 0, 0 };
 
-    //DOHVATA IGRACE
+    //Pacman
     auto view = Engine::Registry().view<Transform, ControllerMapping, MovementData>();
     for (auto entity : view)
     {
@@ -125,17 +125,14 @@ void PingPongPlayerInputSystem::Run()
         auto &ctrl = view.get<ControllerMapping>(entity);
         auto &mov = view.get<MovementData>(entity);
 
-        mov.velocity.x += ctrl.input.x * mov.acceleration * Engine::DeltaTime();
-        mov.velocity.y += ctrl.input.y * mov.acceleration * Engine::DeltaTime();
+        
 
-        if (mov.isFrictionOn && ctrl.input.x == 0 && ctrl.input.y == 0)
-        {
-            mov.velocity *= 0.95f;
-        }
+        t.position.x += ctrl.input.x * mov.maxSpeed;
+        t.position.y += ctrl.input.y * mov.maxSpeed;
 
         playerPosition = t.position;
     }
-
+    //Ghosts
     auto viewEnemy = Engine::Registry().view<EnemyData, Transform, MovementData>();
     for (auto entity : viewEnemy)
     {
@@ -146,20 +143,7 @@ void PingPongPlayerInputSystem::Run()
 
         Vector3 direction = enemy.target - t.position;
         mov.velocity = direction;
-    }
-
-    auto viewMovement = Engine::Registry().view<Transform, MovementData>();
-    for (auto entity : viewMovement)
-    {
-        auto& t = viewMovement.get<Transform>(entity);
-        auto& mov = viewMovement.get<MovementData>(entity);
-
-        if (mov.velocity.length() > mov.maxSpeed)
-        {
-            mov.velocity *= mov.velocity.length() / mov.maxSpeed;
-        }
-
-        t.position.x += mov.velocity.x * Engine::DeltaTime();
-        t.position.y += mov.velocity.y * Engine::DeltaTime();
+        t.position.x += mov.velocity.x;
+        t.position.y += mov.velocity.y;
     }
 }
