@@ -469,12 +469,16 @@ void CharacterControllerFSM::Attack_Right::Enter(CharacterControllerFSM::StateCo
 		AnimatorPlay(animator, "player:player_attack_right");
 	else
 		AnimatorPlay(animator, "skeleton:skeleton_attack_right");
+	
 }
 
 void CharacterControllerFSM::Attack_Right::Run(CharacterControllerFSM::StateComponent& state_)
 {
+	//auto& animator = Engine::Registry().get<Animator>(state_.entity);
 	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+	//auto& animation = Engine::Registry().get<Animation>(state_.entity);
+
 	if (EPSILON_ZERO(input.Get("attack")))
 	{
 		GoTo(ECharacterStates::Idle_Right, state_);
@@ -540,16 +544,40 @@ void CharacterControllerFSM::Death::Enter(CharacterControllerFSM::StateComponent
 void CharacterControllerFSM::Death::Run(CharacterControllerFSM::StateComponent& state_)
 {
 
-	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
-	if (character.id == 0)
-		AnimatorPlay(animator, "player:player_death");
-	else
-		AnimatorPlay(animator, "skeleton:skeleton_death");
+	GoTo(ECharacterStates::Dead, state_);
 	//AnimatorStop(animator);
 }
 
 void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent& state_)
 {
+
+
+}
+
+void CharacterControllerFSM::Dead::Enter(CharacterControllerFSM::StateComponent& state_)
+{
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_death");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_dead");
+}
+
+void CharacterControllerFSM::Dead::Run(CharacterControllerFSM::StateComponent& state_)
+{
+
+	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
+	if (character.id == 0)
+		AnimatorPlay(animator, "player:player_death");
+	else
+		AnimatorPlay(animator, "skeleton:skeleton_dead");
+	//AnimatorStop(animator);
+}
+
+void CharacterControllerFSM::Dead::Exit(CharacterControllerFSM::StateComponent& state_)
+{
+
 
 }
 
@@ -557,7 +585,6 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 {
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 	auto& collision = Engine::Registry().get<SimpleCollision>(state_.entity);
-
 	//printf("prvi entitet %d karaktera \n", (int)state_.entity);
 	
 	auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
@@ -568,10 +595,13 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 		auto& otherCollision = viewCollisions.get<SimpleCollision>(otherEntity);
 		auto& otherTransform = viewCollisions.get<Transform>(otherEntity);
 
-		if (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
-			bbManager.SetCollided(state_.entity, true);
-			bbManager.SetCollided(otherEntity, true);
-			bbManager.RecordCollision(state_.entity, otherEntity);
+		auto attackCollisionFirst = collision;
+		attackCollisionFirst.size *= 1.5;
+		
+		auto attackCollisionSecond = otherCollision;
+		attackCollisionSecond.size *= 1.5;
+
+		if (attackCollisionFirst.IsCollided(transform.position, attackCollisionSecond, otherTransform.position)) {
 
 			auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 			if (EPSILON_NOT_ZERO(input.Get("attack"))) {
@@ -581,14 +611,23 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 					auto& chr = Engine::Registry().get<Character>(state_.entity);
 					auto& otherCharacter = Engine::Registry().get<Character>(otherEntity);
 					//printf("prvi: %d, drugi: %d", (int)state_.entity, (int)otherEntity);
-					/*otherCharacter.character->health -= 0.5f;
-					printf("Character %d health = %f\n", otherCharacter.character->id, otherCharacter.character->health);*/
-					//otherCharacter.character->healthSystem.TakeDamage(0.5);
-					//printf("Character %d health = %f\n",(int)otherCharacter.character->id, otherCharacter.character->healthSystem.GetCurrentHealth());
+					otherCharacter.character->health -= 0.01f;
+
+					//printf("Character %d health = %f\n", otherCharacter.character->id, otherCharacter.character->health);
+					otherCharacter.character->healthSystem.TakeDamage(0.01);
+					printf("Character %d health = %f\n",(int)otherCharacter.character->id, otherCharacter.character->healthSystem.GetCurrentHealth());
 				}
 			}
+		}
+
+		if (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
+			bbManager.SetCollided(state_.entity, true);
+			bbManager.SetCollided(otherEntity, true);
+			bbManager.RecordCollision(state_.entity, otherEntity);
+
 			return std::make_pair(state_.entity, otherEntity);
 		}
+		
 	}
 
 	bbManager.SetCollided(state_.entity, false);

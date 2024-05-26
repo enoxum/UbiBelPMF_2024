@@ -24,7 +24,8 @@ enum struct ECharacterStates
 	Attack_Left,
 	Attack_Up,
 	Attack_Down,
-	Death
+	Death,
+	Dead
 };
 
 
@@ -43,6 +44,7 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Attack_Up);
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Attack_Down);
 	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Death);
+	DEFINE_STATE(CharacterControllerFSM, ECharacterStates, Dead);
 
 	CharacterControllerFSM()
 	{
@@ -59,6 +61,7 @@ struct CharacterControllerFSM : public FSM<ECharacterStates>
 		CONNECT_STATE(ECharacterStates, Attack_Up);
 		CONNECT_STATE(ECharacterStates, Attack_Down);
 		CONNECT_STATE(ECharacterStates, Death);
+		CONNECT_STATE(ECharacterStates, Dead);
 	}
 
 	static BlackboardManager& blackboardManager;
