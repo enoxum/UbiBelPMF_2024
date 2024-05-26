@@ -1,45 +1,85 @@
 #include "deadend_wavestruct.h"
 #include "core/engine.h"
+#include "deadend_player.h"
+#include "deadend_health.h"
 
 using namespace dead_end;
 
-void WaveSystem::Initialize() {
-    currentWave.waveNumber = 1;
-    currentWave.weapon = "Pistol";
-    currentWave.healthResetPercentage = 0;
+void dead_end::WaveSystem::Run()
+{
+    auto view = Engine::Registry().view<Wave>();
+    auto playerView = Engine::Registry().view<Player, Health>();
+    // auto viewEnemy = ...
+    for(auto entity : view)
+    {
+        auto& wave = view.get<Wave>(entity);
+        
+        switch (wave.bossWave)
+        {
+        case false:
+            
+            for (auto entityP : playerView)
+            {
+                auto& player = playerView.get<Player>(entityP);
+                auto& health = playerView.get<Health>(entityP);
+
+                if (player.killCount == wave.waveNumber)
+                {
+                    wave.waveNumber++;
+                    SetWave(wave);
+                    UpdateWave(wave, player, health);
+                }
+            }
+           
+            
+            break;
+
+        case true:
+            // spawn a boss.
+            break;
+
+        default:
+            break;
+        }
+    }
+   
 }
 
-void WaveSystem::SetWave(int waveNumber) {
-    currentWave.waveNumber = waveNumber;
-    switch (waveNumber) {
+
+
+void WaveSystem::SetWave(Wave& wave) {
+    switch (wave.waveNumber) {
     case 1:
-        currentWave.weapon = "Pistol";
-        currentWave.healthResetPercentage = 0;
+        wave.weapon = "Pistol";
+        wave.healthResetPercentage = 0;
         break;
     case 2:
-        currentWave.weapon = "Gun";
-        currentWave.healthResetPercentage = 0;
+        wave.weapon = "Gun";
+        wave.healthResetPercentage = 0;
         break;
     case 3:
-        currentWave.weapon = "Strong Rifle";
-        currentWave.healthResetPercentage = 50;
+        wave.weapon = "Shotgun";
+        wave.healthResetPercentage = 50;
         break;
     case 4:
-        currentWave.weapon = "Machine gun";
-        currentWave.healthResetPercentage = 100;
+        wave.weapon = "Machine gun";
+        wave.healthResetPercentage = 100;
+        wave.bossWave = true;
+        wave.waveNumber = 1;
         break;
     default:
         break;
     }
 }
 
-void WaveSystem::UpdateWave(Player& player, Health& health) {
-    ApplyWaveEffects(player, health);
+void WaveSystem::UpdateWave(Wave& wave_, Player& player_, Health& health_) {
+    ApplyWaveEffects(wave_, player_, health_);
+    // generate another wave.
 }
 
-void WaveSystem::ApplyWaveEffects(Player& player, Health& health) {
-    player.weaponType = currentWave.waveNumber;
-    if (currentWave.healthResetPercentage > 0) {
-        health.currentHealth = (health.maxHealth * currentWave.healthResetPercentage) / 100;
+void WaveSystem::ApplyWaveEffects(Wave& wave_, Player& player_, Health& health_) {
+    player_.weaponType = wave_.waveNumber;
+    if (wave_.healthResetPercentage > 0) {
+        health_.currentHealth = (health_.maxHealth * wave_.healthResetPercentage) / 100;
     }
 }
