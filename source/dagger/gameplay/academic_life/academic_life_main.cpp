@@ -5,11 +5,13 @@
 #include "core/input/inputs.h"
 #include "core/graphics/sprite.h"
 #include "core/graphics/animation.h"
+#include "core/graphics/animations.h"
 #include "core/graphics/shaders.h"
 #include "core/graphics/window.h"
 #include "core/graphics/gui.h"
 #include "core/graphics/text.h"
 #include "core/game/transforms.h"
+#include "core/audio.h"
 
 #include "gameplay/common/simple_collisions.h"
 #include "gameplay/common/particles.h"
@@ -19,7 +21,11 @@
 #include "gameplay/academic_life/falling_entity.h"
 #include "gameplay/academic_life/score_entity.h"
 #include "gameplay/academic_life/health.h"
+#include "gameplay/academic_life/game_state.h"
 #include "gameplay/academic_life/espb.h"
+
+#include "gameplay/academic_life/main_menu.h"
+
 
 #include "enumi.h"
 
@@ -38,6 +44,8 @@ void AcademicLife::GameplaySystemsSetup()
     engine.AddSystem<SimpleCollisionsSystem>();
     engine.AddSystem<common_res::ParticleSystem>();
     engine.AddSystem<ScoreEntitySystem>();
+    engine.AddSystem<MainMenuInputSystem>();
+    engine.AddSystem<GameStateInputSystem>();
 }
 
 constexpr int HEALTH_MARKER = 1;
@@ -55,10 +63,109 @@ void AcademicLife::WorldSetup()
     camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
-
-    academic_life::SetupWorld();
+    academic_life::SetupMainMenu();
+    //academic_life::SetupWorld();
 }
 
+void academic_life::SetupMainMenu()
+{
+    Engine::GetDefaultResource<Audio>()->PlayLoop("music");
+
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
+
+    constexpr Vector2 scale(1, 1);
+
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.emplace<Sprite>(entity);
+        AssignSprite(sprite, "AcademicLife:background");
+        sprite.size = { 850.0f, 600.0f };
+
+        auto& transform = reg.emplace<Transform>(entity);
+        transform.position = { 0.0f, 0.0f, zPos };
+
+        auto& menu = reg.emplace<MainMenu>(entity);
+
+        reg.emplace<MenuControllerMapping>(entity); 
+        
+
+
+    }
+    //start
+    {
+        
+        auto startEntity = reg.create();
+        auto& startText = reg.emplace<Text>(startEntity);
+        startText.scale = Vector2{ 1.0f, 1.0f };
+        startText.Set("pixel-font", "press space to start", glm::vec3(tileSize / 2.0f, -300.0f / 2.0f + tileSize / 2.0f, 0.5f), zPos);
+        
+
+    }
+    //logo
+    {
+        auto logoEntity = reg.create();
+        auto& sprite = reg.emplace<Sprite>(logoEntity);
+        AssignSprite(sprite, "AcademicLife:logo");
+        sprite.size = { 600.0f, 300.0f };
+        sprite.position = { tileSize / 2.0f, 300.0f / 2.0f + tileSize / 2.0f, 0.5f };
+ 
+    }
+
+
+}
+
+void academic_life::CreateBackdrop()
+{
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
+    Float32 xBorder = 850.0f;
+    Float32 yBorder = 600.0f;
+
+    //background 
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:0_sky");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+    }
+    //clouds
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:2_clouds");
+        sprite.size = { xBorder, yBorder };
+        sprite.scale = { 2, 1 };
+        sprite.position = { 0,0,0.5f };
+        sprite.color.a = 0.5f;
+    }
+    //city
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:3_city");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+    
+    }
+    //grass
+    {
+        auto entity = reg.create();
+        auto& sprite = reg.get_or_emplace<Sprite>(entity);
+
+        AssignSprite(sprite, "AcademicLife:4_ground");
+        sprite.size = { xBorder, yBorder };
+        sprite.position = { 0,0,0.5f };
+
+        
+    }
+    
+
+}
 
 void academic_life::SetupWorld()
 {
@@ -80,6 +187,8 @@ void academic_life::SetupWorld()
         Engine::PutDefaultResource<AcademicLifeFieldSettings>(&fieldSettings);
     }
 
+    CreateBackdrop();
+
     // ESPB
     {
         auto entity = reg.create();
@@ -99,7 +208,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, ESPB_MARKER);  //TO DO switch to EnumiScore
+        reg.emplace<int>(entity, ESPB_MARKER);  
     }
 
     // Health
@@ -121,7 +230,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, HEALTH_MARKER); //TO DO switch to EnumiScore
+        reg.emplace<int>(entity, HEALTH_MARKER); 
     }
 
     for (int i = 0; i < height; i++)
@@ -154,10 +263,11 @@ void academic_life::SetupWorld()
     {
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "AcademicLife:student");
-        float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 3 * tileSize, 3 * tileSize * ratio };
-
+        auto& animator = reg.emplace<Animator>(entity);
+        //AssignSprite(sprite, "AcademicLife:student");
+        AssignSprite(sprite, "AcademicLife:IDLE:idle1"); 
+        AnimatorPlay(animator, "AcademicLife:IDLE");
+       
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -tileSize * 4, -tileSize * 4, zPos };
 
@@ -179,6 +289,6 @@ void academic_life::SetupWorld()
     int numFallingEntities = 5;
     for (int i = 0; i < numFallingEntities; i++)
     {
-        createRandomEntity();  // TODO:  namestiti da se entiteti ne kreiraju jedan pored drugog
+        createRandomEntity();
     }
 }

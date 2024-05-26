@@ -10,10 +10,10 @@ public:
 
     void Update(int amount) override;
     int GetValue() const override;
+    void Reset() override;
 
 private:
-    Health() : value(50) {}
+    Health() : value(0) {}
     int value;
     const int m_max_health = 100;
-    const int m_min_health = -100;
 };
