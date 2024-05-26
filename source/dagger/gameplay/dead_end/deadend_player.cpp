@@ -20,13 +20,11 @@ using namespace dead_end;
 void dead_end::PlayerSystem::Run()
 {
 	auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
-	auto view = Engine::Registry().view<Player, Transform, SimpleCollision>();
+	auto view = Engine::Registry().view<Player, Transform, SimpleCollision, Health>();
     auto viewBullet = Engine::Registry().view<Bullet, SimpleCollision>();
+    auto viewCollect = Engine::Registry().view<Collectable>();
 	//auto viewText = Engine::Registry().view<Text>();
 
-    WaveSystem waveSystem;
-    waveSystem.Initialize();
-    int waveNumber = 1; // start wave
 
 	for (auto entity : view)
 	{
@@ -34,13 +32,10 @@ void dead_end::PlayerSystem::Run()
 		auto& player = view.get<Player>(entity);
 		auto& col = view.get<SimpleCollision>(entity);
         auto& health = view.get<Health>(entity);
-        auto& collectables = view.get<Collectable>(entity);
 
         
 
 		//auto& text = viewText.get<Text>(entity); add gameover later.
-        waveSystem.SetWave(waveNumber);
-        waveSystem.UpdateWave(player, health);
 
 
 		if (col.colided)
@@ -48,11 +43,10 @@ void dead_end::PlayerSystem::Run()
             // later : collision w/ enemies and collectables.
 
             // collectables collision
-            if (Engine::Registry().has<Collectable>(col.colidedWith)) {
+            if (viewCollect.contains(col.colidedWith)) {
                 Collectable& collectable = Engine::Registry().get<Collectable>(col.colidedWith);
-                CollectableSystem collectableSystem;
-                collectableSystem.HandleCollectableCollision(player, collectable);
-                Engine::Registry().destroy(col.colidedWith); // Uništavanje kolekcionara nakon prikupljanja
+                dead_end::HandleCollectableCollision(collectable, health);
+                Engine::Registry().destroy(col.colidedWith); 
             }
 
             if (viewBullet.contains(col.colidedWith)) {
@@ -94,13 +88,6 @@ void dead_end::PlayerSystem::Run()
 
                 } while (col.IsCollided(t.position, collision, transform.position));
 
-                // Decrease health upon collision
-                player.health--;
-                if (player.health <= 0)
-                {
-                    player.health = 0;
-                    player.stopMoving = true; // Stop movement if health is zero
-                }
 
             }
 

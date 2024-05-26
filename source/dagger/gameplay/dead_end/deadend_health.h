@@ -3,9 +3,9 @@
 #include "core/engine.h"
 #include "core/core.h"
 
+#include "core/graphics/sprite.h"
 using namespace dagger;
 
-#include "core/graphics/sprite.h"
 
 namespace dead_end
 {
@@ -15,9 +15,10 @@ namespace dead_end
         int maxHealth;
     };
 
-    class HealthSystem : public System
+    class HealthSystem 
+        : public System
     {
-    public:
-        void Run() override;
+        inline String SystemName() override { return "Health system"; }
+        
     };
 }

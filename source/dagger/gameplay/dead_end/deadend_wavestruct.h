@@ -1,5 +1,4 @@
 #pragma once
-\
 
 #include "deadend_player.h"
 #include "deadend_health.h"
@@ -10,20 +9,26 @@ using namespace dead_end;
 namespace dead_end {
 
     struct Wave {
-        int waveNumber;
-        std::string weapon;
-        int healthResetPercentage;
+        int waveNumber{ 1 };
+        int waveSize{ 5 };
+        std::string weapon{ "Pistol" };
+        int healthResetPercentage{ 0 };
+        bool bossWave{ false };
     };
 
-    class WaveSystem {
-    public:
-        void Initialize();
-        void UpdateWave(Player& player, Health& health);
-        void SetWave(int waveNumber);
+    class WaveSystem
+        : public System{
 
-    private:
-        Wave currentWave;
-        void ApplyWaveEffects(Player& player, Health& health);
+        inline String SystemName() override { return "Wave system"; }
+
+        void Run() override;
+
+        public:
+            void UpdateWave(Wave& wave_, Player& player_, Health& health_);
+            void SetWave(Wave& wave_);
+
+            void ApplyWaveEffects(Wave& wave_, Player& player_, Health& health_);
     };
+
 
 } 

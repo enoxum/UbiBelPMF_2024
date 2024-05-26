@@ -6,7 +6,8 @@
 #include "deadend_playerinput.h"
 #include "deadend_map.h"
 #include "deadend_obstacle.h"
-
+#include "deadend_health.h"
+#include "deadend_hud.h"
 
 #include "core/core.h"
 #include "core/engine.h"
@@ -21,6 +22,8 @@
 #include "core/graphics/gui.h"
 
 #include "gameplay/common/simple_collisions.h"
+#include "deadend_wavestruct.h"
+
 
 
 using namespace dagger;
@@ -56,6 +59,9 @@ void dead_end::DeadEndGame::GameplaySystemsSetup()
     engine.AddPausableSystem<PlayerSystem>();
     engine.AddPausableSystem<ShootingSystem>();
     engine.AddPausableSystem<DeadEndObstacleSystem>();
+    engine.AddPausableSystem<HealthSystem>();
+    engine.AddPausableSystem<DeadEndHUDSystem>();
+    engine.AddPausableSystem<WaveSystem>();
     
 }
 
@@ -113,6 +119,9 @@ void dead_end::setupWorld()
         auto& player = reg.emplace<Player>(entity);
         auto& camera = reg.emplace<DeadEndCamera>(entity);
         auto& controller = reg.emplace<ControllerMapping>(entity);
+        auto& health = reg.emplace<Health>(entity);
+        health.currentHealth = 100;
+        health.maxHealth = 100;
 
         DeadEndPlayerInputSystem::SetupPlayerInput(controller);
     }
@@ -128,6 +137,47 @@ void dead_end::setupWorld()
         AssignSprite(sprite, "dead_end:Crosshair:crosshair");
         sprite.size.x = playerSize / 2;
         sprite.size.y = playerSize / 2;
+    }
+
+    // HUD fill
+    {
+        auto entity = reg.create();
+        auto& hud = reg.emplace<HUD>(entity);
+
+        auto& transform = reg.emplace<Transform>(entity);
+        
+        transform.position.x = hud.position.x;
+        transform.position.y = hud.position.y;
+        transform.position.z = zPos - 2.f;
+
+        auto& fill_sprite = reg.emplace<Sprite>(entity);
+
+        AssignSprite(fill_sprite, "dead_end:Health:Health_1");
+
+    }
+
+    // HUD border
+    {
+        auto entity = reg.create();
+        auto& hud = reg.emplace<HUD>(entity);
+
+        auto& transform = reg.emplace<Transform>(entity);
+
+        transform.position.x = hud.position.x;
+        transform.position.y = hud.position.y;
+        transform.position.z = zPos - 2.f;
+
+        auto& border_sprite = reg.emplace<Sprite>(entity);
+
+        AssignSprite(border_sprite, "dead_end:Health:Border_0");
+    }
+
+
+    // waves
+    {
+        auto entity = reg.create();
+        auto& wave = reg.emplace<Wave>(entity);
+
     }
 
 }

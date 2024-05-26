@@ -9,12 +9,10 @@ namespace dead_end
 {
 	struct Player
 	{
-		int health{ 100 };
-		int maxHealth{ 100 };
 		Float32 speed {300.f};
 		int weaponType{ 1 }; // 1 - pistol, 2 - gun
-		bool isPlayer{ true };
 		bool stopMoving = false;
+		int killCount{ 0 };
 	};
 
 	class PlayerSystem
