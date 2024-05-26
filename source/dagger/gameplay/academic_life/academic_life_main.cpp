@@ -88,11 +88,9 @@ void academic_life::SetupMainMenu()
 
         auto& menu = reg.emplace<MainMenu>(entity);
 
-        reg.emplace<MenuControllerMapping>(entity); //TO DO: srediti ovo 
+        reg.emplace<MenuControllerMapping>(entity); 
         
-       /*auto muteBtn = MuteButton::Create({ 350.0f,350.0f }, "AcademicLife:student");
-       muteBtn.sprite.UseAsUI();
-       menu.muteBtn = &muteBtn;*/
+
 
     }
     //start

@@ -22,46 +22,7 @@ namespace academic_life
         Vector2 input{ 0, 1 };
     };
 
-    struct MuteButton {
-
-        Entity entity;
-        Sprite& sprite;
-
-        static MuteButton Get(Entity entity)
-        {
-            auto& reg = Engine::Registry();
-            auto& sprite = reg.get_or_emplace<Sprite>(entity);
-
-            return MuteButton{ entity, sprite };
-        }
-
-        static MuteButton Create(
-            Vector2 position_ = { 0, 0 }, String spritePath = "AcademicLife:student")
-        {
-            auto& reg = Engine::Registry();
-            auto entity = reg.create();
-
-
-            auto btn = MuteButton::Get(entity);
-
-            btn.sprite.scale = { 1, 1 };
-            btn.sprite.position = { position_, 0.6f };;
-
-            AssignSprite(btn.sprite, spritePath);
-
-            return btn;
-        }
-
-        static void ChangeSprite(String spritePath = "AcademicLife:cigarette")
-        {
-            auto& reg = Engine::Registry();
-            auto entity = reg.create();
-            auto btn = MuteButton::Get(entity);
-
-        }
-
-
-    };
+  
 
     struct MainMenu
     {
@@ -74,9 +35,8 @@ namespace academic_life
 
         int play = 0;
         int mute = 1;
-        int quit = 0;
 
-        MuteButton *muteBtn;
+
 
     };
   
