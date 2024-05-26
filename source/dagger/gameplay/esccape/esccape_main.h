@@ -5,6 +5,8 @@
 #include "core/game.h"
 #include "core/engine.h"
 
+#include "Worm.h"
+
 using namespace dagger;
 
 namespace esccape
@@ -15,6 +17,8 @@ namespace esccape
     void CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health);
     void CreateMachineRandom(int screenWidth, int screenHeight, int zPos, int machineScale);
     void CreateWorm(int zPos, int screenWidth, int screenHeight);
+    void CreateNWorms(int n, int zpos, int screenWidth, int screenHeight);
+    void SpawnWorm(Worm& worm, Transform& t, Sprite& sprite);
     void CreateObstacles(int zPos);
     void SetupWorld();
 
