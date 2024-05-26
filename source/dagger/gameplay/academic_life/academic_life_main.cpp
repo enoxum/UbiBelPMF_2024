@@ -80,7 +80,6 @@ void academic_life::SetupMainMenu()
         auto entity = reg.create();
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "AcademicLife:background");
-        //   float ratio = sprite.size.y / sprite.size.x;
         sprite.size = { 850.0f, 600.0f };
 
         auto& transform = reg.emplace<Transform>(entity);
@@ -209,7 +208,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(-700.0f / 2.0f + tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, ESPB_MARKER);  //TO DO switch to EnumiScore
+        reg.emplace<int>(entity, ESPB_MARKER);  
     }
 
     // Health
@@ -231,7 +230,7 @@ void academic_life::SetupWorld()
 
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = glm::vec3(700.0f / 2.0f - tileSize / 2.0f, -600.0f / 2.0f + tileSize / 2.0f + 30.0f, 0.5f);
-        reg.emplace<int>(entity, HEALTH_MARKER); //TO DO switch to EnumiScore
+        reg.emplace<int>(entity, HEALTH_MARKER); 
     }
 
     for (int i = 0; i < height; i++)
@@ -268,9 +267,6 @@ void academic_life::SetupWorld()
         //AssignSprite(sprite, "AcademicLife:student");
         AssignSprite(sprite, "AcademicLife:IDLE:idle1"); 
         AnimatorPlay(animator, "AcademicLife:IDLE");
-
-        /*float ratio = sprite.size.y / sprite.size.x;
-        sprite.size = { 3 * tileSize, 3 * tileSize * ratio };*/
        
         auto& transform = reg.emplace<Transform>(entity);
         transform.position = { -tileSize * 4, -tileSize * 4, zPos };
@@ -294,56 +290,5 @@ void academic_life::SetupWorld()
     for (int i = 0; i < numFallingEntities; i++)
     {
         createRandomEntity();
-        /*
-        int entity_prob = rand() % 2;
-
-        // jednacine
-        if (entity_prob == 0)
-        {
-            //generate_equation_entity(reg, ESPB, tileSize, width, height, zPos, i);
-            auto entity = reg.create();
-
-            auto& transform = reg.emplace<Transform>(entity);
-            auto randomX = rand() % 200 - 150;
-            auto randomY = (rand() % 50) * ((rand() % 10) + 5) + 300;
-            transform.position = { randomX, randomY, zPos };
-
-            auto& falling_text = reg.emplace<FallingText>(entity);
-            auto& text = falling_text.text;
-            text.scale = { 0.6f, 0.6f };
-            text.spacing = { 0.3f };
-            text.position = transform.position;
-            falling_text.speed = tileSize * (rand() % 5 + 3);
-
-            Equation eq = Equation::Equation(3, 4, -5, 5);
-            std::string expression = generate_expression(ESPB, eq);
-            text.message = eq.to_equation(expression);
-            text.value = eq.calculate(expression);
-
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size = { tileSize * 11.5, tileSize * 2 };
-        }
-
-        // lifestyle objekti
-        else {
-            int lifestyle_prob = rand() % 5; //da li ce da deluje pozitivno ili negativno
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            
-            setLifestyleEntity_byProbability(lifestyle_prob, reg, entity, sprite);
-
-            float ratio = sprite.size.y / sprite.size.x;
-            sprite.size = { 2 * tileSize, 2 * tileSize * ratio };
-
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position = { tileSize * (3 * (i + 1) - width / 2), tileSize * (-i * 2 + height / 2), zPos };
-
-            auto& falling_entity = reg.emplace<FallingEntity>(entity);
-            falling_entity.speed = tileSize * (rand() % 5 + 3);
-
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size = sprite.size;
-        }
-        */
     }
 }
