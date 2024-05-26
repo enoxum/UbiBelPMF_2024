@@ -41,10 +41,6 @@ void MainMenuInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
                     Engine::GetDefaultResource<Audio>()->PlayLoop("music");
                 ctrl_.input.y *= -1;
             }
-            else if (kEvent_.key == ctrl_.quitKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
-            {
-                ctrl_.input.z = 1;
-            }
 
 
         }
@@ -65,7 +61,6 @@ void MainMenuInputSystem::Run()
    
         mainMenu.play = ctrl.input.x;
         mainMenu.mute = ctrl.input.y;
-        mainMenu.quit = ctrl.input.z;
         if (mainMenu.play == 1)
         {
             Engine::Registry().clear();

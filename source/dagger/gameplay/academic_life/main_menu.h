@@ -16,9 +16,10 @@ namespace academic_life
     {
         EDaggerKeyboard spaceKey = EDaggerKeyboard::KeySpace;
         EDaggerKeyboard muteKey = EDaggerKeyboard::KeyM;
-        EDaggerKeyboard quitKey = EDaggerKeyboard::KeyQ;
+       
 
-        Vector3 input{ 0, 1, 0 };
+
+        Vector2 input{ 0, 1 };
     };
 
     struct MuteButton {
