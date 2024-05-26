@@ -3,7 +3,7 @@
 #include "core/graphics/text.h"
 #include "core/system.h"
 #include "core/core.h"
-
+#include "espb.h"
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "core/graphics/sprite.h"
 
@@ -11,6 +11,7 @@ using namespace dagger;
 
 namespace academic_life
 {
+
     struct FallingEntity
     {
         float speed;
@@ -25,7 +26,7 @@ namespace academic_life
 
     class Equation {
     public:
-        Equation(const unsigned num_operators, const unsigned num_operands, const int lb, const int ub)
+        Equation::Equation(const unsigned num_operators, const unsigned num_operands, const int lb, const int ub)
             : m_num_operators(num_operators), m_num_operands(num_operands), m_lb(lb), m_ub(ub)
         {
             initialize_code(m_code_simple, &Equation::random_operator_simple);
@@ -44,6 +45,12 @@ namespace academic_life
             }
         }
 
+        template<typename T>
+        std::string generate_expression(Equation& eq, T& (Equation::* get_code)() const)
+        {
+            return eq.to_string((eq.*get_code)());
+        }
+
         std::string random_operator_simple() const;
         std::string random_operator_medium() const;
         std::string random_operator_hard() const;
@@ -51,7 +58,9 @@ namespace academic_life
 
         std::string to_string(const std::vector<std::string>& code);
         std::string to_equation(const std::string& expression) const;
-        double evaluate(const std::string& expression);
+        int calculate(const std::string& expression_str);
+        std::string Equation::generate_expression(Equation& eq);
+        void Equation::generate_equation_entity(const int randomX, const int randomY);
 
         const std::vector<std::string>& get_code_simple() const;
         const std::vector<std::string>& get_code_medium() const;
@@ -79,16 +88,11 @@ namespace academic_life
 
             transform.position.y -= falling_entity.speed * Engine::DeltaTime();
 
-            // Umesto da se vrati gore kada padne na zemlju, bolje je da se kreira novi objekat (drugog tipa)
             if (transform.position.y < -boarderY)
             {
-                transform.position.y = boarderY;
-                fallingEntityCounter += 1;
-                if (fallingEntityCounter % 3 == 0)
-                {
-                    mul += 0.4;
-                    entitySpeed = fieldSettings.fieldTileSize * mul;
-                }
+                falling_entity.text.Set("pixel-font", "", transform.position);
+                Engine::Registry().destroy(entity);  // delete current entity
+                createRandomEntity();  // create new random entity
             }
 
             if (isText)
@@ -105,4 +109,5 @@ namespace academic_life
     };
 
     void setLifestyleEntity_byProbability(int lifestyle_prob, Registry& reg, entt::entity entity, Sprite& sprite);
+    void createRandomEntity();
 }

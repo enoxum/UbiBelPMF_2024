@@ -39,6 +39,8 @@ void AcademicLifeCollisionsLogicSystem::Run()
             fieldSettings = *ptr;
         }
      
+
+
         auto view = Engine::Registry().view<AcademicPlayer, Transform, SimpleCollision>();
         for (auto entity : view)
         {
@@ -55,7 +57,7 @@ void AcademicLifeCollisionsLogicSystem::Run()
                 }
 
                 // TO DO: create random entity
-                auto viewEntities = Engine::Registry().view<FallingEntity, LifestyleChange>();
+                auto viewEntities = Engine::Registry().view<FallingEntity,LifestyleChange>();
                 for (auto entityEntity : viewEntities)
                 {
                     auto lifestyleChange = static_cast<int>(Engine::Registry().get<LifestyleChange>(entityEntity));
@@ -63,8 +65,9 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     if (entityEntity == col.colidedWith)
                     {
                         Health& health = Health::Instance();
-                        health.Increase(lifestyleChange);             //TO DO Decrease proteklim vremenom 
-                        Engine::Registry().destroy(entityEntity);
+                        health.Update(lifestyleChange);             //TO DO: smanjiti proteklim vremenom 
+                        Engine::Registry().destroy(entityEntity);  // delete current entity
+                        createRandomEntity();  // create new random entity
                         break;
                     }
                 }
@@ -76,15 +79,14 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     if (entityEntity == col.colidedWith)
                     {
                         auto& falling_text = viewEntities2.get<FallingText>(entityEntity);
-
-                        // change ESPB based on text evaluation
-
                         falling_text.text.Set("pixel-font", "", falling_text.text.position);
 
                         ESPB& espb = ESPB::Instance();
-                        espb.Increase(3);                   // TO DO logika za promenu espb na osnovu jednacina
-
-                        Engine::Registry().destroy(entityEntity);
+                        espb.Update(falling_text.text.value);
+                        std::cout << falling_text.text.value << std::endl;
+               
+                        Engine::Registry().destroy(entityEntity);  // delete current entity
+                        createRandomEntity();  // create new random entity
                         break;
                     }
                 }
