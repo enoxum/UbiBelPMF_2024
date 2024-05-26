@@ -58,12 +58,12 @@ void SetupScreen(const std::string& message)
     auto& messageText = reg.emplace<Text>(messageEntity);
     messageText.scale = Vector2{ 2.5f, 2.5f };
     messageText.spacing = 2.5f;
-    messageText.Set("pixel-font",message,glm::vec3(20.f / 2.0f, 100.0f / 2.0f + 20.f / 2.0f, 0.5f), 0.5f + 0.1f);
+    messageText.Set("pixel-font", message, glm::vec3(20.f / 2.0f, 100.0f / 2.0f + 20.f / 2.0f, 0.5f), 0.5f + 0.1f);
 
     auto instructionsEntity = reg.create();
     auto& instructionsText = reg.emplace<Text>(instructionsEntity);
     instructionsText.spacing = 0.6f;
-    instructionsText.Set("pixel-font", "Press Enter to go back to the main menu", glm::vec3(20.f / 2.0f, -300.0f / 2.0f + 20.f / 2.0f, 0.5f), 0.05f);
+    instructionsText.Set("pixel-font", "Press Space to go back to the main menu", glm::vec3(20.f / 2.0f, -300.0f / 2.0f + 20.f / 2.0f, 0.5f), 0.05f);
 }
 
 void academic_life::GameOverScreen()

@@ -19,6 +19,5 @@ private:
     ESPB() : value(0) {}
     int value;
     int m_max_espb = 240;
-    int m_min_espb = 0;
 };
 

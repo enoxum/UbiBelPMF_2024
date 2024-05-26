@@ -52,13 +52,11 @@ void AcademicLifeCollisionsLogicSystem::Run()
 
             if (col.colided)
             {
-                // TO DO: score logic
                 int score = 11;
                 if (score < 0) {
                     m_Restart = true;
                 }
 
-                // TO DO: create random entity
                 auto viewEntities = Engine::Registry().view<FallingEntity,LifestyleChange>();
                 for (auto entityEntity : viewEntities)
                 {
@@ -67,8 +65,8 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     {
                         ESPB& espb = ESPB::Instance();
                         Health& health = Health::Instance();
-                        health.Update(lifestyleChange);             //TO DO: smanjiti proteklim vremenom 
-                          if (health.GetValue() <= 0) {
+                        health.Update(lifestyleChange);
+                          if (health.GetValue() <= -100) {
 
                             Engine::Registry().clear();
                             academic_life::GameOverScreen();
@@ -83,7 +81,6 @@ void AcademicLifeCollisionsLogicSystem::Run()
                     }
                 }
 
-                // TO DO: create random entity
                 auto viewEntities2 = Engine::Registry().view<FallingText>();
                 for (auto entityEntity : viewEntities2)
                 {
@@ -95,10 +92,20 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         Health& health = Health::Instance();
                         ESPB& espb = ESPB::Instance();
                         espb.Update(falling_text.text.value);
-                        if (espb.GetValue() >= 240) {
+                        if (espb.GetValue() == 240) {
 
                             Engine::Registry().clear();
                             academic_life::WinScreen();
+                            espb.Reset();
+                            health.Reset();
+                            return;
+
+                        }
+
+                        if (espb.GetValue() < 0) {
+
+                            Engine::Registry().clear();
+                            academic_life::GameOverScreen();
                             espb.Reset();
                             health.Reset();
                             return;
