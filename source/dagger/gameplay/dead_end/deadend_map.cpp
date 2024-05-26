@@ -11,8 +11,12 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
 #include "gameplay/dead_end/deadend_obstacle.h"
+#include "gameplay/dead_end/deadend_enemy.h"
+#include "gameplay/dead_end/deadend_player.h"
+#include "deadend_health.h"
 
 using namespace dead_end;
 
@@ -216,7 +220,7 @@ void loadEnemies(float zPos, float size)
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -230,10 +234,43 @@ void loadEnemies(float zPos, float size)
         
         for (int j = 0; j < width; j++) {
 
-            if (enemy_map[i][j] == 1)
-                // spawn enemy
-                ;
+            if (enemy_map[i][j] == 0)
+                continue;
 
+            auto entity = reg.create();
+            auto& enemy = reg.emplace<DeadEndEnemy>(entity);
+            auto& sprite = reg.emplace<Sprite>(entity);
+            auto& col = reg.emplace<SimpleCollision>(entity);
+
+
+            int randomNumber = std::rand() % 2;
+            switch (randomNumber) {
+                case 0:
+                    AssignSprite(sprite, "dead_end:Enemy:zombie_1");
+                    break;
+                case 1:
+                    AssignSprite(sprite, "dead_end:Enemy:zombie_3");
+                    break;
+                default:
+                    AssignSprite(sprite, "dead_end:Enemy:zombie_1");
+                    break;
+            }
+
+            sprite.size = scale * size;
+
+            col.size.x = sprite.size.x;
+            col.size.y = sprite.size.y;
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = (j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * size;
+            transform.position.y = (i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * size;
+            transform.position.z = zPos;
+
+            auto& health = reg.emplace<Health>(entity);
+            health.currentHealth = 40;
+            health.maxHealth = 40;
+
+            
 
         }
      }
