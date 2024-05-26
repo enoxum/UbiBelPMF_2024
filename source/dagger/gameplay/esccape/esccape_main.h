@@ -20,6 +20,7 @@ namespace esccape
     void CreateNWorms(int n, int zpos, int screenWidth, int screenHeight);
     void SpawnWorm(Worm& worm, Transform& t, Sprite& sprite);
     void CreateObstacles(int zPos);
+    void CreateEnemy(int zPos, int screenWidth, int screenHeight);
     void SetupWorld();
 
 

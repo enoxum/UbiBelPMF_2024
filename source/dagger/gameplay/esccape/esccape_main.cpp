@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include "blackboard_manager.h"
 #include "Worm.h"
+#include "enemy.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -132,6 +133,7 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
 {
     auto& reg = Engine::Registry();
     auto entity = reg.create();
+
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:masina");
     float ratio = sprite.size.y / sprite.size.x;    
@@ -147,6 +149,28 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     auto& col = reg.emplace<SimpleCollision>(entity);
     col.size.x = machineSize;
     col.size.y = machineSize * ratio;
+}
+
+void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "Esccape:turret");
+    float enemySize = 100;
+    float ratio = sprite.size.y / sprite.size.x;
+    sprite.size = { enemySize, enemySize * ratio };
+
+    auto& enemy = reg.emplace<Enemy>(entity);
+
+    auto& transform = reg.emplace<Transform>(entity);
+    transform.position.x = -300;
+    transform.position.y = 200;
+    transform.position.z = zPos;
+
+    auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
+    collision.size.x = enemySize;
+    collision.size.y = enemySize * ratio;
 }
 
 void esccape::CreateObstacles(int zPos)
@@ -248,45 +272,6 @@ void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite) {
             break;
     }
 }
-//// CreatingEnemy
-struct EnemyCharachter
-{
-    Entity entity;
-    Sprite& sprite;
-    EsccapeCharacter& character;
-
-    static EnemyCharachter Get(Entity entity)
-    {
-        auto& reg = Engine::Registry();
-        auto& sprite = reg.get_or_emplace<Sprite>(entity);
-        auto& anim = reg.get_or_emplace<Animator>(entity);
-        auto& input = reg.get_or_emplace<InputReceiver>(entity);
-        auto& character = reg.get_or_emplace<EsccapeCharacter>(entity);
-
-        return EnemyCharachter{ entity, sprite, character };
-    }
-
-    static EnemyCharachter Create(
-        ColorRGB color_ = { 1, 1, 1 },
-        Vector2 position_ = { 0, 0 })
-    {
-        auto& reg = Engine::Registry();
-        auto entity = reg.create();
-
-        auto chr = EnemyCharachter::Get(entity);
-
-        chr.sprite.scale = { 0.2, 0.2 };
-        chr.sprite.position = { position_, 0.0f };
-        chr.sprite.color = { color_, 1.0f };
-
-        AssignSprite(chr.sprite, "Esccape:turret");
-
-        return chr;
-    }
-};
-
-
-
 
 void esccape::SetupWorld()
 {
@@ -317,6 +302,9 @@ void esccape::SetupWorld()
     CreateHealthBar(screenWidth, screenHeight, zPos, 5);
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
+
+    CreateEnemy(zPos, screenWidth, screenHeight);
+
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateObstacles(zPos);

@@ -1,45 +1,20 @@
 #include "enemy.h"
+#include <random>
 
-#include "core/engine.h"
-#include "core/game/transforms.h"
-#include "core/graphics/sprite.h"
-
-#include "gameplay/common/simple_collisions.h"
-
-#include <algorithm>
-#include <execution>
-#include <chrono> // For std::chrono
-#include <thread> // For std::this_thread
-
-using namespace dagger;
 using namespace esccape;
+using namespace dagger;
 
-esccape::Enemy::Enemy()
+void esccape::EnemySystem::Run()
 {
-}
+    //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
+    auto view = Engine::Registry().view<Transform, Enemy, Sprite>();
 
-esccape::Enemy::Enemy(EnemyEntity enemyEntity, std::function<void(int)> healthChangedCallback2) :
-    enemy(enemyEntity), healthChangedCallback(healthChangedCallback2)
-{
-}
-
-void Enemy::SpinUp()
-{
-}
-
-void Enemy::WindDown()
-{
-}
-
-int esccape::Enemy::getHealth()
-{
-    return enemy.health;
-}
-
-void esccape::Enemy::setHealth(int newHealth)
-{
-    enemy.health = newHealth;
-}
-
-void esccape::Enemy::Run() {
+    for (auto entity : view)
+    {
+        auto& t = view.get<Transform>(entity);
+        auto& enemy = view.get<Enemy>(entity);
+        auto& sprite = view.get<Sprite>(entity);
+        //sprite.scale.y = -std::abs(sprite.scale.y);
+        //auto& col = view.get<SimpleCollision>(entity);
+    }
 }

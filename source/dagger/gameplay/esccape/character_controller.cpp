@@ -648,7 +648,6 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
 
 	while (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
-
 		if (otherIsCharacter)
 		{
 			Vector2 otherCollisionSides = otherCollision.GetCollisionSides(otherTransform.position, collision, transform.position);
@@ -673,6 +672,7 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 		}
 
 		if (std::abs(collisionSides.x) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
+			
 			transform.position.x -= transform.position.x < 0 ? -1 : 1;
 		}
 		if (std::abs(collisionSides.y) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {

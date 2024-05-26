@@ -2,37 +2,27 @@
 
 #include "core/system.h"
 #include "core/core.h"
+#include "core/engine.h"
+#include "core/graphics/sprite.h"
+#include "core/game/transforms.h"
+#include "gameplay/common/simple_collisions.h"
 
 using namespace dagger;
 
 namespace esccape
 {
-	struct EnemyEntity
-	{
-		int health;
-	};
+    struct Enemy {
+        Vector2 pos = { 0,0 };
+    };
 
-	class Enemy
-		: public System
-	{
-	public:
-		Enemy();
-		Enemy(EnemyEntity entity, std::function<void(int)> healthChangedCallback);
-		inline String SystemName() { return "Player Input System"; }
+    class EnemySystem
+        : public System
+    {
+    public:
+        inline String SystemName() { return "Enemy System"; }
+        SimpleCollision* collision;
+        Transform* transform;
 
-		void SpinUp() override;
-		void WindDown() override;
-		void Run() override;
-
-		float getSpeed();
-		void setSpeed(float speed);
-		int getHealth();
-		void setHealth(int health);
-		void setHealthChangedCallback(std::function<void(int)> callback);
-
-	private:
-		EnemyEntity enemy;
-		std::function<void(int)> healthChangedCallback;
-	};
-
+        void Run() override;
+    };
 }
