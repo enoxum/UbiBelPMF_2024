@@ -11,6 +11,7 @@ using namespace dagger;
 
 namespace academic_life
 {
+
     struct FallingEntity
     {
         float speed;

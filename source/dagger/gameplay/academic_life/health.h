@@ -15,5 +15,5 @@ private:
     Health() : value(50) {}
     int value;
     const int m_max_health = 100;
-    const int m_min_health = 0;
+    const int m_min_health = -100;
 };
