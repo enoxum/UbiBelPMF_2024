@@ -16,7 +16,7 @@ public:
     void Reset() override;
 
 private:
-    ESPB() : value(0) {}
+    ESPB() : value(60) {}
     int value;
     int m_max_espb = 240;
 };
