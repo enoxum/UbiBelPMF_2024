@@ -166,7 +166,7 @@ void PlayerController::Run()
         auto& r = viewRanged.get<RangedWeaponSystem>(entity);
         r.isActive = focusRanged;
         if (r.isActive) {
-            s.color.b = 0;
+            s.color.a = 1;
             //Missing: Activate sprite transparency or add sprite back
             r.position.x=t.position.x = playerPos.x + 8 * cos_;
             r.position.y=t.position.y = playerPos.y + 8 * sin_;
@@ -175,7 +175,7 @@ void PlayerController::Run()
             s.color.r = r.isMouseBtnPressed ? 0 : 1;
         }
         else {
-            s.color.b = 1;
+            s.color.a = 0;
             //Missing: Make sprite transparent or remove sprite.
         }
     }
@@ -187,14 +187,14 @@ void PlayerController::Run()
         auto& m = viewMelee.get<MeleeWeaponSystem>(entity);
         m.isActive = !focusRanged;
         if (m.isActive) {
-            s.color.b = 0;
+            s.color.a = 1;
             //Missing: Activate sprite transparency or add sprite back
             t.position.x = playerPos.x + 8 * cos_;
             t.position.y = playerPos.y + 8 * sin_;
             s.color.r = m.isMouseBtnPressed ? 0 : 1;
         }
         else {
-            s.color.b = 1;
+            s.color.a = 0;
             //Missing: Make sprite transparent or remove sprite.
         }
     }
