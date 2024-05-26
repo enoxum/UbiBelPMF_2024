@@ -1,15 +1,15 @@
 #include "espb.h"
 
-void ESPB::Increase(int amount) {
+void ESPB::Update(int amount) {
     value += amount;
-    if (value > 240) value = 240;
-}
-
-void ESPB::Decrease(int amount) {
-    value -= amount;
-    if (value < 0) value = 0;
+    value = std::min(value, m_max_espb);
 }
 
 int ESPB::GetValue() const {
     return value;
+}
+
+void ESPB::Reset()
+{
+    value = 60;
 }

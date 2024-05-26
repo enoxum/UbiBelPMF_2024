@@ -2,6 +2,8 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include "core/graphics/animation.h"
+#include "core/graphics/animations.h"
 
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "health.h"
@@ -22,26 +24,45 @@ void AcademicPlayerInputSystem::WindDown()
 }
 
 void AcademicPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
-{
+{ 
+  
+    
     Engine::Registry().view<ControllerMapping>().each([&](ControllerMapping& ctrl_)
-    {
-        if (kEvent_.key == ctrl_.leftKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
         {
-            ctrl_.input.x = -1;
-        }
-        else if (kEvent_.key == ctrl_.leftKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
-        {
-            ctrl_.input.x = 0;
-        }
-        else if (kEvent_.key == ctrl_.rightKey && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
-        {
-            ctrl_.input.x = 1;
-        }
-        else if (kEvent_.key == ctrl_.rightKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
-        {
-            ctrl_.input.x = 0;
-        }
-    });
+            if (kEvent_.key == ctrl_.leftKey && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
+            {
+                ctrl_.input.x = -1;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:RUN_LEFT");
+                    });
+            }
+            else if (kEvent_.key == ctrl_.leftKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
+            {
+                ctrl_.input.x = 0;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:IDLE");
+                        
+                    });
+            }
+            else if (kEvent_.key == ctrl_.rightKey && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
+            {
+                ctrl_.input.x = 1;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:RUN_RIGHT");
+                    });
+            }
+            else if (kEvent_.key == ctrl_.rightKey && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
+            {
+                ctrl_.input.x = 0;
+                Engine::Registry().view<Animator>().each([&](Animator& animator_)
+                    {
+                        AnimatorPlay(animator_, "AcademicLife:IDLE");
+                    });
+            }
+        });
 }
 
 void AcademicPlayerInputSystem::Run()
@@ -58,20 +79,20 @@ void AcademicPlayerInputSystem::Run()
     auto view = Engine::Registry().view<Transform, ControllerMapping, AcademicPlayer, common_res::ParticleSpawnerSettings>();
     for (auto entity : view)
     {
-        auto &t = view.get<Transform>(entity);
-        auto &ctrl = view.get<ControllerMapping>(entity);
-        auto &academic_player = view.get<AcademicPlayer>(entity);
+        auto& t = view.get<Transform>(entity);
+        auto& ctrl = view.get<ControllerMapping>(entity);
+        auto& academic_player = view.get<AcademicPlayer>(entity);
         auto& particleSettings = view.get<common_res::ParticleSpawnerSettings>(entity);
 
         Health& health = Health::Instance();
         int currentHealth = health.GetValue();
 
         academic_player.SetSpeedBasedOnHealth(currentHealth, 20.f); //20.f je TileSize TO DO
-        SetParticleSettings(particleSettings, currentHealth); 
+        SetParticleSettings(particleSettings, currentHealth);
         common_res::ParticleSystem::UpdateParticleSpawnerSettings(entity, particleSettings);
 
 
-        t.position.y = bottomBoarderY + 65.0f; 
+        t.position.y = bottomBoarderY + 65.0f;
         t.position.x += ctrl.input.x * academic_player.horzSpeed * Engine::DeltaTime();
 
         if (t.position.x > boarderX)

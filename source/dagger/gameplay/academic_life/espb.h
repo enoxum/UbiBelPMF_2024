@@ -11,12 +11,13 @@ public:
 
     }
 
-    void Increase(int amount) override;
-    void Decrease(int amount) override;
+    void Update(int amount) override;
     int GetValue() const override;
+    void Reset() override;
 
 private:
-    ESPB() : value(190) {}
+    ESPB() : value(60) {}
     int value;
+    int m_max_espb = 240;
 };
 

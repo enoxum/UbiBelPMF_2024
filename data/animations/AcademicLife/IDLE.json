@@ -1,0 +1,17 @@
+{
+	"animation-name": "AcademicLife:IDLE",
+	"animation-length-ms": 600,
+	"animation-frames": 
+	[
+		{ "texture-name": "AcademicLife:IDLE:idle1" },
+		{ "texture-name": "AcademicLife:IDLE:idle2" },
+		{ "texture-name": "AcademicLife:IDLE:idle3" },
+		{ "texture-name": "AcademicLife:IDLE:idle4" },
+		{ "texture-name": "AcademicLife:IDLE:idle5" },
+		{ "texture-name": "AcademicLife:IDLE:idle6" },
+		{ "texture-name": "AcademicLife:IDLE:idle7" },
+		{ "texture-name": "AcademicLife:IDLE:idle8" },
+		{ "texture-name": "AcademicLife:IDLE:idle9" },
+		{ "texture-name": "AcademicLife:IDLE:idle10" }
+	]
+}
