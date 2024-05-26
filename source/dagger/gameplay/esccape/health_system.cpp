@@ -7,36 +7,42 @@
 
 using namespace esccape;
 
-HealthSystem::HealthSystem() : m_MaxHealth(5), m_CurrentHealth(5) {}
+HealthSystem::HealthSystem() : m_MaxHealth(5), m_CurrentHealth(5) {
+}
 
 HealthSystem::~HealthSystem() {}
 
-void HealthSystem::SetMaxHealth(int maxHealth) {
+void HealthSystem::SetMaxHealth(float maxHealth) {
     m_MaxHealth = maxHealth;
 }
 
-int HealthSystem::GetMaxHealth() const {
+float HealthSystem::GetMaxHealth() const {
     return m_MaxHealth;
 }
 
-void HealthSystem::SetCurrentHealth(int currentHealth) {
+void HealthSystem::SetCurrentHealth(float currentHealth) {
     if (m_CurrentHealth != currentHealth) {
         m_CurrentHealth = currentHealth;
         Engine::Dispatcher().trigger<HealthChanged>({ m_CurrentHealth });  // Emit signal when health changes
     }
 }
 
-int HealthSystem::GetCurrentHealth() const {
+float HealthSystem::GetCurrentHealth() const {
     return m_CurrentHealth;
 }
 
-void HealthSystem::Heal(int amount) {
+void HealthSystem::Heal(float amount) {
     int newHealth = std::min(m_CurrentHealth + amount, m_MaxHealth);
     SetCurrentHealth(newHealth);
 }
 
-void HealthSystem::TakeDamage(int amount) {
-    int newHealth = std::max(m_CurrentHealth - amount, 0);
+void HealthSystem::TakeDamage(float amount) {
+    printf("taking damageee...");
+    m_CurrentHealth -= amount;
+    if (m_CurrentHealth < 0) {
+        m_CurrentHealth = 0;
+    }
+    float newHealth = m_CurrentHealth;
     SetCurrentHealth(newHealth);
 }
 

@@ -18,7 +18,7 @@ void esccape::WormSystem::Run()
         //sprite.scale.y = -std::abs(sprite.scale.y);
         //auto& col = view.get<SimpleCollision>(entity);
         if (worm.spawnEdge == 0 && t.position.y < -worm.startingYTop - 10) {
-            printf("Usao u if\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            //printf("Usao u if\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
             //std::random_device rd;
             //std::mt19937 gen(rd());
             //std::uniform_int_distribution<> dis(-(worm.startingPos.y), worm.startingPos.y);
