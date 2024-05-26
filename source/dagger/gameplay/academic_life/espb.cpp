@@ -11,5 +11,5 @@ int ESPB::GetValue() const {
 
 void ESPB::Reset()
 {
-    value = 0;
+    value = 60;
 }

@@ -199,7 +199,7 @@ void academic_life::createRandomEntity()
 {
     auto& reg = Engine::Instance().Registry();
     int entity_prob = rand() % 2;
-    auto randomX = rand() % 200 - 150;
+    auto randomX = rand() % 300 - (150 + rand() % 90);
     auto randomY = (rand() % 30) * ((rand() % 10) + 5) + 300;
 
     if (entity_prob == 0)
