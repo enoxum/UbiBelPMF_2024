@@ -79,9 +79,12 @@ void PacmanGame::GameplaySystemsSetup()
 
 void PacmanGame::WorldSetup()
 {
+    constexpr int screenWidth = 800;
+    constexpr int screenHeight = 600;
+
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
-    camera->size = { 800, 600 };
+    camera->size = { screenWidth, screenHeight };
     camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
@@ -96,17 +99,14 @@ void pacman::SetupWorld()
     auto& engine = Engine::Instance();
     auto& reg = engine.Registry();
 
-    // field
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
 
-    constexpr int height = 20;
-    constexpr int width = 26;
+    constexpr int height = 22;
+    constexpr int width = 30;
     constexpr float tileSize = 20.f;// / static_cast<float>(Width);
 
     float zPos = 1.f;
 
-    constexpr float Space = 0.1f;
+    constexpr float Space = 0.001f;
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -116,28 +116,21 @@ void pacman::SetupWorld()
             AssignSprite(sprite, "EmptyWhitePixel");
             sprite.size = scale * tileSize;
 
-            if (i % 2 != j % 2)
-            {
-                sprite.color.r = 0.4f;
-                sprite.color.g = 0.4f;
-                sprite.color.b = 0.4f;
-            }
-            else
-            {
-                sprite.color.r = 0.6f;
-                sprite.color.g = 0.6f;
-                sprite.color.b = 0.6f;
-            }
-
+            
+            sprite.color.r = 0.0f;
+            sprite.color.g = 0.0f;
+            sprite.color.b = 0.0f;
+           
             if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
             {
-                sprite.color.r = 0.0f;
-                sprite.color.g = 0.0f;
-                sprite.color.b = 0.0f;
+                sprite.color.r = 0.2f;
+                sprite.color.g = 0.2f;
+                sprite.color.b = 0.2f;
 
-                //auto& col = reg.emplace<SimpleCollision>(entity);
-                //col.size.x = TileSize;
-                //col.size.y = TileSize;
+                auto& col = reg.emplace<SimpleCollision>(entity);
+                col.size.x = tileSize;
+                col.size.y = tileSize;
+
             }
 
             auto& transform = reg.emplace<Transform>(entity);
@@ -148,6 +141,8 @@ void pacman::SetupWorld()
     }
 
     zPos -= 1.f;
+
+
 
     // player controller setup
     const Float32 playerSize = tileSize * ((height - 2) * (1 + Space) * 0.33f);
@@ -184,7 +179,7 @@ void pacman::SetupWorld()
     auto* camera = Engine::GetDefaultResource<Camera>();
 
     //ENEMY
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < 0; i++)
     {
         auto entity = reg.create();
         auto& col = reg.emplace<SimpleCollision>(entity);

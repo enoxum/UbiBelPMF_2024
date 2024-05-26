@@ -1,5 +1,8 @@
 #include "pingpong_playerinput.h"
 
+#include "gameplay/common/simple_collisions.h"
+
+#include "core/graphics/sprite.h"
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include <imgui.h>
@@ -8,10 +11,12 @@
 using namespace dagger;
 using namespace pacman;
 
-Float32 PingPongPlayerInputSystem::s_BoarderDown = -20;
-Float32 PingPongPlayerInputSystem::s_BoarderUp = 20;
-
+Float32 PingPongPlayerInputSystem::s_BoarderUp = 25;
+Float32 PingPongPlayerInputSystem::s_BoarderDown = -25;
 Float32 PingPongPlayerInputSystem::s_PlayerSpeed = 1.f;
+
+bool left, right, up, down = false;
+
 
 void PingPongPlayerInputSystem::SpinUp()
 {
@@ -37,36 +42,53 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
         if (kEvent_.key == ctrl_.up_key && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
         {
             ctrl_.input.y = 1;
+            up = true;
+            left, right, down = false;
         }
         else if (kEvent_.key == ctrl_.up_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y > 0)
         {
             ctrl_.input.y = 1;
+            up = true;
+            left, right, down = false;
         }
-        else if (kEvent_.key == ctrl_.down_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
+        else if (kEvent_.key == ctrl_.down_key && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Pressed))
         {
             ctrl_.input.y = -1;
+            down = true;
+            left, right, up = false;
         }
         else if (kEvent_.key == ctrl_.down_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y < 0)
         {
-            ctrl_.input.y =-1;
+            ctrl_.input.y = -1;
+            down = true;
+            left, right, up = false;
         }
 
         //X
         if (kEvent_.key == ctrl_.right_key && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
         {
             ctrl_.input.x = 1;
+            right = true;
+            left, down, up = false;
         }
         else if (kEvent_.key == ctrl_.right_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
         {
             ctrl_.input.x = 1;
+            right = true;
+            left, down, up = false;
         }
-        else if (kEvent_.key == ctrl_.left_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
+        else if (kEvent_.key == ctrl_.left_key && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Pressed))
         {
             ctrl_.input.x = -1;
+            left = true;
+            down, right, up = false;
+            
         }
         else if (kEvent_.key == ctrl_.left_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
         {
             ctrl_.input.x = -1;
+            left = true;
+            down, right, up = false;
         }
     });
 }
@@ -118,23 +140,52 @@ void PingPongPlayerInputSystem::Run()
     Vector3 playerPosition{ 0, 0, 0 };
 
     //Pacman
-    auto view = Engine::Registry().view<Transform, ControllerMapping, MovementData>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, MovementData,SimpleCollision,Sprite>();
     for (auto entity : view)
     {
+        
+        auto& spr = view.get<Sprite>(entity);
         auto &t = view.get<Transform>(entity);
         auto &ctrl = view.get<ControllerMapping>(entity);
         auto &mov = view.get<MovementData>(entity);
+        auto &col = view.get<SimpleCollision>(entity);
+        
+        // TODO fix left
+        if (left) {
+            AssignSprite(spr, "Pacmanart:pacmanleft:1");
+        }
+        if (right) {
+            AssignSprite(spr, "Pacmanart:pacmanright:1");
+        }
+        if (up) {
+            AssignSprite(spr, "Pacmanart:pacmanup:1");
+        }
+        if (down) {
+            AssignSprite(spr, "Pacmanart:pacmandown:1");
+        }
 
         
-
+        
         t.position.x += ctrl.input.x * mov.maxSpeed;
         t.position.y += ctrl.input.y * mov.maxSpeed;
+        
+        if (t.position.y > s_BoarderUp) 
+        {
+            t.position.y = s_BoarderUp;
+        }
+        if (t.position.y < s_BoarderDown)
+        {
+            t.position.y = s_BoarderDown;
+        }
+
+
+
 
         playerPosition = t.position;
     }
     //Ghosts
     auto viewEnemy = Engine::Registry().view<EnemyData, Transform, MovementData>();
-    for (auto entity : viewEnemy)
+    for(auto entity : viewEnemy)
     {
         auto& t = viewEnemy.get<Transform>(entity);
         auto& mov = viewEnemy.get<MovementData>(entity);
