@@ -24,22 +24,31 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
 	auto& bullet = reg.emplace<Bullet>(entity);
 
 	auto& sprite = reg.emplace<Sprite>(entity);
-    // assign a sprite for bullets when found and according to a weapon type.
-    AssignSprite(sprite, "dead_end:Bullet:bullet_pistol");
-
     float tileSize;
 
+    // assign a sprite for bullets when found and according to a weapon type.
+    switch (weaponType_) {
+        case 1:
+            AssignSprite(sprite, "dead_end:Bullet:bullet_pistol");
+            bullet.damage = 10.f;
+            tileSize = 10.f;
+            break;
+        case 2:
+            AssignSprite(sprite, "dead_end:Bullet:bullet_rifle");
+            bullet.damage = 20.f;
+            tileSize = 20.f;
+            break;
+        case 3:
+            AssignSprite(sprite, "dead_end:Bullet:bullet_shotgun");
+            bullet.damage = 30.f;
+            tileSize = 20.f;
+            break;
+        
+        default:
+            break;
 
-    if (weaponType_ == 1)
-    {
-        tileSize = 10.f;
-        bullet.damage = 10;
     }
-    else if (weaponType_ == 2)
-    {
-        tileSize = 20.f;
-        bullet.damage = 20;
-    }
+
 
     sprite.size.x = tileSize;
     sprite.size.y = tileSize;

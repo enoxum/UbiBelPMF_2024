@@ -14,9 +14,6 @@ namespace dead_end
         bool is_dead{ false };
         bool is_boss{ false };
         Float32 speed = 40.f;
-        Vector3 direction{ 0, 0, 0 };
-        Float32 cooldown = 0.f;
-        Float32 maxCooldown = 0.5f;
         Float32 meleeDamage = 0.15f;
     };
 
@@ -37,11 +34,5 @@ namespace dead_end
         void Run() override;
     };
 
-    class DeadEndEnemyObstacleCollisionSystem
-        : public System
-    {
-        inline String SystemName() { return "Enemy Collision System"; }
 
-        void Run() override;
-    };
 }

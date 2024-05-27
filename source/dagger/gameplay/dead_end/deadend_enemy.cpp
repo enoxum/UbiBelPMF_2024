@@ -3,6 +3,7 @@
 #include "deadend_health.h"
 #include "deadend_wavestruct.h"
 #include "deadend_bullet.h"
+#include "deadend_obstacle.h"
 
 #include "collectables.h"
 
@@ -18,7 +19,6 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
-#include "deadend_obstacle.h"
 
 using namespace dagger;
 using namespace dead_end;
@@ -29,7 +29,6 @@ void dead_end::DeadEndEnemyMoveSystem::Run()
     auto enemyView = Engine::Registry().view<DeadEndEnemy, Transform, SimpleCollision, Health, Sprite>();
     auto playerView = Engine::Registry().view<Transform, Player>();
     auto viewCollisions = Engine::Registry().view<DeadEndObstacle, Transform, SimpleCollision>();
-
 
 
     for (auto entity : enemyView)
@@ -43,13 +42,59 @@ void dead_end::DeadEndEnemyMoveSystem::Run()
         auto& playerPos = playerView.get<Transform>(playerEntity);
 
        
-        Vector2 direction = Vector2{ playerPos.position.x, playerPos.position.y } - Vector2{ enemyPos.position.x, enemyPos.position.y };
+        Vector2 direction = { playerPos.position.x - enemyPos.position.x, playerPos.position.y - enemyPos.position.y };
 
         float length = sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length > 0.0f)
         {
             direction.x /= length;
             direction.y /= length;
+        }
+
+        if (enemyCol.colided)
+        {
+
+            if (Engine::Registry().valid(enemyCol.colidedWith) && enemyView.contains(enemyCol.colidedWith))
+            {
+                enemyPos.position.x += direction.x * Engine::DeltaTime() * enemy.speed;
+                enemyPos.position.y += direction.y * Engine::DeltaTime() * enemy.speed;
+                continue;
+            }
+
+            if (Engine::Registry().valid(enemyCol.colidedWith) && viewCollisions.contains(enemyCol.colidedWith))
+            {
+                SimpleCollision& collision = viewCollisions.get<SimpleCollision>(enemyCol.colidedWith);
+                Transform& transform = viewCollisions.get<Transform>(enemyCol.colidedWith);
+
+                Vector2 collisionSides = enemyCol.GetCollisionSides(enemyPos.position, collision, transform.position);
+
+                do
+                {
+                    // get back for 1 frame 
+                    Float32 dt = Engine::DeltaTime();
+
+                    if (collisionSides.x > 0)
+                    {
+                        enemyPos.position.x -= direction.x * enemy.speed * dt;
+                    }
+                    else if (collisionSides.x < 0)
+                    {
+                        enemyPos.position.x += direction.x * enemy.speed * dt;
+                    }
+
+                    if (collisionSides.y > 0)
+                    {
+                        enemyPos.position.y -= direction.y * enemy.speed * dt;
+                    }
+                    else if (collisionSides.y < 0)
+                    {
+                        enemyPos.position.y += direction.y * enemy.speed * dt;
+                    }
+
+                } while (enemyCol.IsCollided(enemyPos.position, collision, transform.position));
+                
+            }
+            enemyCol.colided = false;
         }
 
         enemyPos.position.x += direction.x * Engine::DeltaTime() * enemy.speed;

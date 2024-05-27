@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <random>
 
 #include "gameplay/dead_end/deadend_obstacle.h"
 #include "gameplay/dead_end/deadend_enemy.h"
@@ -323,19 +324,30 @@ void loadEnemies(float zPos, float size)
 
             auto entity = reg.create();
             auto& enemy = reg.emplace<DeadEndEnemy>(entity);
-            auto& sprite = reg.emplace<Sprite>(entity);
             auto& col = reg.emplace<SimpleCollision>(entity);
+            auto& sprite = reg.emplace<Sprite>(entity);
 
 
             int randomNumber = std::rand() % 2;
+
+            std::random_device rd;
+
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<> dis(30.0f, 50.0f);
+            double random_speed = dis(gen);
+
             switch (randomNumber) {
                 case 0:
-                    enemy.speed = 60.f;
+
+                    enemy.speed = random_speed + 20.f;
                     AssignSprite(sprite, "dead_end:Enemy:zombie_1");
                     break;
                 case 1:
+
+                    enemy.speed = random_speed;
                     AssignSprite(sprite, "dead_end:Enemy:zombie_3");
                     break;
+                
                 default:
                     break;
             }
@@ -351,8 +363,8 @@ void loadEnemies(float zPos, float size)
             transform.position.z = zPos;
 
             auto& health = reg.emplace<Health>(entity);
-            health.currentHealth = 40;
-            health.maxHealth = 40;
+            health.currentHealth = 40.f;
+            health.maxHealth = 40.f;
 
             
 

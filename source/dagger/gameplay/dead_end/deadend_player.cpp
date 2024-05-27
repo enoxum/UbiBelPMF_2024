@@ -8,11 +8,11 @@
 #include "core/core.h"
 #include "core/game/transforms.h"
 #include "core/graphics/text.h"
+#include "core/graphics/sprite.h"
 
 #include "gameplay/common/simple_collisions.h"
 
 #include <algorithm>
-#include <iostream>
 #include "deadend_bullet.h"
 #include "deadend_enemy.h"
 #include "deadend_obstacle.h"
@@ -22,7 +22,7 @@ using namespace dead_end;
 
 void dead_end::PlayerSystem::Run()
 {
-	auto view = Engine::Registry().view<Player, Transform, SimpleCollision, Health>();
+	auto view = Engine::Registry().view<Player, Transform, SimpleCollision, Health, Sprite>();
 	auto viewCollisions = Engine::Registry().view<DeadEndObstacle, Transform, SimpleCollision>();
     auto viewBullet = Engine::Registry().view<Bullet, SimpleCollision>();
     auto viewCollect = Engine::Registry().view<Collectable>();
@@ -36,14 +36,35 @@ void dead_end::PlayerSystem::Run()
 		auto& player = view.get<Player>(entity);
 		auto& col = view.get<SimpleCollision>(entity);
         auto& health = view.get<Health>(entity);
+        auto& sprite = view.get<Sprite>(entity);
 
-		//auto& text = viewText.get<Text>(entity); add gameover later.
+        sprite.size.x = 55.f;
+        sprite.size.y = 55.f;
 
-       
+        switch (player.weaponType) {
+            case 1:
+                AssignSprite(sprite, "dead_end:Player:player_handgun");
+                sprite.size.x = 55.f;
+                sprite.size.y = 55.f;
+                break;
+            case 2:
+                AssignSprite(sprite, "dead_end:Player:player_rifle");
+                sprite.size.x = 55.f;
+                sprite.size.y = 55.f;
+                break;
+            case 3:
+                AssignSprite(sprite, "dead_end:Player:player_shotgun");
+                sprite.size.x = 55.f;
+                sprite.size.y = 55.f;
+                break;
+            
+            default:
+                break;
+        }
+
 
 		if (col.colided)
 		{
-            // later : collision w/ enemies and collectables.
 
             if (Engine::Registry().valid(col.colidedWith) && viewEnemy.contains(col.colidedWith))
             {
@@ -115,12 +136,10 @@ void dead_end::PlayerSystem::handleHit(Player& player_, Health& health_)
 {
     auto value = player_.hit.second;
     health_.currentHealth -= value;
-    std::cout << "Curr HP : " << health_.currentHealth << std::endl;
 
     if (health_.currentHealth <= 0)
     {
         player_.stopMoving = true;
-        // handle game over.
     }
 }
 

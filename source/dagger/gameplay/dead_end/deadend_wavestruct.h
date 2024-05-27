@@ -11,9 +11,12 @@ namespace dead_end {
     struct Wave {
         int waveNumber{ 1 };
         int waveSize{ 5 };
-        std::string weapon{ "Pistol" };
+        int weapon{ 0 };
         int healthResetPercentage{ 0 };
         bool bossWave{ false };
+        Float32 zPos{ 0.f };
+        Float32 playerSize{ 0.f };
+
     };
 
     class WaveSystem
@@ -28,7 +31,10 @@ namespace dead_end {
             void SetWave(Wave& wave_);
 
             void ApplyWaveEffects(Wave& wave_, Player& player_, Health& health_);
+            void loadBoss(Float32 zPos);
     };
+
+    void gameOver();
 
 
 } 

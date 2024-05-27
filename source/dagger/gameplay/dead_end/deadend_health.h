@@ -18,7 +18,9 @@ namespace dead_end
     class HealthSystem 
         : public System
     {
+    public:
         inline String SystemName() override { return "Health system"; }
         
+        void Run() override;
     };
 }
