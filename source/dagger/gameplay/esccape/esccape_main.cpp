@@ -99,14 +99,39 @@ void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID)
     float spriteSize = 150;
     healthBarSprite.size = { spriteSize, spriteSize * ratio };
 
-    auto& transform = reg.get_or_emplace<Transform>(healthBarEntity);
+    auto& transform = reg.emplace<Transform>(healthBarEntity);
     transform.position.x = -300;
     transform.position.y = screenHeight / 2 - 60;
     transform.position.z = 0;
-
     if (chrID == 1) {
         transform.position.x = 300;
-    } 
+    }
+
+    // icon
+    auto iconEntity = reg.create();
+    auto& iconSprite = reg.emplace<Sprite>(iconEntity);
+    if (chrID == 0)
+        AssignSprite(iconSprite, "Esccape:chr_png");
+    else
+        AssignSprite(iconSprite, "Esccape:skeleton_png");
+
+    float ratioIcon = iconSprite.size.y / iconSprite.size.x;
+    float iconSpriteSize = 30;
+    iconSprite.size = { iconSpriteSize, iconSpriteSize * ratioIcon };
+
+    auto& transform1 = reg.emplace<Transform>(iconEntity);
+    if (chrID == 0) {
+        transform1.position.x = -200;
+        transform1.position.y = screenHeight / 2 - 60;
+        transform1.position.z = 0;
+    }
+    else {
+        transform1.position.x = 200;
+        transform1.position.y = screenHeight / 2 - 60;
+        transform1.position.z = 0;
+    }
+    
+
 }
 
 void esccape::UpdateHealthBar(int chrID, int health)
@@ -151,17 +176,6 @@ void esccape::onHealthChanged(const HealthChanged& event) {
     // imamo srca : 0, 1, 2, 3, 4, 5
         //  health: 0, 2, 4, 6, 8, 10
     constexpr float tolerance = 0.01f;
-
-    /*if (std::abs(event.newHealth - 8.0f) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 4);
-    else if (std::abs(event.newHealth - 6.0f) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 3);
-    else if (std::abs(event.newHealth - 4.0f) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 2);
-    else if (std::abs(event.newHealth - 2.0f) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 1);
-    else if (std::abs(event.newHealth ) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 0);*/
 
     if (std::abs(event.newHealth - 8.0f) < tolerance)
         UpdateHealthBar(event.characterID, 4);
@@ -348,7 +362,6 @@ void esccape::SetupWorld()
     zPos -= 1.f;
 
     
-    
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
     CreateEnemy(zPos, screenWidth, screenHeight);
@@ -423,32 +436,6 @@ void esccape::SetupWorld()
             auto entity = mainChar.getEntity();
             //auto& character = reg.emplace<Character>(entity, mainChar);
             auto& character = reg.emplace<Character>(entity, std::move(mainChar));
-
-
-            // ovih 6 linija ispod su mi bile samo da proverim da li se poklapaju entiteti za karaktera koji je ovde i onog koji je u character_controller u CheckCollisions
-            
-            /*if (Engine::Registry().has<Character>(entity))
-                printf("Character %d health = %f\n", character.character->id, character.character->health);
-
-            auto& chr2 = Engine::Registry().get<Character>(entity);
-            if (Engine::Registry().has<Character>(entity))
-                printf("Character %d, entity %d health = %f\n", chr2.character->id, (int)entity, chr2.character->health);*/
-            
-            // ***************
-
-
-
-
-            // ovo sam pokusala da direktno preko konstruktora kreiramo karaktera ali puca kad dodje do kolizije sa drugim karakterom nzm sto
-           
-            /* auto entity = reg.create();
-            auto mainChar = new Character(entity, "ASDWSpace",
-                "spritesheets:player_anim:player_idle_front:1",
-                "player:player_idle_front",
-                { 1, 1, 1 }, { 0, 100 }, 0);*/
-
-            /*printf("%f\n", mainChar->character->healthSystem.GetCurrentHealth());
-            printf("%d\n", mainChar->character->id);*/
         }
     }
 
@@ -469,5 +456,6 @@ void esccape::SetupWorld()
     CreateHealthBar(screenWidth, screenHeight, 0);
     CreateHealthBar(screenWidth, screenHeight, 1);
     Engine::Dispatcher().sink<HealthChanged>().connect<&onHealthChanged>();
+   
 }
 
