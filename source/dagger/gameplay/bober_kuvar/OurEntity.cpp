@@ -9,7 +9,8 @@ OurEntity::OurEntity(const std::string& sprite_path, const std::string& animatio
 	(*transform).position = Vector3{ 0.0f, 0.0f, 0.0f };
 
 	sprite = &Engine::Registry().emplace<Sprite>(instance);
-	AssignSprite(*sprite, sprite_path_);
+	if (sprite_path_ != "")
+		AssignSprite(*sprite, sprite_path_);
 
 	animator = &Engine::Registry().emplace<Animator>(instance);
 	if (animation_path_ != "")

@@ -115,6 +115,7 @@ namespace bober_game
 	{
 		int ID;
 		bool focusOnPlayer;
+		float visionDistance;
 		Vector3 target{ 0, 0, 0 };
 	};
 

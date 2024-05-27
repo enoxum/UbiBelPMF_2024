@@ -44,7 +44,7 @@ void BoberGame::SetCamera()
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };
     //put it on 3 to simulate how the game will look
-    camera->zoom = 3;
+    camera->zoom = 1;
     camera->position = { 0, 0, 0 };
     camera->Update();
 }
@@ -57,30 +57,36 @@ void BoberGame::WorldSetup()
     auto& reg = engine.Registry();
 
     int map_size = 20;
-    int room_size = 4;
+    int room_size = 5;
     OurMap* map = new OurMap(map_size, room_size);
     int n = map->get_n();
     std::vector<std::vector<int>> matrix = map->get_matrix();
 
-    int rand_x = rand() % (n - 2) + 1;
-    int rand_y = rand() % (n - 2) + 1;
-    int tries = 0;
-    while (matrix[rand_y][rand_x] != 0 && tries < 100) {
-        rand_x = rand() % (n - 2) + 1;
-        rand_y = rand() % (n - 2) + 1;
-        tries++;
+    std::vector<Room*> rooms = map->get_rooms();
+    for (Room* room : rooms) {
+        std::vector<Enemy*> roomEnemies;
+        int enemyCount = room->getEnemyCount();
+        std::pair<int, int> topLeft = room->getTopLeft();
+        std::pair<int, int> bottomRight = room->getBottomRight();
+
+        for (size_t i = 0; i < enemyCount; i++)
+        {
+            Enemy* enemy = new Enemy();
+            enemy->spawn(topLeft, bottomRight, matrix);
+
+            roomEnemies.push_back(enemy);
+        }
+
+        room->setRoomEnemies(roomEnemies);
     }
 
-    if (tries >= 100) {
-        Logger::error("Something went really wrong! No possible spawnpoint for Bober!");
-        return;
-    }
+    int randRoomIndex = rand() % rooms.size();
+    std::pair<int, int> topLeft = rooms[randRoomIndex]->getTopLeft();
+    std::pair<int, int> bottomRight = rooms[randRoomIndex]->getBottomRight();
+
     // bober
     Player* bober = new Player();
-    bober->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
-
-    Enemy* enemy = new Enemy();
-    enemy->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
+    bober->spawn(topLeft, bottomRight, matrix);
 
     OurEntity* cursor = new OurEntity("crosshair", "", false, std::make_pair(0, 0));
     //Cursor

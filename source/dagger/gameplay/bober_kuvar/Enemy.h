@@ -9,6 +9,9 @@ class Enemy :
 {
 public:
     Enemy();
+
+    void spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&) override;
+
 private:
     double xpDrop_;
     double lootAmount_;
@@ -18,9 +21,9 @@ private:
     EnemyData* data_;
     Patrol* patrol_;
 
-    void spawn() override;
     void die() override;
     void collision() override;
-    void generatePath();
+    void generatePath(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix);
 };
 */
+

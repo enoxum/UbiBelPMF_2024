@@ -7,7 +7,7 @@ Character::Character(double hp, double speed, double strength, const std::string
 	collision_size_ = collision_size;
 }
 
-void Character::spawn()
+void Character::spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&)
 {
 }
 
