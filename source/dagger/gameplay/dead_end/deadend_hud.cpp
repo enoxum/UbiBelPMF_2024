@@ -18,30 +18,31 @@ void dead_end::DeadEndHUDSystem::Run()
 	auto hudView = Engine::Registry().view<HUD, Transform, Sprite>();
 	auto playerView = Engine::Registry().view<Health, Player, Transform>();
 
-	for (auto entity : hudView)
+	for (auto playerEntity : playerView)
 	{
 
-		auto& hud = hudView.get<HUD>(entity);
-		auto& hud_t = hudView.get<Transform>(entity);
-		auto& hud_s = hudView.get<Sprite>(entity);
+		auto& health = playerView.get<Health>(playerEntity);
+		auto& t = playerView.get<Transform>(playerEntity);
+		float healthRatio = 0.f;
 
-		for (auto playerEntity : playerView)
+		for (auto hudEntity : hudView)
 		{
 
-			auto& health = playerView.get<Health>(playerEntity);
-			auto& t = playerView.get<Transform>(playerEntity);
+			auto& hud = hudView.get<HUD>(hudEntity);
+			auto& hud_t = hudView.get<Transform>(hudEntity);
+			auto& hud_s = hudView.get<Sprite>(hudEntity);
 
-			float healthRatio = static_cast<float>(health.currentHealth) / health.maxHealth;
-			hud.size.y *= healthRatio;
+
+			healthRatio = static_cast<float>(health.currentHealth) / health.maxHealth;
 
 			hud_t.position.x = t.position.x - hud.position.x;
 			hud_t.position.y = t.position.y - hud.position.y;
 
-			
+			hud_s.size.x = hud.size.x * healthRatio;
+			hud_s.size.y = hud.size.y;
+
+			hud_s.size.x = std::clamp(hud_s.size.x, 0.0f, hud.size.x);
 		}
-
-		hud_s.size = hud.size;
-
 
 
 	}

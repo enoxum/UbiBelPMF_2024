@@ -12,17 +12,21 @@
 #include "gameplay/common/simple_collisions.h"
 
 #include <algorithm>
+#include <iostream>
 #include "deadend_bullet.h"
+#include "deadend_enemy.h"
+#include "deadend_obstacle.h"
 
 using namespace dagger;
 using namespace dead_end;
 
 void dead_end::PlayerSystem::Run()
 {
-	auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
 	auto view = Engine::Registry().view<Player, Transform, SimpleCollision, Health>();
+	auto viewCollisions = Engine::Registry().view<DeadEndObstacle, Transform, SimpleCollision>();
     auto viewBullet = Engine::Registry().view<Bullet, SimpleCollision>();
     auto viewCollect = Engine::Registry().view<Collectable>();
+    auto viewEnemy = Engine::Registry().view<DeadEndEnemy, SimpleCollision>();
 	//auto viewText = Engine::Registry().view<Text>();
 
 
@@ -33,33 +37,43 @@ void dead_end::PlayerSystem::Run()
 		auto& col = view.get<SimpleCollision>(entity);
         auto& health = view.get<Health>(entity);
 
-        
-
 		//auto& text = viewText.get<Text>(entity); add gameover later.
 
+       
 
 		if (col.colided)
 		{
             // later : collision w/ enemies and collectables.
 
+            if (Engine::Registry().valid(col.colidedWith) && viewEnemy.contains(col.colidedWith))
+            {
+                auto& enemy = viewEnemy.get<DeadEndEnemy>(col.colidedWith);
+
+                player.hit.first= true;
+                player.hit.second = enemy.meleeDamage;
+                handleHit(player, health);
+                col.colided = false;
+                break;
+            }
+
             // collectables collision
             if (viewCollect.contains(col.colidedWith)) {
                 Collectable& collectable = Engine::Registry().get<Collectable>(col.colidedWith);
                 dead_end::HandleCollectableCollision(collectable, health);
-                Engine::Registry().destroy(col.colidedWith); 
+                Engine::Registry().destroy(col.colidedWith);
+                continue;
             }
 
             if (viewBullet.contains(col.colidedWith)) {
                 col.colided = false;
                 continue;
             }
+
             
-			if (Engine::Registry().valid(col.colidedWith))
+			if (Engine::Registry().valid(col.colidedWith) && viewCollisions.contains(col.colidedWith))
 			{
 				SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
 				Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
-
-                
 
 				Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
 
@@ -96,3 +110,17 @@ void dead_end::PlayerSystem::Run()
 		}
 	}
 }
+
+void dead_end::PlayerSystem::handleHit(Player& player_, Health& health_)
+{
+    auto value = player_.hit.second;
+    health_.currentHealth -= value;
+    std::cout << "Curr HP : " << health_.currentHealth << std::endl;
+
+    if (health_.currentHealth <= 0)
+    {
+        player_.stopMoving = true;
+        // handle game over.
+    }
+}
+

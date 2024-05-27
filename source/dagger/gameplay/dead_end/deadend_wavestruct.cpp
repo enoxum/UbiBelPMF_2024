@@ -2,6 +2,8 @@
 #include "core/engine.h"
 #include "deadend_player.h"
 #include "deadend_health.h"
+#include "deadend_enemy.h"
+#include "deadend_map.h"
 
 using namespace dead_end;
 
@@ -9,7 +11,7 @@ void dead_end::WaveSystem::Run()
 {
     auto view = Engine::Registry().view<Wave>();
     auto playerView = Engine::Registry().view<Player, Health>();
-    // auto viewEnemy = ...
+    auto enemyView = Engine::Registry().view<DeadEndEnemy>();
     for(auto entity : view)
     {
         auto& wave = view.get<Wave>(entity);
@@ -23,8 +25,9 @@ void dead_end::WaveSystem::Run()
                 auto& player = playerView.get<Player>(entityP);
                 auto& health = playerView.get<Health>(entityP);
 
-                if (player.killCount == wave.waveNumber)
+                if (enemyView.empty()) // or enemyView.empty()
                 {
+                    //player.killCount++;
                     wave.waveNumber++;
                     SetWave(wave);
                     UpdateWave(wave, player, health);
@@ -74,6 +77,7 @@ void WaveSystem::SetWave(Wave& wave) {
 
 void WaveSystem::UpdateWave(Wave& wave_, Player& player_, Health& health_) {
     ApplyWaveEffects(wave_, player_, health_);
+    loadEnemies(4, 55);
     // generate another wave.
 }
 
