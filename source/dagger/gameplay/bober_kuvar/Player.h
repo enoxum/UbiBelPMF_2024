@@ -12,13 +12,16 @@ public:
 
     void levelUp();
     int getLevel();
+    double getSpeed();
+
 private:
     void spawn() override;
     void die() override;
     void collision() override;
     void shoot();
 
-    double xp_;
-    int level_;
+    double m_xp;
+    int m_level;
     ControllerMapping* controller_;
+    MovementData* movement_;
 };
