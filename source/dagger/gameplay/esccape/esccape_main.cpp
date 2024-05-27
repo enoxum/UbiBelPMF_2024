@@ -75,7 +75,7 @@ void EsccapeGame::WorldSetup()
 }
 
 
-void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID, int health)
+void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID)
 {
     auto& reg = Engine::Registry();
     entt::entity healthBarEntity;
@@ -93,7 +93,33 @@ void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID, int 
     }
     auto& healthBarSprite = reg.emplace_or_replace<Sprite>(healthBarEntity);
     String hbName;
-    
+
+    AssignSprite(healthBarSprite, "Esccape:hb5");
+    float ratio = healthBarSprite.size.y / healthBarSprite.size.x;
+    float spriteSize = 150;
+    healthBarSprite.size = { spriteSize, spriteSize * ratio };
+
+    auto& transform = reg.get_or_emplace<Transform>(healthBarEntity);
+    transform.position.x = -300;
+    transform.position.y = screenHeight / 2 - 60;
+    transform.position.z = 0;
+
+    if (chrID == 1) {
+        transform.position.x = 300;
+    } 
+}
+
+void esccape::UpdateHealthBar(int chrID, int health)
+{
+    auto& reg = Engine::Registry();
+    entt::entity healthBarEntity;
+    if (chrID == 0)
+        healthBarEntity = chrHealthBarEntity;
+    else
+        healthBarEntity = skeletonHealthBarEntity;
+
+    auto& healthBarSprite = reg.get<Sprite>(healthBarEntity);
+    String hbName;
     switch (health) {
     case 5:
         hbName = "Esccape:hb5";
@@ -115,18 +141,9 @@ void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID, int 
     }
 
     AssignSprite(healthBarSprite, hbName);
-    
     float ratio = healthBarSprite.size.y / healthBarSprite.size.x;
     float spriteSize = 150;
     healthBarSprite.size = { spriteSize, spriteSize * ratio };
-    auto& transform = reg.get_or_emplace<Transform>(healthBarEntity);
-    transform.position.x = -300;
-    transform.position.y = screenHeight / 2 - 60;
-    transform.position.z = 0;
-
-    if (chrID == 1) {
-        transform.position.x = 300;
-    } 
 }
 
 void esccape::onHealthChanged(const HealthChanged& event) {
@@ -135,7 +152,7 @@ void esccape::onHealthChanged(const HealthChanged& event) {
         //  health: 0, 2, 4, 6, 8, 10
     constexpr float tolerance = 0.01f;
 
-    if (std::abs(event.newHealth - 8.0f) < tolerance)
+    /*if (std::abs(event.newHealth - 8.0f) < tolerance)
         CreateHealthBar(800, 600, event.characterID, 4);
     else if (std::abs(event.newHealth - 6.0f) < tolerance)
         CreateHealthBar(800, 600, event.characterID, 3);
@@ -144,11 +161,18 @@ void esccape::onHealthChanged(const HealthChanged& event) {
     else if (std::abs(event.newHealth - 2.0f) < tolerance)
         CreateHealthBar(800, 600, event.characterID, 1);
     else if (std::abs(event.newHealth ) < tolerance)
-        CreateHealthBar(800, 600, event.characterID, 0);
+        CreateHealthBar(800, 600, event.characterID, 0);*/
 
-    printf("obrada signala!!!\n");
-
-    //CreateHealthBar(800, 600, event.characterID, newHealth);
+    if (std::abs(event.newHealth - 8.0f) < tolerance)
+        UpdateHealthBar(event.characterID, 4);
+    else if (std::abs(event.newHealth - 6.0f) < tolerance)
+        UpdateHealthBar(event.characterID, 3);
+    else if (std::abs(event.newHealth - 4.0f) < tolerance)
+        UpdateHealthBar(event.characterID, 2);
+    else if (std::abs(event.newHealth - 2.0f) < tolerance)
+        UpdateHealthBar(event.characterID, 1);
+    else if (std::abs(event.newHealth) < tolerance)
+        UpdateHealthBar(event.characterID, 0);
 }
 
 
@@ -442,8 +466,8 @@ void esccape::SetupWorld()
         }
     }
     
-    CreateHealthBar(screenWidth, screenHeight, 0, 5);
-    CreateHealthBar(screenWidth, screenHeight, 1, 5);
+    CreateHealthBar(screenWidth, screenHeight, 0);
+    CreateHealthBar(screenWidth, screenHeight, 1);
     Engine::Dispatcher().sink<HealthChanged>().connect<&onHealthChanged>();
 }
 
