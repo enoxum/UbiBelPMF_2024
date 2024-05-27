@@ -66,21 +66,7 @@ void MainMenuInputSystem::Run()
             Engine::Registry().clear();
             academic_life::SetupWorld();
         }
-        if (mainMenu.mute == -1)
-        {
-          /*  Engine::Registry().view<Sprite>().each([&](Sprite& sprite_)
-                {
-                    if (sprite_.position.x == 350.0f && sprite_.position.y == 350.0f && sprite_.position.z == 0.6f)
-                    {
-                        
-                        printf("found sprite!!!");
-                        mainMenu.mute = 1;
-                    }
-                    
-
-                });*/
-           
-        }
+     
 
      
      
