@@ -77,6 +77,9 @@ void BoberGame::WorldSetup()
     Player* bober = new Player();
     bober->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
 
+    Enemy* enemy = new Enemy();
+    enemy->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
+
     //// enemy
     //Enemy* enemy = new Enemy();
     //enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });

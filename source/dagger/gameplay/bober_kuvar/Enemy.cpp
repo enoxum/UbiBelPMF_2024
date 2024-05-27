@@ -10,7 +10,7 @@ Enemy::Enemy()
 	numOfWaypoints_ = (rand() % 4) + 3;
 
 	movement_ = &Engine::Instance().Registry().emplace<MovementData>(instance);
-	movement_->speed = m_speed;
+	movement_->speed = speed_;
 
 	data_ = &Engine::Instance().Registry().emplace<EnemyData>(instance);
 	data_->ID = 1;

@@ -5,7 +5,7 @@ class Character :
     public OurEntity
 {
 public:
-    void move(Vector3 vector);
+    //void move(Vector3 vector);
     
     double getSpeed();
     Character(double hp, double speed, double strength, const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size);

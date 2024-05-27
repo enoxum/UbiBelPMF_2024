@@ -4,13 +4,13 @@
 using namespace bober_game;
 
 Player::Player()
-	: Character(100.0, 100.0, 10.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64)), , m_xp(0), m_level(1)
+	: Character(100.0, 100.0, 10.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64)), xp_(0), level_(1)
 {
 	controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 	PlayerController::SetupPlayerInput(*controller_);
 
 	movement_ = &Engine::Instance().Registry().emplace<MovementData>(instance);
-	movement_->speed = m_speed;
+	movement_->speed = speed_;
 
 	Engine::Registry().emplace<common::CameraFollowFocus>(instance);
 }
@@ -36,12 +36,12 @@ void Player::shoot()
 
 void Player::levelUp()
 {
-	m_level++;
+	level_++;
 }
 
 int Player::getLevel()
 {
-	return m_level;
+	return level_;
 }
 
 double Player::getSpeed() {

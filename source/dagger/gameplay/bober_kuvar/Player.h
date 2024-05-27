@@ -20,8 +20,8 @@ private:
     void collision() override;
     void shoot();
 
-    double m_xp;
-    int m_level;
+    double xp_;
+    int level_;
     ControllerMapping* controller_;
     MovementData* movement_;
 };

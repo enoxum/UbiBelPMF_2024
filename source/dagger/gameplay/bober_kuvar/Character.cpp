@@ -20,5 +20,5 @@ void Character::collision()
 }
 
 double Character::getSpeed() {
-	return m_speed;
+	return speed_;
 }
