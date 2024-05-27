@@ -22,6 +22,7 @@
 #include "blackboard_manager.h"
 #include "Worm.h"
 #include "enemy.h"
+#include "bullet.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -60,6 +61,7 @@ void EsccapeGame::GameplaySystemsSetup()
     engine.AddSystem<WormSystem>();
     engine.AddSystem<EsccapeControllerSystem>();
     engine.AddSystem<CharacterSystem>();
+    engine.AddSystem<ShootingSystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -365,6 +367,8 @@ void esccape::SetupWorld()
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
     CreateEnemy(zPos, screenWidth, screenHeight);
+
+    CreateBullet(Vector2{ 0,0 }, Vector2{1, 0});
 
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateWorm(zPos, screenWidth, screenHeight);
