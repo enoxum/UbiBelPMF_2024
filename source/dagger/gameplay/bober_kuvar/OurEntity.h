@@ -18,15 +18,24 @@
 #include "tools/diagnostics.h"
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
+#include <gameplay/common/simple_collisions.h>
 
 class OurEntity
 {
 public:
-	OurEntity();
-	~OurEntity();
+	OurEntity(const std::string &sprite_path, const std::string &animation_path, bool collidable, std::pair<int, int> collision_size);
+  ~OurEntity();
 	Entity instance;
 	Transform* transform;
 	Sprite* sprite;
 	Animator* animator;
+	SimpleCollision* collision;
+
+	void move(Vector3 vector);
 private:
-};*/
+	std::string sprite_path_;
+	std::string animation_path_;
+	bool collidable_;
+	std::pair<int, int> collision_size_;
+};
+*/

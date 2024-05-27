@@ -105,12 +105,31 @@ namespace bober_game
 		Vector2 position{ 0,0 };
 	};
 
+	struct MovementData
+	{
+		Float32 speed;
+		Vector2 velocity{ 0.f, 0.f };
+	};
+
+	struct EnemyData
+	{
+		int ID;
+		bool focusOnPlayer;
+		Vector3 target{ 0, 0, 0 };
+	};
+
+	struct Patrol {
+		std::vector<Vector3> waypoints;
+		int currentWaypointIndex;
+		bool forward;
+	};
+
 	class PlayerController
 		: public System
 	{
 
 	public:
-		static double playerSpeed;
+		//static double playerSpeed;
 
 		String SystemName() override {
 			return "Character Controller System";

@@ -22,6 +22,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "OurMap.h"
 #include "PlayerController.h"
 
 using namespace dagger;
@@ -42,22 +43,44 @@ void BoberGame::SetCamera()
     auto* camera = Engine::GetDefaultResource<Camera>();
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };
-    camera->zoom = 2;
+    //put it on 3 to simulate how the game will look
+    camera->zoom = 3;
     camera->position = { 0, 0, 0 };
     camera->Update();
 }
 
 void BoberGame::WorldSetup()
 {
+    SetCamera();
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
     auto& engine = Engine::Instance();
     auto& reg = engine.Registry();
-    // bober
-    Player *bober = new Player();
 
-    // enemy
+    int map_size = 20;
+    int room_size = 4;
+    OurMap* map = new OurMap(map_size, room_size);
+    int n = map->get_n();
+    std::vector<std::vector<int>> matrix = map->get_matrix();
+
+    int rand_x = rand() % (n - 2) + 1;
+    int rand_y = rand() % (n - 2) + 1;
+    int tries = 0;
+    while (matrix[rand_y][rand_x] != 0 && tries < 100) {
+        rand_x = rand() % (n - 2) + 1;
+        rand_y = rand() % (n - 2) + 1;
+        tries++;
+    }
+
+    if (tries >= 100) {
+        Logger::error("Something went really wrong! No possible spawnpoint for Bober!");
+        return;
+    }
+    // bober
+    Player* bober = new Player();
+    bober->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
+
     Enemy* enemy = new Enemy();
-    enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });
+    enemy->move(Vector3{ rand_x * 64, -rand_y * 64, 0.0f });
 
     OurEntity* cursor = new OurEntity("crosshair", "", false, std::make_pair(0, 0));
     //Cursor

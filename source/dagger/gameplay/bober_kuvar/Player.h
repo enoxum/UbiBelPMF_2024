@@ -16,6 +16,7 @@ public:
     void levelUp();
     int getLevel();
     std::vector<Weapon*> weapons;
+    double getSpeed();
 private:
     void spawn() override;
     void die() override;
@@ -25,4 +26,6 @@ private:
     double xp_;
     int level_;
     ControllerMapping* controller_;
-};*/
+    MovementData* movement_;
+};
+*/
