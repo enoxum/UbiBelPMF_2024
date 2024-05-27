@@ -57,6 +57,9 @@ namespace bober_game
 	struct ReloadEvent 
 	{
 	};
+	struct TileSystem
+	{
+	};
 
 	struct Cursor
 	{
@@ -88,7 +91,6 @@ namespace bober_game
 		bool firstTime = true;
 		float speed;
 		Vector2 dir{ 0,0 };
-		int ttl = 1000;
 	};
 	
 	struct MeleeWeaponSystem
@@ -383,10 +385,6 @@ namespace bober_game
 		{
 
 		}
-		void shoot()
-		{
-
-		}
 		double xp_;
 		int level_;
 		ControllerMapping* controller_;
@@ -503,6 +501,7 @@ namespace bober_game
 			: OurEntity(sprite_path, animation_path, collidable, std::pair<int, int>(64, 64))
 		{
 			collidable_ = collidable;
+			Engine::Registry().emplace<TileSystem>(instance);
 		}
 	private:
 		bool collidable_;

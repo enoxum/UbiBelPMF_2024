@@ -15,7 +15,6 @@
 
 using namespace bober_game;
 
-//Vector2 playerPos{ 0,0 };
 std::unordered_map<int,Bullet*> PlayerController::bullets;
 
 void PlayerController::SpinUp()
@@ -114,7 +113,7 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
         r.isMouseBtnPressed = isMousePressed;
         //Event za kreiranje bullet-a
         if (r.isMouseBtnPressed && r.isActive) {
-            s.speed = 150.f;
+            s.speed = 225.f;
             s.position = r.position;
             Engine::Dispatcher().trigger<ShootEvent>(s);//prosledjujemo s
         }
@@ -139,10 +138,13 @@ void PlayerController::Run()
     Vector2 dir{ 0,0 };
     Vector3 playerPosition;
     bool colidedWithEnemy = false;
+    bool colidedWithBullet = false;
   
     auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData>();
     auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision>();
+    auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
+    auto viewWalls = Engine::Registry().view<TileSystem, SimpleCollision>();
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
@@ -177,8 +179,13 @@ void PlayerController::Run()
                 if (col.colidedWith == enemy)
                     colidedWithEnemy = true;
             }
+            for (auto bullet : viewBullet)
+            {
+                if (col.colidedWith == bullet)
+                    colidedWithBullet = true;
+            }
 
-            if (Engine::Registry().valid(col.colidedWith) && !colidedWithEnemy)
+            if (Engine::Registry().valid(col.colidedWith) && !colidedWithEnemy && !colidedWithBullet)
             {
                 SimpleCollision& collision = otherViews.get<SimpleCollision>(col.colidedWith);
                 Transform& transform = otherViews.get<Transform>(col.colidedWith);
@@ -198,6 +205,7 @@ void PlayerController::Run()
         }
 
         colidedWithEnemy = false;
+        colidedWithBullet = false;
         col.colided = false;
     }
   
@@ -235,7 +243,7 @@ void PlayerController::Run()
             //Missing: Make sprite transparent or remove sprite.
         }
     }
-    auto viewEnemy = Engine::Registry().view<EnemyData>();
+    //auto viewEnemy = Engine::Registry().view<EnemyData>();
     auto viewMelee = Engine::Registry().view<Transform, Sprite, MeleeWeaponSystem>();
     for (auto entity : viewMelee)
     {
@@ -255,7 +263,7 @@ void PlayerController::Run()
             //Missing: Make sprite transparent or remove sprite.
         }
     }
-    auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
+    //Bullets
     for (auto entity : viewBullet)
     {
         auto& t = viewBullet.get<Transform>(entity);
@@ -266,13 +274,22 @@ void PlayerController::Run()
         //if ((--b.ttl == 0) {
         if (col.colided) {
             if (Engine::Registry().valid(col.colidedWith)) {
-                for (auto enemy : viewEnemy) {
+                for (auto enemy : enemyView) {
                     if (col.colidedWith == enemy) {
+                        //Uradi damage
                         int idx = b.index;
                         delete bullets[b.index];
                         bullets.erase(idx);
                         continue;
-                    } //Trenutno brise metke samo pri sudaru sa enemy-jem. Kasnije dodati provere za zidove i ostale stvari.
+                    }
+                }
+                for (auto wall : viewWalls) {
+                    if (col.colidedWith == wall) {
+                        int idx = b.index;
+                        delete bullets[b.index];
+                        bullets.erase(idx);
+                        continue;
+                    }
                 }
             }
         }
