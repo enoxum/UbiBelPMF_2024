@@ -10,6 +10,7 @@ namespace esccape
 {
     struct HealthChanged {
         float newHealth;
+        int characterID;
     };
 
     class HealthSystem {
@@ -23,6 +24,9 @@ namespace esccape
         void SetCurrentHealth(float currentHealth);
         float GetCurrentHealth() const;
 
+        void SetCharacterID(int id);
+        int GetCharacterID() const;
+
         void Heal(float amount);
         void TakeDamage(float amount);
 
@@ -31,6 +35,8 @@ namespace esccape
     private:
         float m_MaxHealth;
         float m_CurrentHealth;
+
+        int m_CharacterID;
     };
 }
 

@@ -7,7 +7,7 @@
 
 using namespace esccape;
 
-HealthSystem::HealthSystem() : m_MaxHealth(5), m_CurrentHealth(5) {
+HealthSystem::HealthSystem() : m_MaxHealth(5), m_CurrentHealth(5), m_CharacterID(0) {
 }
 
 HealthSystem::~HealthSystem() {}
@@ -23,12 +23,22 @@ float HealthSystem::GetMaxHealth() const {
 void HealthSystem::SetCurrentHealth(float currentHealth) {
     if (m_CurrentHealth != currentHealth) {
         m_CurrentHealth = currentHealth;
-        Engine::Dispatcher().trigger<HealthChanged>({ m_CurrentHealth });  // Emit signal when health changes
+        Engine::Dispatcher().trigger<HealthChanged>({ m_CurrentHealth, m_CharacterID });  // Emit signal when health changes
     }
 }
 
 float HealthSystem::GetCurrentHealth() const {
     return m_CurrentHealth;
+}
+
+void esccape::HealthSystem::SetCharacterID(int id)
+{
+    m_CharacterID = id;
+}
+
+int esccape::HealthSystem::GetCharacterID() const
+{
+    return m_CharacterID;
 }
 
 void HealthSystem::Heal(float amount) {
@@ -38,11 +48,11 @@ void HealthSystem::Heal(float amount) {
 
 void HealthSystem::TakeDamage(float amount) {
     printf("taking damageee...");
-    m_CurrentHealth -= amount;
-    if (m_CurrentHealth < 0) {
-        m_CurrentHealth = 0;
+    float newHealth = m_CurrentHealth - amount;
+    if (newHealth < 0) {
+        newHealth = 0;
     }
-    float newHealth = m_CurrentHealth;
+    
     SetCurrentHealth(newHealth);
 }
 

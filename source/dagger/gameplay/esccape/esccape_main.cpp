@@ -28,6 +28,8 @@ using namespace esccape;
 
 namespace esccape
 {
+    entt::entity chrHealthBarEntity = entt::null;
+    entt::entity skeletonHealthBarEntity = entt::null;
     entt::entity healthBarEntity = entt::null;
 }
 
@@ -73,19 +75,23 @@ void EsccapeGame::WorldSetup()
 }
 
 
-void esccape::CreateHealthBar(int screenWidth, int screenHeight, int zPos, int health)
+void esccape::CreateHealthBar(int screenWidth, int screenHeight, int chrID, int health)
 {
-    // Fix
-    auto& healthBarReg = Engine::Registry();
+    auto& reg = Engine::Registry();
+    entt::entity healthBarEntity;
 
-    /*if (healthBarEntity != entt::null) {
-        printf("aaaaaa");
-        healthBarReg.destroy(healthBarEntity);
-    }*/
-    
-    // Create a new health bar entity
-    healthBarEntity = healthBarReg.create();
-    auto& healthBarSprite = healthBarReg.emplace<Sprite>(healthBarEntity);
+    if (chrHealthBarEntity == entt::null)
+        chrHealthBarEntity = reg.create();
+    if (skeletonHealthBarEntity == entt::null)
+        skeletonHealthBarEntity = reg.create();
+
+    if (chrID == 0) {
+        healthBarEntity = chrHealthBarEntity;
+    }
+    else {
+        healthBarEntity = skeletonHealthBarEntity;
+    }
+    auto& healthBarSprite = reg.emplace_or_replace<Sprite>(healthBarEntity);
     String hbName;
     
     switch (health) {
@@ -109,24 +115,43 @@ void esccape::CreateHealthBar(int screenWidth, int screenHeight, int zPos, int h
     }
 
     AssignSprite(healthBarSprite, hbName);
+    
     float ratio = healthBarSprite.size.y / healthBarSprite.size.x;
     float spriteSize = 150;
     healthBarSprite.size = { spriteSize, spriteSize * ratio };
-    auto& transform = healthBarReg.emplace<Transform>(healthBarEntity);
-    transform.position.x = -screenWidth/2 + 100;
-    transform.position.y = screenHeight/2 - 60;
-    transform.position.z = zPos;
+    auto& transform = reg.get_or_emplace<Transform>(healthBarEntity);
+    transform.position.x = -300;
+    transform.position.y = screenHeight / 2 - 60;
+    transform.position.z = 0;
+
+    if (chrID == 1) {
+        transform.position.x = 300;
+    } 
 }
 
-void esccape::onHealthChanged(int newHealth)
-{
-    if (newHealth > 5)
-        newHealth = 5;
-    if (newHealth < 0)
-        newHealth = 0;
+void esccape::onHealthChanged(const HealthChanged& event) {
+    // health ide od 0 do 10
+    // imamo srca : 0, 1, 2, 3, 4, 5
+        //  health: 0, 2, 4, 6, 8, 10
+    constexpr float tolerance = 0.01f;
 
-    CreateHealthBar(800, 600, -1, newHealth);   
+    if (std::abs(event.newHealth - 8.0f) < tolerance)
+        CreateHealthBar(800, 600, event.characterID, 4);
+    else if (std::abs(event.newHealth - 6.0f) < tolerance)
+        CreateHealthBar(800, 600, event.characterID, 3);
+    else if (std::abs(event.newHealth - 4.0f) < tolerance)
+        CreateHealthBar(800, 600, event.characterID, 2);
+    else if (std::abs(event.newHealth - 2.0f) < tolerance)
+        CreateHealthBar(800, 600, event.characterID, 1);
+    else if (std::abs(event.newHealth ) < tolerance)
+        CreateHealthBar(800, 600, event.characterID, 0);
+
+    printf("obrada signala!!!\n");
+
+    //CreateHealthBar(800, 600, event.characterID, newHealth);
 }
+
+
 
 
 void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, int machineScale)
@@ -165,7 +190,7 @@ void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
 
     auto& transform = reg.emplace<Transform>(entity);
     transform.position.x = -300;
-    transform.position.y = 200;
+    transform.position.y = 150;
     transform.position.z = zPos;
 
     auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
@@ -175,7 +200,7 @@ void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
 
 void esccape::CreateObstacles(int zPos)
 {
-    int numberOfRocks = rand() % 10 + 3;
+    int numberOfRocks = rand() % 2 + 1;
     printf("%d", numberOfRocks);
 
     for (int i = 0; i < numberOfRocks; i++)
@@ -299,10 +324,9 @@ void esccape::SetupWorld()
     zPos -= 1.f;
 
     
-    CreateHealthBar(screenWidth, screenHeight, zPos, 5);
+    
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
-
     CreateEnemy(zPos, screenWidth, screenHeight);
 
     //CreateWorm(zPos, screenWidth, screenHeight);
@@ -418,5 +442,8 @@ void esccape::SetupWorld()
         }
     }
     
+    CreateHealthBar(screenWidth, screenHeight, 0, 5);
+    CreateHealthBar(screenWidth, screenHeight, 1, 5);
+    Engine::Dispatcher().sink<HealthChanged>().connect<&onHealthChanged>();
 }
 

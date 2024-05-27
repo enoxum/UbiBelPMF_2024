@@ -100,6 +100,7 @@ Character Character::Create(
     chr.character->id = id;
     chr.character->healthSystem.SetCurrentHealth(10);
     chr.character->healthSystem.SetMaxHealth(10);
+    chr.character->healthSystem.SetCharacterID(id);
     ATTACH_TO_FSM(CharacterControllerFSM, entity);
 
     AssignSprite(*chr.sprite, spritesheet_);
