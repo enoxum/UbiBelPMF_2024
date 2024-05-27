@@ -62,6 +62,7 @@ void EsccapeGame::GameplaySystemsSetup()
     engine.AddSystem<EsccapeControllerSystem>();
     engine.AddSystem<CharacterSystem>();
     engine.AddSystem<ShootingSystem>();
+    engine.AddSystem<EnemySystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -368,7 +369,6 @@ void esccape::SetupWorld()
     CreateNWorms(4, zPos, screenWidth, screenHeight);
     CreateEnemy(zPos, screenWidth, screenHeight);
 
-    CreateBullet(Vector2{-200,0 }, Vector2{1, 0}, 2.0f);
 
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateWorm(zPos, screenWidth, screenHeight);

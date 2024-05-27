@@ -23,6 +23,10 @@ namespace esccape
         SimpleCollision* collision;
         Transform* transform;
 
+        long long time = 0;
+        const long long delta = 4000;
+
         void Run() override;
+        void SpinUp() override;
     };
 }

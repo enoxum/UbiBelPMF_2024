@@ -1,5 +1,8 @@
 #include "enemy.h"
 #include <random>
+#include <chrono>
+
+#include "bullet.h" 
 
 using namespace esccape;
 using namespace dagger;
@@ -9,12 +12,19 @@ void esccape::EnemySystem::Run()
     //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, Enemy, Sprite>();
 
-    for (auto entity : view)
+    auto now = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+    if (duration.count() > time + delta)
     {
-        auto& t = view.get<Transform>(entity);
-        auto& enemy = view.get<Enemy>(entity);
-        auto& sprite = view.get<Sprite>(entity);
-        //sprite.scale.y = -std::abs(sprite.scale.y);
-        //auto& col = view.get<SimpleCollision>(entity);
+        time += delta;
+        CreateBullet(Vector2{ -200,0 }, Vector2{ 1, 0 }, 250.f);
     }
+}
+
+void esccape::EnemySystem::SpinUp() 
+{
+    auto now = std::chrono::system_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+
+    time = duration.count();
 }
