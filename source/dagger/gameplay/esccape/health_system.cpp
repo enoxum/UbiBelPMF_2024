@@ -42,12 +42,13 @@ int esccape::HealthSystem::GetCharacterID() const
 }
 
 void HealthSystem::Heal(float amount) {
+    printf("+++healing...\n\n\n");
     int newHealth = std::min(m_CurrentHealth + amount, m_MaxHealth);
     SetCurrentHealth(newHealth);
 }
 
 void HealthSystem::TakeDamage(float amount) {
-    printf("taking damageee...");
+    printf("---taking damageee...\n\n\n");
     float newHealth = m_CurrentHealth - amount;
     if (newHealth < 0) {
         newHealth = 0;

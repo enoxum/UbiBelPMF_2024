@@ -16,10 +16,10 @@ namespace esccape
 		int id = 0;
 		int speed{ 1 };
 		float health = 10;
-		int attackCooldown = 300;
+		int attackCooldown = 50;
 		HealthSystem healthSystem;
 
-		EsccapeCharacter() : id(0), speed(1), health(10), healthSystem() {}
+		EsccapeCharacter() : id(0), speed(1), health(10), attackCooldown(50), healthSystem() {}
 	};
 
 

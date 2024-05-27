@@ -10,6 +10,7 @@
 
 #include "character.h"
 #include "bullet.h"
+#include "boost.h"
 #include "blackboard_manager.h"
 
 using namespace dagger;
@@ -712,6 +713,7 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 	auto& otherCollision = Engine::Registry().get<SimpleCollision>(collidedWith);
 	bool otherIsCharacter = Engine::Registry().has<Character>(collidedWith);
 	bool otherIsBullet = Engine::Registry().has<Bullet>(collidedWith);
+	bool otherIsBoost = Engine::Registry().has<Boost>(collidedWith);
 
 	
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
@@ -723,6 +725,15 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 			character.healthSystem.TakeDamage(1.0f);
 			character.healthSystem.TakeDamage(0.05f);
 			Engine::Registry().destroy(collidedWith);
+
+			break;
+		}
+
+		if (otherIsBoost) {
+			auto& character = Engine::Registry().get<EsccapeCharacter>(entity1);
+			character.healthSystem.Heal(2.0f);
+			Engine::Registry().destroy(collidedWith);
+			printf("Character %d health = %f\n", (int)character.id, character.healthSystem.GetCurrentHealth());
 
 			break;
 		}

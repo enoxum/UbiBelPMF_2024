@@ -23,6 +23,8 @@
 #include "Worm.h"
 #include "enemy.h"
 #include "bullet.h"
+#include "boost.h"
+#include "machine.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -63,6 +65,8 @@ void EsccapeGame::GameplaySystemsSetup()
     engine.AddSystem<CharacterSystem>();
     engine.AddSystem<ShootingSystem>();
     engine.AddSystem<EnemySystem>();
+    engine.AddSystem<MachineSystem>();
+    engine.AddSystem<BoostSystem>();
 }
 
 void EsccapeGame::WorldSetup()
@@ -190,9 +194,17 @@ void esccape::onHealthChanged(const HealthChanged& event) {
         UpdateHealthBar(event.characterID, 1);
     else if (std::abs(event.newHealth) < tolerance)
         UpdateHealthBar(event.characterID, 0);
+    else if (std::abs(event.newHealth - tolerance) >= 8.0)
+        UpdateHealthBar(event.characterID, 5);
+    else if (std::abs(event.newHealth - tolerance) >= 6.0)
+        UpdateHealthBar(event.characterID, 4);
+    else if (std::abs(event.newHealth - tolerance) >= 4.0)
+        UpdateHealthBar(event.characterID, 3);
+    else if (std::abs(event.newHealth - tolerance) >= 2.0)
+        UpdateHealthBar(event.characterID, 2);
+    else if (std::abs(event.newHealth - tolerance) >= 0.0)
+        UpdateHealthBar(event.characterID, 1);
 }
-
-
 
 
 void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, int machineScale)
@@ -205,6 +217,8 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     float ratio = sprite.size.y / sprite.size.x;    
     float machineSize = 300;              
     sprite.size = { machineSize, machineSize * ratio };
+
+    auto& enemy = reg.emplace<Machine>(entity);
     
     auto& transform = reg.emplace<Transform>(entity); 
 
