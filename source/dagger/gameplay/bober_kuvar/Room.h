@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "core/core.h"
 #include "Enemy.h"
 class Room
@@ -18,4 +18,5 @@ private:
 	std::vector<Enemy> roomEnemies_;
 	int roomType_; // za sada int
 };
+*/
 

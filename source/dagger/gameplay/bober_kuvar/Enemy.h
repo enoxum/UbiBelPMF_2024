@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "PlayerController.h"
 #include "Character.h"
 
@@ -22,5 +22,5 @@ private:
     void die() override;
     void collision() override;
     void generatePath();
-
 };
+*/

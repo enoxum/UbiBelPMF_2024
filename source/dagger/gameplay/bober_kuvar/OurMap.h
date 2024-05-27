@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "core/core.h"
 #include "Room.h"
 #include "Tile.h"
@@ -27,4 +27,5 @@ private:
 	void print_matrix_in_console(std::vector<std::vector<int>> matrix);
 	void fill(int x, int y, int* min_x, int* min_y, int* max_x, int* max_y, std::vector<std::pair<int, int>> *doors_coords);
 };
+*/
 

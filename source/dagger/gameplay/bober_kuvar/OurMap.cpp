@@ -1,3 +1,4 @@
+/*
 #define _USE_MATH_DEFINES
 
 #include "OurMap.h"
@@ -327,3 +328,4 @@ void OurMap::print_matrix_in_console(std::vector<std::vector<int>> matrix)
 	}
 	Logger::error("\n");
 }
+*/

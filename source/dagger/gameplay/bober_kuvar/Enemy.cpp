@@ -1,3 +1,4 @@
+/*
 #include "Enemy.h"
 #include <queue>
 
@@ -37,7 +38,6 @@ void Enemy::collision()
 {
 
 }
-
 void Enemy::generatePath()
 {
 	patrol_->waypoints.push_back(initialPosition_);
@@ -55,3 +55,4 @@ void Enemy::generatePath()
 	}
 
 }
+*/

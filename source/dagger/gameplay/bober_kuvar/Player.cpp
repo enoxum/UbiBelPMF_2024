@@ -1,5 +1,4 @@
-#include "Player.h"
-#include "Weapon.h"
+/*#include "Player.h"
 
 using namespace bober_game;
 
@@ -17,7 +16,7 @@ Player::Player()
 
 void Player::spawn()
 {
-	
+	//weapons.push_back(new Melee());
 }
 
 void Player::die()
@@ -32,6 +31,7 @@ void Player::collision()
 
 void Player::shoot()
 {
+
 }
 
 void Player::levelUp()
@@ -47,4 +47,4 @@ int Player::getLevel()
 double Player::getSpeed() {
 	return Character::getSpeed();
 }
-
+*/

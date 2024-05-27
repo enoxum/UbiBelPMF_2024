@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "OurEntity.h"
 
 class Character :
@@ -14,8 +14,6 @@ private:
     virtual void spawn();
     virtual void die();
     virtual void collision();
-
-
 protected:
     double hp_;
     double speed_;
@@ -23,3 +21,4 @@ protected:
     bool collidable_;
     std::pair<int, int> collision_size_;
 };
+*/

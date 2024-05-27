@@ -1,4 +1,4 @@
-#include "Room.h"
+/*#include "Room.h"
 #include "Tile.h"
 
 Room::Room(int id, std::pair<int, int> top_left, std::pair<int, int> bottom_right, std::vector<std::pair<int, int>> doors_coords)
@@ -23,3 +23,4 @@ std::vector<std::pair<int, int>> Room::getDoorsCoords()
 {
 	return doors_coords_;
 }
+*/

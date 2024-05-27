@@ -1,6 +1,9 @@
-#pragma once
+/*#pragma once
 #include "Character.h"
 #include "PlayerController.h"
+#include "Weapon.h"
+#include "Ranged.h"
+#include "Melee.h"
 
 using namespace bober_game;
 
@@ -12,8 +15,8 @@ public:
 
     void levelUp();
     int getLevel();
+    std::vector<Weapon*> weapons;
     double getSpeed();
-
 private:
     void spawn() override;
     void die() override;
@@ -25,3 +28,4 @@ private:
     ControllerMapping* controller_;
     MovementData* movement_;
 };
+*/
