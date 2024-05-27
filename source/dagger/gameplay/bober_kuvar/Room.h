@@ -3,11 +3,19 @@
 #include "Enemy.h"
 class Room
 {
+public:
+	Room(int id, std::pair<int, int> top_left, std::pair<int, int> bottom_right, std::vector<std::pair<int, int>> doors_coords);
+	std::pair<int, int> getTopLeft();
+	std::pair<int, int> getBottomRight();
+	std::vector<std::pair<int, int>> getDoorsCoords();
 private:
-	int enemyCount_;
-	std::list<Enemy> roomEnemies_;
-	int roomType_; // za sada int
+	int id_;
+	std::pair<int, int> top_left_;
+	std::pair<int, int> bottom_right_;
+	std::vector<std::pair<int, int>> doors_coords_;
 
-	void generateRoom();
+	int enemyCount_;
+	std::vector<Enemy> roomEnemies_;
+	int roomType_; // za sada int
 };
 

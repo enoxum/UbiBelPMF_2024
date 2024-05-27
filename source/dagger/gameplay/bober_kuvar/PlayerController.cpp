@@ -3,8 +3,12 @@
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
+#include <gameplay/common/simple_collisions.h>
 
 using namespace bober_game;
+
+double PlayerController::playerSpeed = 1000.0;
+Vector2 playerPos = { 0.0, 0.0 };
 
 void PlayerController::SpinUp()
 {
@@ -62,7 +66,8 @@ void PlayerController::Run()
 {
     Vector3 playerPosition;
 
-    auto view = Engine::Registry().view<Transform, ControllerMapping, MovementData>();
+    auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData>();
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
@@ -70,17 +75,46 @@ void PlayerController::Run()
         auto& mov = view.get<MovementData>(entity);
 
         playerPosition = t.position;
+        auto& col = view.get<SimpleCollision>(entity);
+
+        if (!col.colided) {
+            playerPos = t.position;
+        }
 
         if (ctrl.input == Vector2{0.0f, 0.0f})
             break;
 
         double normalized = 1 / sqrt(ctrl.input.x * ctrl.input.x + ctrl.input.y * ctrl.input.y);
 
-        t.position.x += normalized * ctrl.input.x * mov.speed * Engine::DeltaTime();
-        t.position.y += normalized * ctrl.input.y * mov.speed * Engine::DeltaTime();
+        double move_x = normalized * ctrl.input.x * playerSpeed * Engine::DeltaTime();
+        double move_y = normalized * ctrl.input.y * playerSpeed * Engine::DeltaTime();
 
+        t.position.x += move_x;
+        t.position.y += move_y;
+      
         playerPosition = t.position;
 
+        if (col.colided) {
+            if (Engine::Registry().valid(col.colidedWith))
+            {
+                SimpleCollision& collision = otherViews.get<SimpleCollision>(col.colidedWith);
+                Transform& transform = otherViews.get<Transform>(col.colidedWith);
+                Vector2 collisionSides = col.GetCollisionSides(t.position, collision, transform.position);
+
+
+                do {
+                    if (std::abs(collisionSides.x) > 0)
+                        t.position.x -= collisionSides.x * Engine::DeltaTime();
+
+                    if (std::abs(collisionSides.y) > 0)
+                        t.position.y -= collisionSides.y * Engine::DeltaTime();
+                } while (col.IsCollided(t.position, collision, transform.position));
+
+                //t.position = { playerPos, 0.0 };
+            }
+        }
+
+        col.colided = false;
     }
 
     auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol>();
@@ -151,17 +185,4 @@ void PlayerController::Run()
             t.position.y += mov.velocity.y;
         }
     }
-
- 
-
-    /*auto viewPosition = Engine::Registry().view<Transform, MovementData>();
-    for (auto entity : viewPosition)
-    {
-        auto& t = viewPosition.get<Transform>(entity);
-        auto& mov = viewPosition.get<MovementData>(entity);
-
-        t.position.x += mov.velocity.x * Engine::DeltaTime();
-        t.position.y += mov.velocity.y * Engine::DeltaTime();
-    }*/
-    
 }

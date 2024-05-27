@@ -1,7 +1,8 @@
 #include "Enemy.h"
 #include <queue>
 
-Enemy::Enemy() : Character(200.0, 40.0, 10.0)
+Enemy::Enemy()
+	: Character(200.0, 40.0, 10.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64))
 {
 	lootAmount_ = 100.0f;
 	xpDrop_ = 100.0f;
