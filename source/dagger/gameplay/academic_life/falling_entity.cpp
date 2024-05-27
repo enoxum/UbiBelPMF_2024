@@ -110,6 +110,8 @@ std::string Equation::to_equation(const std::string& expression) const
 }
 
 int calculate_one(const int left, const char op, const int right) {
+    if (op == '/' && right == 0)
+        return left;
     return (op == '+') ? left + right :
            (op == '-') ? left - right :
            (op == '*') ? left * right :
