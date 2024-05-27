@@ -15,8 +15,7 @@
 
 using namespace bober_game;
 
-double PlayerController::playerSpeed = 100.0;
-Vector2 playerPos{ 0,0 };
+//Vector2 playerPos{ 0,0 };
 std::unordered_map<int,Bullet*> PlayerController::bullets;
 
 void PlayerController::SpinUp()
@@ -211,8 +210,8 @@ void PlayerController::Run()
         double theta = atan2(c.position.y , c.position.x);
         cos_ = cos(theta);
         sin_ = sin(theta);
-        t.position.x = playerPos.x + 50 * cos_;
-        t.position.y = playerPos.y + 50 * sin_;
+        t.position.x = playerPosition.x + 50 * cos_;
+        t.position.y = playerPosition.y + 50 * sin_;
         s.color.r = c.isMouseBtnPressed ? 0 : 1;
     }
     auto viewRanged = Engine::Registry().view<Transform, Sprite, RangedWeaponSystem>();
@@ -225,10 +224,10 @@ void PlayerController::Run()
         if (r.isActive) {
             s.color.a = 1;
             //Missing: Activate sprite transparency or add sprite back
-            r.position.x=t.position.x = playerPos.x + 8 * cos_;
-            r.position.y=t.position.y = playerPos.y + 8 * sin_;
-            dir.x = t.position.x - playerPos.x;
-            dir.y = t.position.y - playerPos.y;
+            r.position.x=t.position.x = playerPosition.x + 8 * cos_;
+            r.position.y=t.position.y = playerPosition.y + 8 * sin_;
+            dir.x = t.position.x - playerPosition.x;
+            dir.y = t.position.y - playerPosition.y;
             s.color.r = r.isMouseBtnPressed ? 0 : 1;
         }
         else {
@@ -247,8 +246,8 @@ void PlayerController::Run()
         if (m.isActive) {
             s.color.a = 1;
             //Missing: Activate sprite transparency or add sprite back
-            t.position.x = playerPos.x + 8 * cos_;
-            t.position.y = playerPos.y + 8 * sin_;
+            t.position.x = playerPosition.x + 8 * cos_;
+            t.position.y = playerPosition.y + 8 * sin_;
             s.color.r = m.isMouseBtnPressed ? 0 : 1;
         }
         else {
