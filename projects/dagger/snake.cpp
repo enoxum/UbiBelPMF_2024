@@ -29,11 +29,11 @@ void RedSnakeSystem::AddSegment()
     if (!snakeSegments.empty())
     {
         auto& lastTransform = reg.get<Transform>(snakeSegments.back());
-        transform.position = lastTransform.position - Vector3(20.0f, 0, 0);  // Postavi novi segment iza poslednjeg
+        transform.position = lastTransform.position - Vector3(20.0f, 0, 0); 
     }
 
     auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "RedSnake:body");
+    AssignSprite(sprite, "RedSnake:snake");
     sprite.size = Vector2(1, 1) * 20.0f;
 
     auto& snakeBody = reg.emplace<SnakeBody>(entity);

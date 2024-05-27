@@ -69,7 +69,7 @@ void red_snake::CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_)
     auto entity = reg.create();
 
     auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "RedSnake:head");
+    AssignSprite(sprite, "RedSnake:snake");
     sprite.size = Vector2(1, 1) * tileSize_;
     //sprite.color = color_;
 

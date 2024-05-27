@@ -19,7 +19,7 @@ namespace red_snake
     {
         bool eat{ false };
     };
-
+    
     struct SnakeHead : public SnakeSegment
     {
     };
