@@ -8,6 +8,7 @@
 #include <core/game/transforms.h>
 #include "core/engine.h"
 #include "deadend_crosshair.h"
+#include "deadend_camera.h"
 
 using namespace dead_end;
 
@@ -45,11 +46,6 @@ void dead_end::WaveSystem::Run()
 
             auto bossView = Engine::Registry().view<DeadEndEnemy>();
 
-            if (bossView.empty())
-            {
-                gameOver();
-                // game over :)
-            }
 
             break;
 
@@ -157,11 +153,11 @@ void dead_end::gameOver()
     auto& transform = reg.emplace<Transform>(entity);
 
     AssignSprite(sprite, "dead_end:GameOver:game_over_2");
-    
+    sprite.UseAsUI();
     sprite.size.x = 800;
     sprite.size.y = 600;
 
-    transform.position.z = 1.f;
+    transform.position.z = 0.f;
     transform.position.x = playerPos.position.x;
     transform.position.y = playerPos.position.y;
 
