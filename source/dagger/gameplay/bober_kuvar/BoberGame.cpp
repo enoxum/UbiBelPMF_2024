@@ -18,7 +18,7 @@
 
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
-#include "gameplay/common/aiming_system.h"
+#include "gameplay/common/simple_collisions.h"
 
 #include "Player.h"
 #include "Enemy.h"
@@ -34,6 +34,7 @@ void BoberGame::GameplaySystemsSetup()
 
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
+    engine.AddSystem<SimpleCollisionsSystem>();
 }
 
 void BoberGame::SetCamera()
@@ -58,14 +59,12 @@ void BoberGame::WorldSetup()
     Enemy* enemy = new Enemy();
     enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });
 
-    OurEntity* cursor = new OurEntity();
+    OurEntity* cursor = new OurEntity("crosshair","",false,std::make_pair(0,0));
     //Cursor
     {
         Vector2 scale(1, 1);
         constexpr float tileSize = 10.f;
-        AssignSprite(*cursor->sprite, "crosshair");
         (*cursor->sprite).size = scale * tileSize;
-        reg.remove<Animator>(cursor->instance);
         reg.emplace<Cursor>(cursor->instance);
     }
     Melee* sword = new Melee();

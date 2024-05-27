@@ -179,6 +179,7 @@ void PlayerController::Run()
             //Missing: Make sprite transparent or remove sprite.
         }
     }
+    auto viewEnemy = Engine::Registry().view<EnemyData>();
     auto viewMelee = Engine::Registry().view<Transform, Sprite, MeleeWeaponSystem>();
     for (auto entity : viewMelee)
     {
@@ -198,19 +199,26 @@ void PlayerController::Run()
             //Missing: Make sprite transparent or remove sprite.
         }
     }
-    auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem>();
+    auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
     for (auto entity : viewBullet)
     {
         auto& t = viewBullet.get<Transform>(entity);
         auto& s = viewBullet.get<Sprite>(entity);
         auto& b = viewBullet.get<BulletSystem>(entity);
-                           //get<SimpleCollision>
+        auto& col = viewBullet.get<SimpleCollision>(entity);
         //Privremeni TimeToLive sistem za metke.
-        if ((--b.ttl) == 0) {
-            int idx = b.index;
-            delete bullets[b.index];
-            bullets.erase(idx);
-            continue;
+        //if ((--b.ttl == 0) {
+        if (col.colided) {
+            if (Engine::Registry().valid(col.colidedWith)) {
+                for (auto enemy : viewEnemy) {
+                    if (col.colidedWith == enemy) {
+                        int idx = b.index;
+                        delete bullets[b.index];
+                        bullets.erase(idx);
+                        continue;
+                    } //Trenutno brise metke samo pri sudaru sa enemy-jem. Kasnije dodati provere za zidove i ostale stvari.
+                }
+            }
         }
         if (b.firstTime) {
             b.dir = dir;

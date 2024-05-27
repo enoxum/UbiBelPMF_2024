@@ -20,6 +20,7 @@
 #include "tools/diagnostics.h"
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
+#include "gameplay/common/simple_collisions.h"
 #include <map>
 
 using namespace dagger;
@@ -55,6 +56,13 @@ namespace bober_game
 
 	struct ReloadEvent 
 	{
+	};
+
+	struct EnemyData
+	{
+		int ID;
+		bool focusOnPlayer;
+		Vector3 target{ 0, 0, 0 };
 	};
 
 	struct Cursor
@@ -134,16 +142,27 @@ namespace bober_game
 	class OurEntity
 	{
 	public:
-		OurEntity()
+		OurEntity(const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size) 
+			: sprite_path_(sprite_path), animation_path_(animation_path), collidable_(collidable), collision_size_(collision_size)
 		{
-			instance = Engine::Instance().Registry().create();
+			instance = Engine::Registry().create();
 
-			transform = &Engine::Instance().Registry().emplace<Transform>(instance);
+			transform = &Engine::Registry().emplace<Transform>(instance);
 			(*transform).position = Vector3{ 0.0f, 0.0f, 0.0f };
 
-			sprite = &Engine::Instance().Registry().emplace<Sprite>(instance);
+			sprite = &Engine::Registry().emplace<Sprite>(instance);
+			if (sprite_path_ != "")
+				AssignSprite(*sprite, sprite_path_);
 
-			animator = &Engine::Instance().Registry().emplace<Animator>(instance);
+			animator = &Engine::Registry().emplace<Animator>(instance);
+			if (animation_path_ != "")
+				AnimatorPlay(*animator, animation_path_);
+
+			if (collidable_) {
+				collision = &Engine::Registry().emplace<SimpleCollision>(instance);
+				(*collision).size.x = collision_size.second;
+				(*collision).size.y = collision_size.first;
+			}
 		}
 		~OurEntity()
 		{
@@ -156,7 +175,12 @@ namespace bober_game
 		Transform* transform;
 		Sprite* sprite;
 		Animator* animator;
+		SimpleCollision* collision;
 	private:
+		std::string sprite_path_;
+		std::string animation_path_;
+		bool collidable_;
+		std::pair<int, int> collision_size_;
 	};
 
 	//Character
@@ -164,7 +188,8 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Character() : OurEntity() 
+		Character(const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size) 
+			: OurEntity(sprite_path, animation_path, collidable, collision_size)
 		{
 
 		}
@@ -186,9 +211,11 @@ namespace bober_game
 
 		}
 
-		double hp;
-		double speed;
-		double strength;
+		double hp_;
+		double speed_;
+		double strength_;
+		bool collidable_;
+		std::pair<int, int> collision_size_;
 	};
 
 	//Enemy
@@ -196,14 +223,16 @@ namespace bober_game
 		public Character
 	{
 	public:
-		Enemy() : Character()
+		Enemy() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64))
 		{
-			AssignSprite(*sprite, "souls_like_knight_character:IDLE:idle1");
-			AnimatorPlay(*animator, "souls_like_knight_character:IDLE");
+			data_ = &Engine::Instance().Registry().emplace<EnemyData>(instance);
+			data_->ID = 1;
+			data_->focusOnPlayer = false;
 			lootAmount = 100.0f;
 			xpDrop = 100.0f;
 		}
 	private:
+		EnemyData* data_;
 		double xpDrop;
 		double lootAmount;
 
@@ -226,12 +255,11 @@ namespace bober_game
 		public Character
 	{
 	public:
-		Player() : Character()
+		Player() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 16))
 		{
 			controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 			PlayerController::SetupPlayerInput(*controller_);
-			AssignSprite(*sprite, "souls_like_knight_character:IDLE:idle1");
-			AnimatorPlay(*animator, "souls_like_knight_character:IDLE");
+			
 			Engine::Registry().emplace<common::CameraFollowFocus>(instance);
 		}
 
@@ -272,7 +300,7 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Weapon(double damage) : OurEntity()
+		Weapon(double damage) : OurEntity("","",false, std::make_pair(0, 0))
 		{
 			damage_ = damage;
 		}
@@ -308,7 +336,7 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Bullet(float speed) : OurEntity(), speed_(speed)
+		Bullet(float speed) : OurEntity("pizzaSlice","",true,std::make_pair(2,2)), speed_(speed)
 		{
 			bullet_system = &Engine::Instance().Registry().emplace<BulletSystem>(instance);
 			bullet_system->speed = speed;
