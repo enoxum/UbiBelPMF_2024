@@ -1,0 +1,8 @@
+	{
+		"animation-name": "player:player_dead",
+		"animation-length-ms": 600,
+		"animation-frames": [
+			{ "texture-name": "spritesheets:player_anim:player_death:3" }
+
+		]
+	}

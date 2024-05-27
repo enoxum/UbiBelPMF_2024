@@ -607,16 +607,16 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 			auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 			if (EPSILON_NOT_ZERO(input.Get("attack"))) {
 				//printf("ATTACK!!!!\n");
-				bool isCharacter = Engine::Registry().has<Character>(otherEntity);
+				bool isCharacter = Engine::Registry().has<EsccapeCharacter>(otherEntity);
 				if (isCharacter) {
-					auto& chr = Engine::Registry().get<Character>(state_.entity);
-					auto& otherCharacter = Engine::Registry().get<Character>(otherEntity);
+					auto& chr = Engine::Registry().get<EsccapeCharacter>(state_.entity);
+					auto& otherCharacter = Engine::Registry().get<EsccapeCharacter>(otherEntity);
 					//printf("prvi: %d, drugi: %d", (int)state_.entity, (int)otherEntity);
-					otherCharacter.character->health -= 0.01f;
+					otherCharacter.health -= 0.01f;
 
 					//printf("Character %d health = %f\n", otherCharacter.character->id, otherCharacter.character->health);
-					otherCharacter.character->healthSystem.TakeDamage(0.01);
-					printf("Character %d health = %f\n",(int)otherCharacter.character->id, otherCharacter.character->healthSystem.GetCurrentHealth());
+					otherCharacter.healthSystem.TakeDamage(0.01);
+					printf("Character %d health = %f\n",(int)otherCharacter.id, otherCharacter.healthSystem.GetCurrentHealth());
 				}
 			}
 		}
