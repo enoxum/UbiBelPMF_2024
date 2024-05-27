@@ -396,23 +396,39 @@ void CharacterControllerFSM::Attack_Down::Enter(CharacterControllerFSM::StateCom
 
 void CharacterControllerFSM::Attack_Down::Run(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	auto& characterEntity = Engine::Registry().get<Character>(state_.entity);
+	auto&& [input, character] = Engine::Registry().get<InputReceiver, EsccapeCharacter>(state_.entity);
 
-	if (EPSILON_ZERO(input.Get("attack")))
+	if (character.attackCooldown == 0)
 	{
-		GoTo(ECharacterStates::Idle_Front, state_);
+		character.attackCooldown = 300;
+
+		if (EPSILON_NOT_ZERO(input.Get("right")))
+		{
+			GoTo(ECharacterStates::Running_Right, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("left")))
+		{
+			GoTo(ECharacterStates::Running_Left, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("up")))
+		{
+			GoTo(ECharacterStates::Running_Up, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("down")))
+		{
+			GoTo(ECharacterStates::Running_Down, state_);
+		}
+		else
+		{
+			GoTo(ECharacterStates::Idle_Front, state_);
+		}
+
 	}
 	else
 	{
-		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		if (character.health <= 0)
-			GoTo(ECharacterStates::Death, state_);
-		if (!character.healthSystem.IsAlive())
-			GoTo(ECharacterStates::Death, state_);
-
+		character.attackCooldown--;
 	}
+
 
 }
 
@@ -437,19 +453,37 @@ void CharacterControllerFSM::Attack_Left::Enter(CharacterControllerFSM::StateCom
 
 void CharacterControllerFSM::Attack_Left::Run(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	if (EPSILON_ZERO(input.Get("attack")))
+	auto&& [input, character] = Engine::Registry().get<InputReceiver, EsccapeCharacter>(state_.entity);
+
+	if (character.attackCooldown == 0)
 	{
-		GoTo(ECharacterStates::Idle_Left, state_);
+		character.attackCooldown = 300;
+
+		if (EPSILON_NOT_ZERO(input.Get("right")))
+		{
+			GoTo(ECharacterStates::Running_Right, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("left")))
+		{
+			GoTo(ECharacterStates::Running_Left, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("up")))
+		{
+			GoTo(ECharacterStates::Running_Up, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("down")))
+		{
+			GoTo(ECharacterStates::Running_Down, state_);
+		}
+		else
+		{
+			GoTo(ECharacterStates::Idle_Left, state_);
+		}
+
 	}
 	else
 	{
-		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		if (character.health <= 0)
-			GoTo(ECharacterStates::Death, state_);
-		if (!character.healthSystem.IsAlive())
-			GoTo(ECharacterStates::Death, state_);
+		character.attackCooldown--;
 	}
 }
 
@@ -475,22 +509,37 @@ void CharacterControllerFSM::Attack_Right::Enter(CharacterControllerFSM::StateCo
 
 void CharacterControllerFSM::Attack_Right::Run(CharacterControllerFSM::StateComponent& state_)
 {
-	//auto& animator = Engine::Registry().get<Animator>(state_.entity);
-	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	//auto& animation = Engine::Registry().get<Animation>(state_.entity);
+	auto&& [input, character] = Engine::Registry().get<InputReceiver, EsccapeCharacter>(state_.entity);
 
-	if (EPSILON_ZERO(input.Get("attack")))
+	if (character.attackCooldown == 0)
 	{
-		GoTo(ECharacterStates::Idle_Right, state_);
+		character.attackCooldown = 300;
+
+		if (EPSILON_NOT_ZERO(input.Get("right")))
+		{
+			GoTo(ECharacterStates::Running_Right, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("left")))
+		{
+			GoTo(ECharacterStates::Running_Left, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("up")))
+		{
+			GoTo(ECharacterStates::Running_Up, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("down")))
+		{
+			GoTo(ECharacterStates::Running_Down, state_);
+		}
+		else
+		{
+			GoTo(ECharacterStates::Idle_Right, state_);
+		}
+
 	}
 	else
 	{
-		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		if (character.health <= 0)
-			GoTo(ECharacterStates::Death, state_);
-		if (!character.healthSystem.IsAlive())
-			GoTo(ECharacterStates::Death, state_);
+		character.attackCooldown--;
 	}
 
 }
@@ -511,19 +560,37 @@ void CharacterControllerFSM::Attack_Up::Enter(CharacterControllerFSM::StateCompo
 
 void CharacterControllerFSM::Attack_Up::Run(CharacterControllerFSM::StateComponent& state_)
 {
-	auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
-	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	if (EPSILON_ZERO(input.Get("attack")))
+	auto&& [input, character] = Engine::Registry().get<InputReceiver, EsccapeCharacter>(state_.entity);
+
+	if (character.attackCooldown == 0)
 	{
-		GoTo(ECharacterStates::Idle_Back, state_);
+		character.attackCooldown = 300;
+
+		if (EPSILON_NOT_ZERO(input.Get("right")))
+		{
+			GoTo(ECharacterStates::Running_Right, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("left")))
+		{
+			GoTo(ECharacterStates::Running_Left, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("up")))
+		{
+			GoTo(ECharacterStates::Running_Up, state_);
+		}
+		else if (EPSILON_NOT_ZERO(input.Get("down")))
+		{
+			GoTo(ECharacterStates::Running_Down, state_);
+		}
+		else
+		{
+			GoTo(ECharacterStates::Idle_Back, state_);
+		}
+
 	}
 	else
 	{
-		auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
-		if (character.health <= 0)
-			GoTo(ECharacterStates::Death, state_);
-		if (!character.healthSystem.IsAlive())
-			GoTo(ECharacterStates::Death, state_);
+		character.attackCooldown--;
 	}
 }
 
@@ -544,8 +611,18 @@ void CharacterControllerFSM::Death::Enter(CharacterControllerFSM::StateComponent
 
 void CharacterControllerFSM::Death::Run(CharacterControllerFSM::StateComponent& state_)
 {
+	auto&& [input, character] = Engine::Registry().get<InputReceiver, EsccapeCharacter>(state_.entity);
 
-	GoTo(ECharacterStates::Dead, state_);
+	if (character.attackCooldown == 0)
+	{
+		character.attackCooldown = 300;
+		GoTo(ECharacterStates::Dead, state_);
+
+	}
+	else
+	{
+		character.attackCooldown--;
+	}
 	//AnimatorStop(animator);
 }
 
@@ -560,20 +637,13 @@ void CharacterControllerFSM::Dead::Enter(CharacterControllerFSM::StateComponent&
 
 	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
 	if (character.id == 0)
-		AnimatorPlay(animator, "player:player_death");
+		AnimatorPlay(animator, "player:player_dead");
 	else
 		AnimatorPlay(animator, "skeleton:skeleton_dead");
 }
 
 void CharacterControllerFSM::Dead::Run(CharacterControllerFSM::StateComponent& state_)
 {
-
-	auto&& [animator, character] = Engine::Registry().get<Animator, EsccapeCharacter>(state_.entity);
-	if (character.id == 0)
-		AnimatorPlay(animator, "player:player_death");
-	else
-		AnimatorPlay(animator, "skeleton:skeleton_dead");
-	//AnimatorStop(animator);
 }
 
 void CharacterControllerFSM::Dead::Exit(CharacterControllerFSM::StateComponent& state_)
@@ -586,7 +656,6 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 {
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 	auto& collision = Engine::Registry().get<SimpleCollision>(state_.entity);
-	//printf("prvi entitet %d karaktera \n", (int)state_.entity);
 	
 	auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
 
@@ -606,15 +675,12 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 
 			auto& input = Engine::Registry().get<InputReceiver>(state_.entity);
 			if (EPSILON_NOT_ZERO(input.Get("attack"))) {
-				//printf("ATTACK!!!!\n");
 				bool isCharacter = Engine::Registry().has<EsccapeCharacter>(otherEntity);
 				if (isCharacter) {
 					auto& chr = Engine::Registry().get<EsccapeCharacter>(state_.entity);
 					auto& otherCharacter = Engine::Registry().get<EsccapeCharacter>(otherEntity);
-					//printf("prvi: %d, drugi: %d", (int)state_.entity, (int)otherEntity);
-					otherCharacter.health -= 0.01f;
 
-					//printf("Character %d health = %f\n", otherCharacter.character->id, otherCharacter.character->health);
+					otherCharacter.health -= 0.01f;
 					otherCharacter.healthSystem.TakeDamage(0.01);
 					printf("Character %d health = %f\n",(int)otherCharacter.id, otherCharacter.healthSystem.GetCurrentHealth());
 				}
