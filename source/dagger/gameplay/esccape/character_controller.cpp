@@ -652,11 +652,13 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 
 	while (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 		if (otherIsBullet) {
-			auto& chr = Engine::Registry().get<Character>(entity1);
-			chr.character->healthSystem.TakeDamage(1.0f);
-			chr.character->healthSystem.TakeDamage(1.0f);
-			chr.character->healthSystem.TakeDamage(0.05f);
+			auto& character = Engine::Registry().get<EsccapeCharacter>(entity1);
+			character.healthSystem.TakeDamage(1.0f);
+			character.healthSystem.TakeDamage(1.0f);
+			character.healthSystem.TakeDamage(0.05f);
 			Engine::Registry().destroy(collidedWith);
+
+			break;
 		}
 
 		if (otherIsCharacter)
