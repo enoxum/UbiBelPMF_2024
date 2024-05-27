@@ -97,14 +97,6 @@ void dead_end::DeadEndPlayerInputSystem::Run()
         t.position.x += ctrl.input.x * Engine::DeltaTime() * player.speed;
         t.position.y += ctrl.input.y * Engine::DeltaTime() * player.speed;
 
-        if (player.weaponType == 1)
-        {
-            // assign a sprite for a player w/pistol.
-        }
-        else {
-            // assign a sprite for a player w/gun.
-        }
-
 
         auto* c = Engine::GetDefaultResource<Camera>();
 

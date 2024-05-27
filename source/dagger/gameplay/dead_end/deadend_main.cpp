@@ -91,6 +91,7 @@ void dead_end::setupWorld()
     constexpr int screenHeight = 600;
 
     constexpr float playerSize = 55.f;
+    constexpr float crosshairSize = 25.f;
 
     float zPos = 5.f;
 
@@ -100,12 +101,13 @@ void dead_end::setupWorld()
     zPos -= 1.f;
     loadObstacles(zPos);
 
-    loadEnemies( zPos, playerSize);
+    //loadEnemies( zPos, playerSize);
 
 
     // player
     {
         auto entity = reg.create();
+        auto& player = reg.emplace<Player>(entity);
         auto& col = reg.emplace<SimpleCollision>(entity);
         col.size.x = playerSize;
         col.size.y = playerSize;
@@ -120,7 +122,6 @@ void dead_end::setupWorld()
         sprite.size.x = playerSize ;
         sprite.size.y = playerSize ;
 
-        auto& player = reg.emplace<Player>(entity);
         auto& camera = reg.emplace<DeadEndCamera>(entity);
         auto& controller = reg.emplace<ControllerMapping>(entity);
         auto& health = reg.emplace<Health>(entity);
@@ -139,8 +140,8 @@ void dead_end::setupWorld()
 
         auto& sprite = reg.emplace<Sprite>(entity);
         AssignSprite(sprite, "dead_end:Crosshair:crosshair");
-        sprite.size.x = 20.f;
-        sprite.size.y = 20.f;
+        sprite.size.x = crosshairSize;
+        sprite.size.y = crosshairSize;
     }
 
     // HUD fill
@@ -182,6 +183,38 @@ void dead_end::setupWorld()
     {
         auto entity = reg.create();
         auto& wave = reg.emplace<Wave>(entity);
+        wave.zPos = zPos;
+        wave.playerSize = playerSize;
+
+    }
+
+    // enemies
+    {
+        
+        
+            auto entity = reg.create();
+            auto& enemy = reg.emplace<DeadEndEnemy>(entity);
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            auto& sprite = reg.emplace<Sprite>(entity);
+            auto& transform = reg.emplace<Transform>(entity);
+            auto& health = reg.emplace<Health>(entity);
+
+            enemy.speed = 50.f;
+
+            sprite.size.x = playerSize;
+            sprite.size.y = playerSize;
+            AssignSprite(sprite, "dead_end:Enemy:zombie_1");
+
+            col.size.x = playerSize;
+            col.size.y = playerSize;
+
+            health.currentHealth = 40.f;
+            health.maxHealth = 40.f;
+
+            transform.position.x = 270;
+            transform.position.y = 270;
+            transform.position.z = zPos;
+
 
     }
 

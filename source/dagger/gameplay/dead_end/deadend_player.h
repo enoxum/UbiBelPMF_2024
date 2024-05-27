@@ -11,7 +11,7 @@ namespace dead_end
 	struct Player
 	{
 		Float32 speed {300.f};
-		int weaponType{ 1 }; // 1 - pistol, 2 - gun
+		int weaponType{ 1 }; // 1 - pistol, 2 - gun, 3-shotgun
 		bool stopMoving{ false };
 		int killCount{ 0 };
 		std::pair<bool, Float32> hit{ false, 0.f };
