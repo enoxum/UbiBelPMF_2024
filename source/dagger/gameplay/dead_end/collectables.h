@@ -16,7 +16,7 @@ namespace dead_end
 
     struct Collectable {
         CollectableType type;
-        int value;
+        Float32 value;
     };
 
     class CollectableSystem : public System
