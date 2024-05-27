@@ -10,7 +10,7 @@ namespace dead_end
 	struct HUD 
 	{
 		Vector2 position {300.f, 250.f};
-		Vector2 size{ 130.f, 100.f };
+		Vector2 size{ 130.f, 130.f };
 	};
 
 	class DeadEndHUDSystem

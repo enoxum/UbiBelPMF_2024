@@ -71,7 +71,7 @@ void dead_end::CreateBullet(Vector2 position_, Vector2 target_, int weaponType_)
 void dead_end::ShootingSystem::Run()
 {
     auto view = Engine::Registry().view<Transform, Bullet, Sprite, SimpleCollision>();
-    auto viewCollisions = Engine::Registry().view<Transform, DeadEndObstacle>();
+    auto viewCollisions = Engine::Registry().view<DeadEndObstacle>();
     auto playerView = Engine::Registry().view<Player>();
 
     for (auto entity : view)

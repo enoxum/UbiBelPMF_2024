@@ -11,8 +11,8 @@ namespace dead_end
 {
     struct Health
     {
-        int currentHealth;
-        int maxHealth;
+        Float32 currentHealth;
+        Float32 maxHealth;
     };
 
     class HealthSystem 

@@ -330,13 +330,13 @@ void loadEnemies(float zPos, float size)
             int randomNumber = std::rand() % 2;
             switch (randomNumber) {
                 case 0:
+                    enemy.speed = 60.f;
                     AssignSprite(sprite, "dead_end:Enemy:zombie_1");
                     break;
                 case 1:
                     AssignSprite(sprite, "dead_end:Enemy:zombie_3");
                     break;
                 default:
-                    AssignSprite(sprite, "dead_end:Enemy:zombie_1");
                     break;
             }
 
