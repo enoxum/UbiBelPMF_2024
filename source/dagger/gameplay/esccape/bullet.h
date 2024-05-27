@@ -26,6 +26,6 @@ namespace esccape
         void Run() override;
     };
 
-    void CreateBullet(Vector2 position_, Vector2 direction);
+    void CreateBullet(Vector2 position_, Vector2 direction, float damage);
 }
 

@@ -368,7 +368,7 @@ void esccape::SetupWorld()
     CreateNWorms(4, zPos, screenWidth, screenHeight);
     CreateEnemy(zPos, screenWidth, screenHeight);
 
-    CreateBullet(Vector2{ 0,0 }, Vector2{1, 0});
+    CreateBullet(Vector2{-200,0 }, Vector2{1, 0}, 2.0f);
 
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateWorm(zPos, screenWidth, screenHeight);

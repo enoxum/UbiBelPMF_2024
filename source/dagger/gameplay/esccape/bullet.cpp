@@ -5,7 +5,7 @@
 using namespace esccape;
 using namespace dagger;
 
-void esccape::CreateBullet(Vector2 position_, Vector2 direction)
+void esccape::CreateBullet(Vector2 position_, Vector2 direction, float speed)
 {
 
     auto& reg = Engine::Instance().Registry();
@@ -13,8 +13,7 @@ void esccape::CreateBullet(Vector2 position_, Vector2 direction)
 
     auto& bullet = reg.emplace<Bullet>(entity);
     bullet.direction = direction;
-    bullet.damage = 10.f;
-    bullet.speed = 150.f;
+    bullet.speed = speed;
 
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:bullet-sprite");

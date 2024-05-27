@@ -9,6 +9,7 @@
 #include "esccape_controller.h"
 
 #include "character.h"
+#include "bullet.h"
 #include "blackboard_manager.h"
 
 using namespace dagger;
@@ -644,10 +645,20 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 	auto& otherTransform = Engine::Registry().get<Transform>(collidedWith);
 	auto& otherCollision = Engine::Registry().get<SimpleCollision>(collidedWith);
 	bool otherIsCharacter = Engine::Registry().has<Character>(collidedWith);
+	bool otherIsBullet = Engine::Registry().has<Bullet>(collidedWith);
+
 	
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
 
 	while (collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
+		if (otherIsBullet) {
+			auto& chr = Engine::Registry().get<Character>(entity1);
+			chr.character->healthSystem.TakeDamage(1.0f);
+			chr.character->healthSystem.TakeDamage(1.0f);
+			chr.character->healthSystem.TakeDamage(0.05f);
+			Engine::Registry().destroy(collidedWith);
+		}
+
 		if (otherIsCharacter)
 		{
 			Vector2 otherCollisionSides = otherCollision.GetCollisionSides(otherTransform.position, collision, transform.position);
