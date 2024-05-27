@@ -128,9 +128,12 @@ void PlayerController::Run()
         auto& col = enemyView.get<SimpleCollision>(entity);
 
         float distance = sqrt(pow(t.position.x - playerPosition.x, 2) + pow(t.position.y - playerPosition.y, 2));
-        if (distance < 50.f)
+        if (distance < enemy.visionDistance)
+        {
             enemy.focusOnPlayer = true;
-        else if (distance > 150.f)
+            enemy.visionDistance += 0.01;
+        }
+        else if (distance > 1.5 * enemy.visionDistance)
             enemy.focusOnPlayer = false;
 
         if (!enemy.focusOnPlayer)

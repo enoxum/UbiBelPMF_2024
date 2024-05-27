@@ -13,9 +13,9 @@ public:
     void levelUp();
     int getLevel();
     double getSpeed();
+    void spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&) override;
 
 private:
-    void spawn() override;
     void die() override;
     void collision() override;
     void shoot();

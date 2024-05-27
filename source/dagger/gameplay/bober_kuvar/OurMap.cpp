@@ -24,6 +24,11 @@ std::vector<std::vector<int>> OurMap::get_matrix()
 	return matrix_;
 }
 
+std::vector<Room*> OurMap::get_rooms()
+{
+	return rooms_;
+}
+
 void OurMap::generateMap()
 {
 	make_wall_matrix();
