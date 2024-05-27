@@ -79,13 +79,14 @@ namespace academic_life
         AcademicLifeFieldSettings fieldSettings, bool isText)
     {
         auto view = Engine::Registry().view<Transform, T>();
+        ESPB& espb = ESPB::Instance();
         for (auto entity : view)
         {
             auto& transform = view.get<Transform>(entity);
             auto& falling_entity = view.get<T>(entity);
             falling_entity.speed = entitySpeed;
 
-            transform.position.y -= falling_entity.speed * Engine::DeltaTime();
+            transform.position.y -= falling_entity.speed * Engine::DeltaTime()*espb.get_speed_factor();
 
             if (transform.position.y < -boarderY)
             {
