@@ -24,6 +24,7 @@
 #include "gameplay/common/simple_collisions.h"
 #include "deadend_wavestruct.h"
 #include "deadend_enemy.h"
+#include "collectables.h"
 
 
 
@@ -216,6 +217,29 @@ void dead_end::setupWorld()
             transform.position.z = zPos;
 
 
+    }
+
+    // medkit
+    {
+        auto entity = reg.create();
+        auto& collectable = reg.emplace<Collectable>(entity);
+        auto& transform = reg.emplace<Transform>(entity);
+        auto& sprite = reg.emplace<Sprite>(entity);
+        auto& col = reg.emplace<SimpleCollision>(entity);
+
+        collectable.type = CollectableType::HealthPack;
+        collectable.value = 30.f;
+
+        transform.position.x = -250.f;
+        transform.position.y = 500.f;
+        transform.position.z = zPos;
+
+        AssignSprite(sprite, "dead_end:Collect:medkit");
+        sprite.size.x = 100.f;
+        sprite.size.y = 100.f;
+
+        col.size.x = 20.f;
+        col.size.y = 20.f;
     }
 
 }

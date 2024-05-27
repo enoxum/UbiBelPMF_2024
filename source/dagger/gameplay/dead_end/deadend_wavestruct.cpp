@@ -46,6 +46,10 @@ void dead_end::WaveSystem::Run()
 
             auto bossView = Engine::Registry().view<DeadEndEnemy>();
 
+            if (bossView.empty())
+            {
+                gameOver();
+            }
 
             break;
 
