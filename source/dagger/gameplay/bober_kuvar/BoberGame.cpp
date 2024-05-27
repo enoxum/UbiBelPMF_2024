@@ -18,6 +18,7 @@
 
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
+#include "gameplay/common/simple_collisions.h"
 
 #include "Player.h"
 #include "Enemy.h"
@@ -52,6 +53,8 @@ void BoberGame::WorldSetup()
 {
     SetCamera();
     //Engine::GetDefaultResource<Audio>()->PlayLoop("music");
+    auto& engine = Engine::Instance();
+    auto& reg = engine.Registry();
 
     int map_size = 20;
     int room_size = 5;
@@ -84,4 +87,37 @@ void BoberGame::WorldSetup()
     // bober
     Player* bober = new Player();
     bober->spawn(topLeft, bottomRight, matrix);
+
+    OurEntity* cursor = new OurEntity("crosshair", "", false, std::make_pair(0, 0));
+    //Cursor
+    {
+        Vector2 scale(1, 1);
+        constexpr float tileSize = 10.f;
+        (*cursor->sprite).size = scale * tileSize;
+        reg.emplace<Cursor>(cursor->instance);
+    }
+    Melee* sword = new Melee();
+    //Melee
+    {
+        Vector2 scale(1, 1);
+        constexpr float tileSize = 20.f;
+        //AssignSprite(*sword->sprite, "pizzaSlice");
+        (*sword->sprite).size = scale * tileSize;
+        reg.remove<Animator>(sword->instance);
+
+        bober->weapons.push_back(sword);
+    }
+
+    Ranged* gun = new Ranged(8,8,2.0);
+    //Ranged
+    {
+        Vector2 scale(1, 1);
+        constexpr float tileSize = 20.f;
+        //AssignSprite(*gun->sprite, "pizzaGun");
+        (*gun->sprite).size = scale * tileSize;
+        reg.remove<Animator>(gun->instance);
+
+        bober->weapons.push_back(gun);
+    }
+    SetCamera();
 }

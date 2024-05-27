@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "core/core.h"
 
 #include "core/core.h"
@@ -24,6 +24,7 @@ class OurEntity
 {
 public:
 	OurEntity(const std::string &sprite_path, const std::string &animation_path, bool collidable, std::pair<int, int> collision_size);
+  ~OurEntity();
 	Entity instance;
 	Transform* transform;
 	Sprite* sprite;
@@ -37,3 +38,4 @@ private:
 	bool collidable_;
 	std::pair<int, int> collision_size_;
 };
+*/

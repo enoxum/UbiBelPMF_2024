@@ -1,4 +1,4 @@
-#pragma once
+/*ragma once
 #include "OurEntity.h"
 
 class Tile :
@@ -8,5 +8,5 @@ public:
     Tile(const std::string& sprite_path, const std::string& animation_path, bool collidable);
 private:
     bool collidable_;
-};
+};*/
 

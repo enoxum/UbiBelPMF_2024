@@ -1,4 +1,4 @@
-#include "OurEntity.h"
+/*#include "OurEntity.h"
 
 OurEntity::OurEntity(const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size)
 	: sprite_path_(sprite_path), animation_path_(animation_path), collidable_(collidable), collision_size_(collision_size)
@@ -27,3 +27,4 @@ void OurEntity::move(Vector3 vector)
 {
 	transform->position += vector;
 }
+*/

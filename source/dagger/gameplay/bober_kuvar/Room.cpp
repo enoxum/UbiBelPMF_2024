@@ -1,4 +1,4 @@
-#include "Room.h"
+/*#include "Room.h"
 #include "Tile.h"
 
 Room::Room(int id, std::pair<int, int> top_left, std::pair<int, int> bottom_right, std::vector<std::pair<int, int>> doors_coords)
@@ -39,3 +39,5 @@ void Room::setRoomEnemies(std::vector<Enemy*> roomEnemies)
 {
 	roomEnemies_ = roomEnemies;
 }
+*/
+

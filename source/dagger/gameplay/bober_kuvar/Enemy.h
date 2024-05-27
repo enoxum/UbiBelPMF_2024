@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "PlayerController.h"
 #include "Character.h"
 
@@ -24,5 +24,6 @@ private:
     void die() override;
     void collision() override;
     void generatePath(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix);
-
 };
+*/
+

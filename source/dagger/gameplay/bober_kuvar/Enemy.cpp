@@ -1,3 +1,4 @@
+/*
 #include "Enemy.h"
 #include <queue>
 
@@ -87,3 +88,4 @@ void Enemy::generatePath(const std::pair<int, int>& topLeft, const std::pair<int
 		numOfWaypoints_--;
 	}
 }
+*/
