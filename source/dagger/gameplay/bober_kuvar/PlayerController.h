@@ -20,6 +20,7 @@
 #include "tools/diagnostics.h"
 #include "gameplay/common/parallax.h"
 #include "gameplay/common/camera_focus.h"
+#include <map>
 
 using namespace dagger;
 
@@ -106,7 +107,7 @@ namespace bober_game
 		String SystemName() override {
 			return "Character Controller System";
 		}
-		static std::vector<Bullet*> bullets;
+		static std::unordered_map<int, Bullet*> bullets;
 		void SpinUp() override;
 		void WindDown() override;
 		void Run() override;
@@ -326,7 +327,7 @@ namespace bober_game
 		public Weapon
 	{
 	public:
-		Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon(5.0), currentAmmo_(currentAmmo), magSize_(magSize), reloadSpeed_(reloadSpeed)
+		Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon(5.0), currentAmmo_(currentAmmo), magSize_(magSize), reloadSpeed_(reloadSpeed),numberOfBullets(0)
 		{
 			ranged = &Engine::Registry().emplace<RangedWeaponSystem>(instance);
 			ranged->isMouseBtnPressed = false;
@@ -339,8 +340,8 @@ namespace bober_game
 		{
 			if (currentAmmo_ != 0) {
 				Bullet* bullet = new Bullet(shoot_.speed);
-				bullet->bullet_system->index = PlayerController::bullets.size();
-				PlayerController::bullets.push_back(bullet);
+				bullet->bullet_system->index = (++numberOfBullets)%100;
+				PlayerController::bullets[bullet->bullet_system->index]=bullet;
 				Vector2 scale(1, 1);
 				constexpr float tileSize = 20.f;
 				(*bullet->transform).position.x = shoot_.position.x;
@@ -358,6 +359,7 @@ namespace bober_game
 		int currentAmmo_;
 		int magSize_;
 		double reloadSpeed_;
+		int numberOfBullets;
 
 		void reload()
 		{

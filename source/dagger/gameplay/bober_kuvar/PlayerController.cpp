@@ -15,7 +15,7 @@ using namespace bober_game;
 
 double PlayerController::playerSpeed = 100.0;
 Vector2 playerPos{ 0,0 };
-std::vector<Bullet*> PlayerController::bullets;
+std::unordered_map<int,Bullet*> PlayerController::bullets;
 
 void PlayerController::SpinUp()
 {
@@ -207,12 +207,9 @@ void PlayerController::Run()
                            //get<SimpleCollision>
         //Privremeni TimeToLive sistem za metke.
         if ((--b.ttl) == 0) {
+            int idx = b.index;
             delete bullets[b.index];
-            /*bullets.erase(bullets.begin() + b.index);
-            for (int i=b.index;i<bullets.size();i++) {
-                bullets[i]->bullet_system->index--;
-            }
-            delete bullet;*/
+            bullets.erase(idx);
             continue;
         }
         if (b.firstTime) {
