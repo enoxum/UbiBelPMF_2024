@@ -59,7 +59,7 @@ void BoberGame::WorldSetup()
     Enemy* enemy = new Enemy();
     enemy->move(Vector3{ 100.0f, 0.0f, 0.0f });
 
-    OurEntity* cursor = new OurEntity("crosshair","",false,std::make_pair(0,0));
+    OurEntity* cursor = new OurEntity("crosshair", "", false, std::make_pair(0, 0));
     //Cursor
     {
         Vector2 scale(1, 1);
@@ -72,7 +72,7 @@ void BoberGame::WorldSetup()
     {
         Vector2 scale(1, 1);
         constexpr float tileSize = 20.f;
-        AssignSprite(*sword->sprite, "pizzaSlice");
+        //AssignSprite(*sword->sprite, "pizzaSlice");
         (*sword->sprite).size = scale * tileSize;
         reg.remove<Animator>(sword->instance);
 
@@ -84,11 +84,11 @@ void BoberGame::WorldSetup()
     {
         Vector2 scale(1, 1);
         constexpr float tileSize = 20.f;
-        AssignSprite(*gun->sprite, "pizzaGun");
+        //AssignSprite(*gun->sprite, "pizzaGun");
         (*gun->sprite).size = scale * tileSize;
         reg.remove<Animator>(gun->instance);
 
-       bober->weapons.push_back(gun);
+        bober->weapons.push_back(gun);
     }
     SetCamera();
 }

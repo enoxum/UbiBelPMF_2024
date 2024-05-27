@@ -151,8 +151,7 @@ namespace bober_game
 			(*transform).position = Vector3{ 0.0f, 0.0f, 0.0f };
 
 			sprite = &Engine::Registry().emplace<Sprite>(instance);
-			if (sprite_path_ != "")
-				AssignSprite(*sprite, sprite_path_);
+			AssignSprite(*sprite, sprite_path_);
 
 			animator = &Engine::Registry().emplace<Animator>(instance);
 			if (animation_path_ != "")
@@ -160,15 +159,12 @@ namespace bober_game
 
 			if (collidable_) {
 				collision = &Engine::Registry().emplace<SimpleCollision>(instance);
-				(*collision).size.x = collision_size.second;
-				(*collision).size.y = collision_size.first;
+				(*collision).size.x = collision_size_.second;
+				(*collision).size.y = collision_size_.first;
 			}
 		}
 		~OurEntity()
 		{
-			/*delete transform;
-			delete sprite;
-			delete animator;*/
 			Engine::Instance().Registry().destroy(instance);
 		}
 		Entity instance;
@@ -188,7 +184,7 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Character(const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size) 
+		Character(const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size)
 			: OurEntity(sprite_path, animation_path, collidable, collision_size)
 		{
 
@@ -214,8 +210,6 @@ namespace bober_game
 		double hp_;
 		double speed_;
 		double strength_;
-		bool collidable_;
-		std::pair<int, int> collision_size_;
 	};
 
 	//Enemy
@@ -223,18 +217,17 @@ namespace bober_game
 		public Character
 	{
 	public:
-		Enemy() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(64, 64))
+		Enemy() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::make_pair(32, 32)), xpDrop_(10.0), lootAmount_(2.0)
 		{
 			data_ = &Engine::Instance().Registry().emplace<EnemyData>(instance);
 			data_->ID = 1;
 			data_->focusOnPlayer = false;
-			lootAmount = 100.0f;
-			xpDrop = 100.0f;
+
 		}
 	private:
 		EnemyData* data_;
-		double xpDrop;
-		double lootAmount;
+		double xpDrop_;
+		double lootAmount_;
 
 		void spawn() override
 		{
@@ -255,7 +248,7 @@ namespace bober_game
 		public Character
 	{
 	public:
-		Player() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 16))
+		Player() : Character("souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::make_pair(32, 32))
 		{
 			controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 			PlayerController::SetupPlayerInput(*controller_);
@@ -300,9 +293,9 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Weapon(double damage) : OurEntity("","",false, std::make_pair(0, 0))
+		Weapon(const std::string& sprite_path, double damage) : OurEntity(sprite_path, "", false, std::make_pair(0, 0)), damage_(damage)
 		{
-			damage_ = damage;
+
 		}
 	private:
 		double damage_;
@@ -313,10 +306,10 @@ namespace bober_game
 		public Weapon
 	{
 	public:
-		Melee() : Weapon(20.0)
+		Melee() : Weapon("pizzaSlice", 20.0)
 		{
-			melee = &Engine::Registry().emplace<MeleeWeaponSystem>(instance);
-			melee->isMouseBtnPressed = false;
+			melee_ = &Engine::Registry().emplace<MeleeWeaponSystem>(instance);
+			melee_->isMouseBtnPressed = false;
 
 			Engine::Registry().emplace<SlashEvent>(instance);
 			Engine::Dispatcher().sink<SlashEvent>().connect<&Melee::slash>(this);
@@ -326,9 +319,9 @@ namespace bober_game
 
 		}
 	private:
-		MeleeWeaponSystem* melee;
-		double cooldown;
-		double reach;
+		MeleeWeaponSystem* melee_;
+		double cooldown_;
+		double reach_;
 	};
 
 	//Bullet
@@ -336,7 +329,7 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Bullet(float speed) : OurEntity("pizzaSlice","",true,std::make_pair(2,2)), speed_(speed)
+		Bullet(float speed) : OurEntity("pizzaSlice", "", true, std::make_pair(2,2)), speed_(speed)
 		{
 			bullet_system = &Engine::Instance().Registry().emplace<BulletSystem>(instance);
 			bullet_system->speed = speed;
@@ -355,7 +348,7 @@ namespace bober_game
 		public Weapon
 	{
 	public:
-		Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon(5.0), currentAmmo_(currentAmmo), magSize_(magSize), reloadSpeed_(reloadSpeed),numberOfBullets(0)
+		Ranged(int currentAmmo, int magSize, double reloadSpeed) :Weapon("pizzaGun", 5.0), currentAmmo_(currentAmmo), magSize_(magSize), reloadSpeed_(reloadSpeed), numberOfBullets_(0)
 		{
 			ranged = &Engine::Registry().emplace<RangedWeaponSystem>(instance);
 			ranged->isMouseBtnPressed = false;
@@ -368,7 +361,7 @@ namespace bober_game
 		{
 			if (currentAmmo_ != 0) {
 				Bullet* bullet = new Bullet(shoot_.speed);
-				bullet->bullet_system->index = (++numberOfBullets)%100;
+				bullet->bullet_system->index = (++numberOfBullets_) % 100;
 				PlayerController::bullets[bullet->bullet_system->index]=bullet;
 				Vector2 scale(1, 1);
 				constexpr float tileSize = 20.f;
@@ -376,7 +369,7 @@ namespace bober_game
 				(*bullet->transform).position.y = shoot_.position.y;
 				(*bullet->sprite).position.x = shoot_.position.x;
 				(*bullet->sprite).position.y = shoot_.position.y;
-				AssignSprite(*bullet->sprite, "pizzaSlice");
+				//AssignSprite(*bullet->sprite, "pizzaSlice");
 				(*bullet->sprite).size = scale * tileSize;
 				Engine::Registry().remove<Animator>(bullet->instance);
 				currentAmmo_--;
@@ -387,7 +380,7 @@ namespace bober_game
 		int currentAmmo_;
 		int magSize_;
 		double reloadSpeed_;
-		int numberOfBullets;
+		int numberOfBullets_;
 
 		void reload()
 		{
