@@ -80,7 +80,7 @@ void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& s
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> disDistance(400, 1200);
-    std::uniform_int_distribution<> disSpeed(5, 10);
+    std::uniform_int_distribution<> disSpeed(100, 200);
     int speed = disSpeed(gen);
     switch (edge) {
         case 0:
@@ -88,28 +88,28 @@ void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& s
             t.position.y = worm.startingYTop + disDistance(gen);
             sprite.rotation = 0;
             collision.size = { sprite.size.x, sprite.size.y };
-            worm.speed = { 0, -(speed + worm.level * 25), 0 };
+            worm.speed = { 0, -(speed + worm.level * 30), 0 };
             break;
         case 1:
             t.position.x = worm.startingXRight + disDistance(gen);
             t.position.y = pos;
             sprite.rotation = 270;
             collision.size = { sprite.size.y, sprite.size.x };
-            worm.speed = { -(speed + worm.level * 25), 0, 0 };
+            worm.speed = { -(speed + worm.level * 30), 0, 0 };
             break;
         case 2:
             t.position.x = pos;
             t.position.y = worm.startingYBottom - disDistance(gen);
             sprite.rotation = 180;
             collision.size = { sprite.size.x, sprite.size.y };
-            worm.speed = { 0, speed + worm.level * 25, 0 };
+            worm.speed = { 0, speed + worm.level * 30, 0 };
             break;
         case 3:
             t.position.x = worm.startingXLeft - disDistance(gen);
             t.position.y = pos;
             sprite.rotation = 90;
             collision.size = { sprite.size.y, sprite.size.x };
-            worm.speed = { speed + worm.level * 25, 0, 0 };
+            worm.speed = { speed + worm.level * 30, 0, 0 };
             break;
     }
 }
@@ -124,7 +124,7 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     auto entity = reg.create();
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:crv");
-    int wormSize = 35;
+    int wormSize = 40;
     float ratio = sprite.size.y / sprite.size.x;
     sprite.size = { wormSize, wormSize * ratio };
 
@@ -153,7 +153,7 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
 void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite, SimpleCollision& collision) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> disSpeed(150, 250);
+    std::uniform_int_distribution<> disSpeed(100, 200);
     std::uniform_int_distribution<> disX(worm.minimumX, worm.maximumX);
     std::uniform_int_distribution<> disY(worm.minimumY, worm.maximumY);
     std::uniform_int_distribution<> disDistance(400, 1200);
