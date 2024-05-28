@@ -11,6 +11,9 @@
 using namespace dagger;
 using namespace red_snake;
 
+Text appleCounterText;
+int count = 0;
+
 void RedSnakeSystem::SpinUp()
 {
     constexpr int height = 20;
@@ -25,6 +28,8 @@ void RedSnakeSystem::SpinUp()
     CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
 
     snakeTickCounter = 0;
+    count = 0;
+    UpdateCounter(count);
 }
 
 void RedSnakeSystem::WindDown()
@@ -47,6 +52,7 @@ void RedSnakeSystem::AddSegment()
 
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "RedSnake:snake");
+    sprite.color = ColorRGBA(0.5f, 1.0f, 0.5f, 1.0f);    
     sprite.size = Vector2(1, 1) * 20.0f;
 
     auto& snakeBody = reg.emplace<SnakeSegment>(entity);
@@ -80,9 +86,10 @@ void red_snake::RedSnakeSystem::CreateSnake(float tileSize_, ColorRGBA color_, V
     auto entity = reg.create();
 
     auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "RedSnake:snake");
+    AssignSprite(sprite, "RedSnake:head_left");
     sprite.size = Vector2(1, 1) * tileSize_;
-    //sprite.color = color_;
+    sprite.color = ColorRGBA(0.0f, 0.5f, 0.0f, 1.0f);
+    sprite.size = Vector2(1, 1);
 
     auto& transform = reg.emplace<Transform>(entity);
 
@@ -104,12 +111,30 @@ void red_snake::RedSnakeSystem::CreateSnake(float tileSize_, ColorRGBA color_, V
     snakeSegments.push_back(entity);
 }
 
+void red_snake::RedSnakeSystem::ResetGame()
+{
+    auto& reg = Engine::Registry();
+
+    for (auto segment : snakeSegments)
+    {
+        reg.destroy(segment);
+    }
+    snakeSegments.clear();
+
+    auto viewFood = reg.view<Food>();
+    for (auto entity : viewFood)
+    {
+        reg.destroy(entity);
+    }
+
+    SpinUp();
+}
 
 
-Text appleCounterText;
-int count = 0;
 
-void UpdateCounter(int applesEaten) {
+
+
+void red_snake::RedSnakeSystem::UpdateCounter(int applesEaten) {
     appleCounterText.spacing = 0.7f;
     appleCounterText.Set("pixel-font", "Apples eaten: " + std::to_string(applesEaten), Vector3(10, 250, 0), true);
 }
@@ -150,8 +175,30 @@ void RedSnakeSystem::Run()
             auto& segment = reg.get<SnakeSegment>(entity);
 
             //Move head
+            /*auto& head = reg.get<SnakeHead>(entity);
+            t.position += head.direction * snakeSpeed;*/
+
             auto& head = reg.get<SnakeHead>(entity);
-            t.position += head.direction * snakeSpeed;
+            t.position += head.direction * segmentSpacing;
+
+            // Promena sprite-a na osnovu smera kretanja
+            auto& sprite = reg.get<Sprite>(entity);
+            if (head.direction == Vector3(0, 1, 0))
+            {
+                AssignSprite(sprite, "RedSnake:head_up");
+            }
+            else if (head.direction == Vector3(0, -1, 0))
+            {
+                AssignSprite(sprite, "RedSnake:head_down");
+            }
+            else if (head.direction == Vector3(-1, 0, 0))
+            {
+                AssignSprite(sprite, "RedSnake:head_left");
+            }
+            else if (head.direction == Vector3(1, 0, 0))
+            {
+                AssignSprite(sprite, "RedSnake:head_right");
+            }
 
             Vector3 direction = segment.direction * segmentSpacing;
             t.position += direction;
@@ -182,7 +229,29 @@ void RedSnakeSystem::Run()
                 }
             }
         }
+
+
+        if (t.position.x >= (26 / 2 + 0.5f) * 20.f + 5 ||
+            t.position.x <= -(26 / 2 + 0.5f) * 20.f - 5 ||
+            t.position.y >= (20 / 2 + 0.5f) * 20.f + 5 ||
+            t.position.y <= -(20 / 2 + 0.5f) * 20.f - 5
+            ) {
+            HWND hwnd = CreateWindow("myWindowClass", "Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                100, 100, 500, 400, NULL, NULL, NULL, NULL);
+            int result = MessageBox(hwnd, "Game Over! Do you want to play again?", "RedSnake", MB_YESNO);
+
+            if (result == IDYES)
+            {
+                ResetGame();
+            }
+            else if (result == IDNO)
+            {
+                PostQuitMessage(0);
+            }
+            return;
+        }
     }
+
 
     auto& headTransform = reg.get<Transform>(snakeSegments[0]);
     for (size_t i = 1; i < snakeSegments.size(); ++i)
@@ -190,11 +259,16 @@ void RedSnakeSystem::Run()
         auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
         if (headTransform.position == segmentTransform.position)
         {
+            // Kolizija detektovana, prekini igru
             HWND hwnd = CreateWindow("myWindowClass", "Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
                 100, 100, 500, 400, NULL, NULL, NULL, NULL);
-            int result = MessageBox(hwnd, "Game Over! You ate yourself.", "RedSnake", MB_OK);
+            int result = MessageBox(hwnd, "Game Over! Do you want to play again?", "RedSnake", MB_YESNO);
 
-            if (result == IDOK)
+            if (result == IDYES)
+            {
+                ResetGame();
+            }
+            else if (result == IDNO)
             {
                 PostQuitMessage(0);
             }

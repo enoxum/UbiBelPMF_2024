@@ -78,7 +78,7 @@ void SnakePlayerInputSystem::Run()
         Vector3 direction{ ctrl.input.x, ctrl.input.y, 0 };
         head.direction = direction;
 
-        if (t.position.x >= (26 / 2 + 0.5f) * 20.f + 5 ||
+        /*if (t.position.x >= (26 / 2 + 0.5f) * 20.f + 5 ||
             t.position.x <= -(26 / 2 + 0.5f) * 20.f - 5 ||
             t.position.y >= (20 / 2 + 0.5f) * 20.f + 5 ||
             t.position.y <= -(20 / 2 + 0.5f) * 20.f - 5
@@ -91,6 +91,6 @@ void SnakePlayerInputSystem::Run()
             {
                 PostQuitMessage(0);
             }
-        }
+        }*/
     }
 }
