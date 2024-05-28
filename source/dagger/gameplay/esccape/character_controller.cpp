@@ -758,7 +758,7 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 
 				break;
 			}
-			else {
+			else if(boost.id == 1){
 				String inputContext;
 				auto& input = Engine::Registry().get<InputReceiver>(entity1);
 				if (character.id == 0 && !character.inputContextReversed)
@@ -783,6 +783,20 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 				}
 				input.contexts.pop_back();
 				input.contexts.push_back(inputContext);
+				Engine::Registry().destroy(collidedWith);
+				break;
+			}
+			else if(boost.id == 2){
+				printf("speed b4 = %f\n", character.speed);
+				character.speed *= 1.1;
+				printf("speed after = %f\n", character.speed);
+				Engine::Registry().destroy(collidedWith);
+				break;
+			}
+			else if (boost.id == 3) {
+				printf("speed b4 = %f\n", character.speed);
+				character.speed *= 0.9;
+				printf("speed after = %f\n", character.speed);
 				Engine::Registry().destroy(collidedWith);
 				break;
 			}

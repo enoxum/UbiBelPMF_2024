@@ -22,9 +22,22 @@ void esccape::MachineSystem::Run()
         int x_rnd = -200 + rand() % 201;
         int y_rnd = rand() % (-201);
 
-        int randId = (std::rand() % 5) < 4 ? 0 : 1;
+        
+        int randId = std::rand() % 20; 
 
-        //printf("******* x_rnd=%d *** y_rnd=%d\n\n\n", x_rnd, y_rnd);
+        if (randId < 12) {
+            randId = 0;
+        }
+        else if (randId < 14) {
+            randId = 1;
+        }
+        else if (randId < 17) {
+            randId = 2;
+        }
+        else {
+            randId = 3; 
+        }
+        //printf("rand = %d\n", randId);
 
         if (duration.count() > time + delta)
         {

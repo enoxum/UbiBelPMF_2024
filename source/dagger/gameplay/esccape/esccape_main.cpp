@@ -384,7 +384,9 @@ void esccape::SetupWorld()
                 "spritesheets:player_anim:player_idle_front:1",
                 "player:player_idle_front",
                 { 1, 1, 1 }, { -300, 0 }, 0);
+            mainChar.character->speed = 100.f;
             mainChar.character->inputContextReversed = false;
+            printf("mainspeed main = %f\n", mainChar.character->speed);
             reg.emplace<Character>(entity, std::move(mainChar));
          
         }
@@ -399,6 +401,9 @@ void esccape::SetupWorld()
                 "spritesheets:skeleton:skeleton_idle_front:1",
                 "skeleton:skeleton_idle_front",
                 { 1, 1, 1 }, { 300, 0 }, 1);
+            skeletonChar.character->speed = 100.f;
+            skeletonChar.character->inputContextReversed = false;
+            printf("skeletonspeed main = %f\n\n", skeletonChar.character->speed);
             reg.emplace<Character>(entity, std::move(skeletonChar));
         }
     }

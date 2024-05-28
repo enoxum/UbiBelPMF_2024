@@ -21,10 +21,20 @@ void esccape::CreateBoost(int id, Vector2 position_, Vector2 direction, float sp
         AssignSprite(sprite, "Esccape:waterdrop");
         boost.id = 0;
     }
-    else
+    else if(id == 1)
     {
         AssignSprite(sprite, "Esccape:arrows");
         boost.id = 1;
+    }
+    else if (id == 2)
+    {
+        AssignSprite(sprite, "Esccape:lightning");
+        boost.id = 2;
+    }
+    else if (id == 3)
+    {
+        AssignSprite(sprite, "Esccape:red_lightning");
+        boost.id = 3;
     }
     int boostSize = 40;
     float ratio = sprite.size.y / sprite.size.x;

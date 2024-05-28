@@ -29,7 +29,7 @@ namespace esccape
     {
         inline String GetIniFile() override
         {
-            return "pingpong.ini";
+            return "esccape.ini";
         };
 
         void CoreSystemsSetup() override;

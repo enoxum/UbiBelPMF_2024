@@ -39,7 +39,7 @@ Character::Character(Entity entity, const std::string& input_, const std::string
     collision->size.x = sprite->size.x;
     collision->size.y = sprite->size.y;
     
-    character->speed = 100;
+    character->speed = 100.f;
     character->id = id;
     character->healthSystem.SetCurrentHealth(10);
     character->healthSystem.SetMaxHealth(10);

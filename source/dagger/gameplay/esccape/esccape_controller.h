@@ -14,13 +14,13 @@ namespace esccape
 	struct EsccapeCharacter
 	{
 		int id = 0;
-		int speed{ 1 };
+		float speed{ 100.f };
 		float health = 10;
 		int attackCooldown = 50;
 		HealthSystem healthSystem;
 		bool inputContextReversed;
 
-		EsccapeCharacter() : id(0), speed(1), health(10), attackCooldown(50), healthSystem() {}
+		EsccapeCharacter() : id(0), speed(100.f), health(10), attackCooldown(50), healthSystem() {}
 	};
 
 
