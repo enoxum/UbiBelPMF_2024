@@ -7,6 +7,9 @@
 #include "core/game/transforms.h"
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "gameplay/academic_life/academic_life_main.h"
+#include <iostream>
+#include "gameplay/academic_life/score_entity.h"
+#include <climits>
 
 using namespace academic_life;
 namespace academic_life {
@@ -80,6 +83,7 @@ void GameStateInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_) {
 
 void academic_life::GameOverScreen()
 {
+
     auto& engine = Engine::Instance();
     auto& reg = engine.Registry();
 
@@ -139,4 +143,8 @@ void academic_life::WinScreen()
     auto& instructionsText = reg.emplace<Text>(instructionsEntity);
     instructionsText.spacing = 0.6f;
     instructionsText.Set("pixel-font", "Press Space to go back to the main menu", glm::vec3(20.f / 2.0f, -350.0f / 2.0f + 20.f / 2.0f, 0.5f), 0.05f);
-}
+    
+    auto bestScoreEntity = reg.create();
+    auto& bestScoreText = reg.emplace<Text>(bestScoreEntity);
+    bestScoreText.Set("pixel-font", "Best time: " + std::to_string(ScoreEntitySystem::getBestTime()), glm::vec3(0.0f, -230.0f, 0.5f), 0.1f);
+    }

@@ -6,6 +6,7 @@
 
 #include "gameplay/academic_life/academic_life_logic.h"
 #include "core/game/transforms.h"
+#include "core/graphics/text.h"
 
 
 using namespace dagger;
@@ -21,6 +22,10 @@ namespace academic_life
         }
     };
 
+    struct TimeComponent
+    {
+        time_t beginTime;
+    };
     
     class ScoreEntitySystem : public System
     {
@@ -30,5 +35,13 @@ namespace academic_life
         void Run() override;        
         void SpinUp() override;
         void WindDown() override;
+        
+        static time_t getBestTime();
+        static void updateBestTime();
+        static time_t bestTime;
+        
+
+    private:
+        void updateTime();
     };
 }

@@ -5,6 +5,7 @@
 #include "core/game.h"
 #include "core/engine.h"
 #include <core/graphics/sprite.h>
+#include <ctime>
 
 using namespace dagger;
 

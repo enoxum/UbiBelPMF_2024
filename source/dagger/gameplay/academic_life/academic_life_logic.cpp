@@ -94,6 +94,7 @@ void AcademicLifeCollisionsLogicSystem::Run()
                         espb.Update(falling_text.text.value);
                         if (espb.GetValue() == 240) {
 
+                            ScoreEntitySystem::updateBestTime();
                             Engine::Registry().clear();
                             academic_life::WinScreen();
                             espb.Reset();

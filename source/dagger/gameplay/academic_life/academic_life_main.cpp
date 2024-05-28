@@ -34,6 +34,8 @@
 using namespace dagger;
 using namespace academic_life;
 
+
+
 void AcademicLife::GameplaySystemsSetup()
 {
     auto& engine = Engine::Instance();
@@ -290,5 +292,12 @@ void academic_life::SetupWorld()
     for (int i = 0; i < numFallingEntities; i++)
     {
         createRandomEntity();
+    }
+    // timer
+    {
+        auto entity = reg.create();
+        auto& time = reg.emplace<TimeComponent>(entity);
+        time.beginTime = std::time(0);
+        auto& text = reg.emplace<Text>(entity);
     }
 }
