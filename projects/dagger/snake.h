@@ -34,10 +34,10 @@ namespace red_snake
     class RedSnakeSystem : public System
     {
     public:
-        float snakeTick = 0.20f;
+        float snakeTick = 0.15f;
         float snakeTickCounter = 0;
 
-        float snakeSpeed = 30;
+        float snakeSpeed = 20;
 
     public:
         inline String SystemName() { return "Red Snake System"; }
