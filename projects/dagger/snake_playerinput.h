@@ -13,7 +13,7 @@ namespace red_snake
         EDaggerKeyboard down_key;
         EDaggerKeyboard left_key;
         EDaggerKeyboard right_key;
-        
+
         Vector2 input{ 0, 0 };
     };
 

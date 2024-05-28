@@ -2,6 +2,7 @@
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include <iostream>
+#include "snake.h"
 
 using namespace dagger;
 using namespace red_snake;
@@ -29,48 +30,53 @@ void SnakePlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
             if (kEvent_.key == ctrl_.up_key && (kEvent_.action == EDaggerInputState::Pressed || kEvent_.action == EDaggerInputState::Held))
             {
                 ctrl_.input.y = 1;
+                ctrl_.input.x = 0;
             }
             else if (kEvent_.key == ctrl_.up_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y > 0)
             {
-                ctrl_.input.y = 0;
+                //    ctrl_.input.y = 0;
             }
             else if (kEvent_.key == ctrl_.down_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
             {
                 ctrl_.input.y = -1;
+                ctrl_.input.x = 0;
             }
             else if (kEvent_.key == ctrl_.down_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.y < 0)
             {
-                ctrl_.input.y = 0;
+                //    ctrl_.input.y = 0;
             }
             else if (kEvent_.key == ctrl_.left_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
             {
                 ctrl_.input.x = -1;
+                ctrl_.input.y = 0;
             }
             else if (kEvent_.key == ctrl_.left_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x < 0)
             {
-                ctrl_.input.x = 0;
+                //    ctrl_.input.x = 0;
             }
             else if (kEvent_.key == ctrl_.right_key && (kEvent_.action == EDaggerInputState::Held || kEvent_.action == EDaggerInputState::Pressed))
             {
                 ctrl_.input.x = 1;
+                ctrl_.input.y = 0;
             }
             else if (kEvent_.key == ctrl_.right_key && kEvent_.action == EDaggerInputState::Released && ctrl_.input.x > 0)
             {
-                ctrl_.input.x = 0;
+                //    ctrl_.input.x = 0;
             }
         });
 }
 
 void SnakePlayerInputSystem::Run()
 {
-    auto view = Engine::Registry().view<Transform, SnakeControllerMapping>();
+    auto view = Engine::Registry().view<Transform, SnakeControllerMapping, SnakeHead>();
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<SnakeControllerMapping>(entity);
+        auto& head = view.get<SnakeHead>(entity);
 
         Vector3 direction{ ctrl.input.x, ctrl.input.y, 0 };
-
+        head.direction = direction;
 
         if (t.position.x >= (26 / 2 + 0.5f) * 20.f + 5 ||
             t.position.x <= -(26 / 2 + 0.5f) * 20.f - 5 ||
@@ -86,8 +92,5 @@ void SnakePlayerInputSystem::Run()
                 PostQuitMessage(0);
             }
         }
-
-
-        t.position += direction * SnakePlayerInputSystem::s_SnakeSpeed * 30.0f * Engine::DeltaTime();
     }
 }

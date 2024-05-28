@@ -24,6 +24,7 @@ void RedSnakeSystem::SpinUp()
     int foodY = (std::rand()) % 18 + 1;
     CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
 
+    snakeTickCounter = 0;
 }
 
 void RedSnakeSystem::WindDown()
@@ -39,16 +40,16 @@ void RedSnakeSystem::AddSegment()
     auto& transform = reg.emplace<Transform>(entity);
     if (!snakeSegments.empty())
     {
-        
+        //auto& lastSegment = reg.get<SnakeSegment>(snakeSegments.back());
         auto& lastTransform = reg.get<Transform>(snakeSegments.back());
-        transform.position = lastTransform.position; 
+        transform.position = lastTransform.position;
     }
 
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "RedSnake:snake");
     sprite.size = Vector2(1, 1) * 20.0f;
 
-    auto& snakeBody = reg.emplace<SnakeBody>(entity);
+    auto& snakeBody = reg.emplace<SnakeSegment>(entity);
     snakeSegments.push_back(entity);
     /*auto& controller = reg.emplace<SnakeControllerMapping>(entity);
     SnakePlayerInputSystem::SetupPlayerInput(controller);*/
@@ -64,7 +65,11 @@ void RedSnakeSystem::UpdateSegmentsPositions()
     {
         auto& segment = reg.get<SnakeSegment>(snakeSegments[i]);
         auto& prevSegment = reg.get<SnakeSegment>(snakeSegments[i - 1]);
-        segment.next_position = prevSegment.transform.position;
+
+        Vector3 distanceV = prevSegment.transform.position - segment.next_position;
+        segment.next_position += distanceV / 2.f;
+
+        //segment.next_position = prevSegment.transform.position;
     }
 
 }
@@ -112,28 +117,42 @@ void UpdateCounter(int applesEaten) {
 
 void RedSnakeSystem::Run()
 {
+    snakeTickCounter += Engine::DeltaTime();
+
+    if (snakeTickCounter < snakeTick)
+    {
+        return;
+    }
+    else
+    {
+        snakeTickCounter = 0;
+    }
+
     auto& reg = Engine::Registry();
     auto viewCollisions = reg.view<Transform, SimpleCollision>();
     auto view = reg.view<SnakeSegment, Transform, SimpleCollision>();
-
-    const float segmentSpacing = 20.0f; 
+    const float segmentSpacing = 20.0f;
     std::vector<Vector3> previousPositions(snakeSegments.size());
 
+    Vector3 previousSegmentPosition;
 
-    for (size_t i = 0; i < snakeSegments.size(); ++i)
-    {
-        auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
-        previousPositions[i] = segmentTransform.position;
-    }
+    bool test = false;
 
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
-        auto& segment = view.get<SnakeSegment>(entity);
         auto& col = view.get<SimpleCollision>(entity);
 
         if (reg.has<SnakeHead>(entity))
         {
+            previousSegmentPosition = t.position;
+
+            auto& segment = reg.get<SnakeSegment>(entity);
+
+            //Move head
+            auto& head = reg.get<SnakeHead>(entity);
+            t.position += head.direction * snakeSpeed;
+
             Vector3 direction = segment.direction * segmentSpacing;
             t.position += direction;
 
@@ -165,19 +184,44 @@ void RedSnakeSystem::Run()
         }
     }
 
-    for (size_t i = snakeSegments.size() - 1; i > 0; --i)
+    auto& headTransform = reg.get<Transform>(snakeSegments[0]);
+    for (size_t i = 1; i < snakeSegments.size(); ++i)
     {
         auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
-        segmentTransform.position = previousPositions[i - 1];
+        if (headTransform.position == segmentTransform.position)
+        {
+            HWND hwnd = CreateWindow("myWindowClass", "Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                100, 100, 500, 400, NULL, NULL, NULL, NULL);
+            int result = MessageBox(hwnd, "Game Over! You ate yourself.", "RedSnake", MB_OK);
+
+            if (result == IDOK)
+            {
+                PostQuitMessage(0);
+            }
+            return;
+        }
     }
+
+    for (size_t i = snakeSegments.size() - 1; i > 0; --i)
+    {
+        auto& segment = reg.get<SnakeSegment>(snakeSegments[i]);
+        auto& transform = reg.get<Transform>(snakeSegments[i]);
+
+        Vector3 oldPosition = transform.position;
+        transform.position = previousSegmentPosition;
+
+        previousSegmentPosition = oldPosition;
+    }
+
 
     for (auto entity : view)
     {
         auto& segment = view.get<SnakeSegment>(entity);
         if (segment.grow)
         {
-            AddSegment();
             segment.grow = false;
+            AddSegment();
+            break;
         }
     }
 }

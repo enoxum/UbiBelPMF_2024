@@ -10,8 +10,8 @@ namespace red_snake
         Transform transform;
         Sprite sprite;
         Vector3 speed{ 0, 0, 0 };
-        Vector3 next_position {};
-        Vector3 direction { 0, 0, 0 };
+        Vector3 next_position{};
+        Vector3 direction{ 0, 0, 0 };
 
 
         bool grow{ false };
@@ -33,7 +33,11 @@ namespace red_snake
 
     class RedSnakeSystem : public System
     {
-        
+    public:
+        float snakeTick = 0.20f;
+        float snakeTickCounter = 0;
+
+        float snakeSpeed = 30;
 
     public:
         inline String SystemName() { return "Red Snake System"; }

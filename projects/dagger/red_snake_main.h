@@ -22,6 +22,6 @@ namespace red_snake
 		void CoreSystemsSetup() override;
 		void GameplaySystemsSetup() override;
 		void WorldSetup() override;
-		
+
 	};
 }

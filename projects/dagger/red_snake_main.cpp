@@ -80,13 +80,13 @@ void red_snake::CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_)
     auto& transform = reg.emplace<Transform>(entity);
     auto* camera = Engine::GetDefaultResource<Camera>();
     float gameWidth = camera->size.x;
-    float gameHeight= camera->size.y;
-    
+    float gameHeight = camera->size.y;
+
     // mora ovo pametnije al neka stoji ovako za sad
 
 
-    float randomX = RandomFloat(-(26 / 2 + 0.5f) * 20.f, (26 / 2 + 0.5f) * 20.f );
-    float randomY = RandomFloat(-(20 / 2 + 0.5f) * 20.f, (20 / 2 + 0.5f) * 20.f );
+    float randomX = RandomFloat(-(26 / 2 + 0.5f) * 20.f, (26 / 2 + 0.5f) * 20.f);
+    float randomY = RandomFloat(-(20 / 2 + 0.5f) * 20.f, (20 / 2 + 0.5f) * 20.f);
 
     transform.position.x = randomX;
     transform.position.y = randomY;
@@ -156,12 +156,12 @@ void red_snake::SetUpWorld()
     int foodY = (std::rand()) % 18 + 1;
     CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
     */
-   // appleCounterText.spacing = 0.7f;
-    //appleCounterText.Set("pixel-font", "Apples eaten: 0", Vector3(10, 250, 10), true);
-   /*auto ui = reg.create();
-    auto& text = reg.emplace<Text>(ui);
-    text.spacing = 0.6f;
-    text.Set("pixel-font", "hello world", Vector3(10, 250, 0), true);*/ 
+    // appleCounterText.spacing = 0.7f;
+     //appleCounterText.Set("pixel-font", "Apples eaten: 0", Vector3(10, 250, 10), true);
+    /*auto ui = reg.create();
+     auto& text = reg.emplace<Text>(ui);
+     text.spacing = 0.6f;
+     text.Set("pixel-font", "hello world", Vector3(10, 250, 0), true);*/
 }
 float RandomFloat(float min, float max)
 {
