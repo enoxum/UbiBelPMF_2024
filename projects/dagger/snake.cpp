@@ -116,17 +116,16 @@ void RedSnakeSystem::Run()
     auto viewCollisions = reg.view<Transform, SimpleCollision>();
     auto view = reg.view<SnakeSegment, Transform, SimpleCollision>();
 
-    const float segmentSpacing = 20.0f;  // Fiksno rastojanje između segmenata
+    const float segmentSpacing = 20.0f; 
     std::vector<Vector3> previousPositions(snakeSegments.size());
 
-    // Skladišti trenutne pozicije segmenata
+
     for (size_t i = 0; i < snakeSegments.size(); ++i)
     {
         auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
         previousPositions[i] = segmentTransform.position;
     }
 
-    // Pomeranje glave na osnovu unosa
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
@@ -135,7 +134,6 @@ void RedSnakeSystem::Run()
 
         if (reg.has<SnakeHead>(entity))
         {
-            // Procesiraj kretanje glave
             Vector3 direction = segment.direction * segmentSpacing;
             t.position += direction;
 
@@ -167,14 +165,12 @@ void RedSnakeSystem::Run()
         }
     }
 
-    // Ažuriranje pozicija segmenata tela
     for (size_t i = snakeSegments.size() - 1; i > 0; --i)
     {
         auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
         segmentTransform.position = previousPositions[i - 1];
     }
 
-    // Obradi rast segmenta
     for (auto entity : view)
     {
         auto& segment = view.get<SnakeSegment>(entity);
