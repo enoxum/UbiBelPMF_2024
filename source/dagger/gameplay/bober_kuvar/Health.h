@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include "core/system.h"
 #include "core/core.h"
@@ -38,4 +38,4 @@ namespace health_system
         inline String SystemName() { return "Bober Health System"; }
         void Run() override;
     };
-}
+}*/

@@ -20,9 +20,9 @@
 #include "gameplay/common/camera_focus.h"
 #include "gameplay/common/simple_collisions.h"
 
-#include "Player.h"
-#include "Enemy.h"
-#include "OurMap.h"
+//#include "Player.h"
+//#include "Enemy.h"
+//#include "OurMap.h"
 #include "PlayerController.h"
 
 using namespace dagger;
@@ -36,7 +36,6 @@ void BoberGame::GameplaySystemsSetup()
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
     engine.AddSystem<SimpleCollisionsSystem>();
-    engine.AddSystem<Health>();
 }
 
 void BoberGame::SetCamera()

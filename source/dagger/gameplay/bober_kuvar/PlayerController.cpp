@@ -141,12 +141,15 @@ void PlayerController::Run()
     Vector3 playerPosition;
     bool colidedWithEnemy = false;
     bool colidedWithBullet = false;
+    Float32 currentHealthRatio = 0.0f;
   
+    //auto viewHealthBar = Engine::Registry().view<HealthBar>();
     auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
-    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer,HealthComponent,HealthBar>();
     auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision, DamageEventEnemy>();
     auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
     auto viewWalls = Engine::Registry().view<TileSystem, SimpleCollision>();
+    
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
@@ -429,5 +432,31 @@ void PlayerController::Run()
         }
         colidedWithEnemy = false;
         col.colided = false;
+    }
+    //calculate current player health ratio
+    for (auto entity : view)
+    {
+        auto& healthComponent = view.get<HealthComponent>(entity);
+        currentHealthRatio = healthComponent.currentHealth / (Float32)healthComponent.maxHealth;
+    }
+    
+    //Get health bars
+    for (auto entity : view)
+    {
+        auto& healthBar = view.get<HealthBar>(entity);
+
+        auto& fillSprite = Engine::Registry().get<Sprite>(healthBar.fillEntity);
+
+        Float32 fillWidth = std::clamp(currentHealthRatio, 0.f, 1.f) * healthBar.width; // calculate new width
+        bool changed = fillSprite.size.x != fillWidth; //check if width actually changed
+        Float32 oldWidth = fillSprite.size.x; //save oldwidth
+        fillSprite.size = { fillWidth, healthBar.height };
+
+        if (changed)
+        {
+            auto& fillSpriteTransform = Engine::Registry().get<Transform>(healthBar.fillEntity);
+            fillSpriteTransform.position.x += (fillWidth - oldWidth) / 2;
+        }
+
     }
 }
