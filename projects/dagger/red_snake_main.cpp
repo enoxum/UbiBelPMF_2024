@@ -74,7 +74,7 @@ void red_snake::CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_)
 
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "RedSnake:food");
-    sprite.size = Vector2(1, 1) * tileSize_;
+    sprite.size = Vector2(1, 1) * 30.0f;
     sprite.color = color_;
 
     auto& transform = reg.emplace<Transform>(entity);

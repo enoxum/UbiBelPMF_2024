@@ -89,7 +89,7 @@ void red_snake::RedSnakeSystem::CreateSnake(float tileSize_, ColorRGBA color_, V
     AssignSprite(sprite, "RedSnake:head_left");
     sprite.size = Vector2(1, 1) * tileSize_;
     sprite.color = ColorRGBA(0.0f, 0.5f, 0.0f, 1.0f);
-    sprite.size = Vector2(1, 1);
+    sprite.size = Vector2(1, 1)*20.0f;
 
     auto& transform = reg.emplace<Transform>(entity);
 
