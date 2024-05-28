@@ -209,7 +209,6 @@ void academic_life::createRandomEntity()
         generate_equation_entity(randomX, randomY);
     }
 
-    // lifestyle objekti
     else {
         generate_lifestyle_entity(randomX, randomY);
     }
