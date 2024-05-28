@@ -36,42 +36,35 @@ struct Maze {
 };
 
 Maze createPacmanMaze() {
+    std::vector<std::string> matrix;
     Maze maze;
-    maze.grid = {
-        {CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall},
-        {CellType::Wall, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Wall},
-        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Pellet, CellType::Wall},
-        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::GhostHouse, CellType::Wall, CellType::Pellet, CellType::Wall},
-        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Pellet, CellType::Wall},
-        {CellType::Wall, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Wall},
-        {CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall}
-    };
+    std::ifstream file("pacmanMaze.txt");
+    if (!file.is_open()) {
+        printf("nece fajl");
+    }
+    std::string line;
+    while (std::getline(file, line)) {
+        matrix.push_back(line);
+    }
+    file.close();
+    maze.grid.resize(matrix.size(), std::vector<CellType>(matrix[0].size(), CellType::Empty));
+
+    for (int i = 0; i < matrix.size(); i++) {
+        for (int j = 0; j < matrix[i].size(); j++) {
+            char cell = matrix[i][j];
+            if (cell == '-') {
+                maze.grid[i][j] = CellType::Wall;
+            }
+            else if (cell == '.') {
+                maze.grid[i][j] = CellType::Pellet;
+            }
+        }
+    }
     return maze;
 }
 
 //global for now, change later for optimization
 Maze g_pacmanMaze;
-
-//void pacman::CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_)
-//{
-//    auto& reg = Engine::Registry();
-//    auto entity = reg.create();
-//    auto& sprite = reg.emplace<Sprite>(entity);
-//    AssignSprite(sprite, "PingPong:ball");
-//    sprite.size = Vector2(1, 1) * tileSize_;
-//
-//    sprite.color = color_;
-//
-//    auto& transform = reg.emplace<Transform>(entity);
-//    transform.position = pos_ * tileSize_;
-//    transform.position.z = pos_.z;
-//    auto& ball = reg.emplace<PingPongBall>(entity);
-//    ball.speed = speed_ * tileSize_;
-//
-//    auto& col = reg.emplace<SimpleCollision>(entity);
-//    col.size.x = tileSize_;
-//    col.size.y = tileSize_;
-//}
 
 void pacman::PacmanGame::CoreSystemsSetup()
 {
@@ -129,60 +122,60 @@ void pacman::SetupWorld()
 
 
     constexpr int height = 22;
-    constexpr int width = 30;
+    constexpr int width = 24;
     constexpr float tileSize = 20.f;// / static_cast<float>(Width);
 
     float zPos = 1.f;
 
     constexpr float Space = 0.001f;
-    /*
+    
     //TODO: usaglasiti height/width sa grid.size
-    for (int i = 0; i < 7; i++)
-    {
-        for (int j = 0; j < 7; j++)
-        {
-            auto entity = reg.create();
-            auto& sprite = reg.emplace<Sprite>(entity);
-            sprite.size = scale * tileSize;
+    //for (int i = 0; i < 7; i++)
+    //{
+    //    for (int j = 0; j < 7; j++)
+    //    {
+    //        auto entity = reg.create();
+    //        auto& sprite = reg.emplace<Sprite>(entity);
+    //        sprite.size = scale * tileSize;
 
-            auto& col = reg.emplace<SimpleCollision>(entity);
-            col.size.x = tileSize;
-            col.size.y = tileSize;
+    //        auto& col = reg.emplace<SimpleCollision>(entity);
+    //        col.size.x = tileSize;
+    //        col.size.y = tileSize;
 
-            switch (g_pacmanMaze.grid[i][j]) 
-            {
-                case CellType::Empty:
-                    AssignSprite(sprite, "EmptyWhitePixel");
-                    sprite.color.r = 0.0f;
-                    sprite.color.g = 0.0f;
-                    sprite.color.b = 0.0f;
-                    break;
-                case CellType::Wall:
-                    AssignSprite(sprite, "EmptyWhitePixel");
-                    sprite.color.r = 0.2f;
-                    sprite.color.g = 0.2f;
-                    sprite.color.b = 0.2f;
-                    break;
-                case CellType::Pellet:
-                    AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
-                    sprite.color.r = 0.4f;
-                    sprite.color.g = 0.4f;
-                    sprite.color.b = 0.4f;
-                    break;
-                case CellType::GhostHouse:
-                    AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
-                    sprite.color.r = 0.64f;
-                    sprite.color.g = 0.6f;
-                    sprite.color.b = 0.6f;
-                    break;
-            }
+    //        switch (g_pacmanMaze.grid[i][j]) 
+    //        {
+    //            case CellType::Empty:
+    //                AssignSprite(sprite, "EmptyWhitePixel");
+    //                sprite.color.r = 0.0f;
+    //                sprite.color.g = 0.0f;
+    //                sprite.color.b = 0.0f;
+    //                break;
+    //            case CellType::Wall:
+    //                AssignSprite(sprite, "EmptyWhitePixel");
+    //                sprite.color.r = 0.2f;
+    //                sprite.color.g = 0.2f;
+    //                sprite.color.b = 0.2f;
+    //                break;
+    //            case CellType::Pellet:
+    //                AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
+    //                sprite.color.r = 0.4f;
+    //                sprite.color.g = 0.4f;
+    //                sprite.color.b = 0.4f;
+    //                break;
+    //            case CellType::GhostHouse:
+    //                AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
+    //                sprite.color.r = 0.64f;
+    //                sprite.color.g = 0.6f;
+    //                sprite.color.b = 0.6f;
+    //                break;
+    //        }
 
-            auto& transform = reg.emplace<Transform>(entity);
-            transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-            transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-            transform.position.z = zPos;
-        }
-    }*/
+    //        auto& transform = reg.emplace<Transform>(entity);
+    //        transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+    //        transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
+    //        transform.position.z = zPos;
+    //    }
+    //}
 
 
     
@@ -200,16 +193,22 @@ void pacman::SetupWorld()
             sprite.color.g = 0.0f;
             sprite.color.b = 0.0f;
            
-            if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+            if (g_pacmanMaze.grid[i][j]==CellType::Wall)
             {
-                sprite.color.r = 0.2f;
-                sprite.color.g = 0.2f;
-                sprite.color.b = 0.2f;
+                sprite.color.r = 0.f;
+                sprite.color.g = 0.011f;
+                sprite.color.b = 0.439f;
 
                 auto& col = reg.emplace<SimpleCollision>(entity);
                 col.size.x = tileSize;
                 col.size.y = tileSize;
 
+            }
+            else if (g_pacmanMaze.grid[i][j] == CellType::Pellet)
+            {
+                sprite.color.r = 0.f;
+                sprite.color.g = 0.f;
+                sprite.color.b = 0.f;
             }
 
             auto& transform = reg.emplace<Transform>(entity);
