@@ -32,6 +32,9 @@ namespace esccape
 
     int generateSpawnPoint(int edge, Worm& worm);
     void setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite);
+    void SpawnWorm(Worm& worm, Transform& t, Sprite& sprite);
+    void CreateWorm(int zPos, int screenWidth, int screenHeight);
+    void CreateNWorms(int n, int zPos, int screenWidth, int screenHeight);
 
 	class WormSystem
         : public System

@@ -7,7 +7,7 @@ using namespace dagger;
 void esccape::WormSystem::Run()
 {
     //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
-    auto view = Engine::Registry().view<Transform, Worm, Sprite>();
+    auto view = Engine::Registry().view<Transform, Worm, Sprite, SimpleCollision>();
     //auto view = Engine::Registry().view<Transform, Worm>();
 
     for (auto entity : view)
@@ -15,8 +15,7 @@ void esccape::WormSystem::Run()
         auto& t = view.get<Transform>(entity);
         auto& worm = view.get<Worm>(entity);
         auto& sprite = view.get<Sprite>(entity);
-        //sprite.scale.y = -std::abs(sprite.scale.y);
-        //auto& col = view.get<SimpleCollision>(entity);
+        auto& col = view.get<SimpleCollision>(entity);
         if (worm.spawnEdge == 0 && t.position.y < -worm.startingYTop - 10) {
             int randomEdge = rand() % 4;
             int pos = generateSpawnPoint(randomEdge, worm);
@@ -104,5 +103,79 @@ void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& s
             sprite.rotation = 90;
             worm.speed = { speed, 0, 0 };
             break;
+    }
+}
+
+void esccape::CreateNWorms(int n, int zPos, int screenWidth, int screenHeight) {
+    for (int i = 0; i < n; i++)
+        CreateWorm(zPos, screenWidth, screenHeight);
+}
+
+void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "Esccape:crv");
+    int wormSize = 50;
+    float ratio = sprite.size.y / sprite.size.x;
+    sprite.size = { wormSize, wormSize * ratio };
+
+    auto& worm = reg.emplace<Worm>(entity);
+
+    auto& transform = reg.emplace<Transform>(entity);
+
+    auto& collision = reg.emplace<SimpleCollision>(entity);
+    collision.size = sprite.size;
+
+    worm.startingYTop = screenHeight / 2 + 50;
+    worm.startingXRight = screenWidth / 2 + 30;
+    worm.startingYBottom = -(screenHeight / 2 + 50);
+    worm.startingXLeft = -(screenWidth / 2 + 30);
+    worm.minimumX = -350; // 30
+    worm.maximumX = 350;
+    worm.minimumY = -250;
+    worm.maximumY = 250;
+
+    worm.scaleX = sprite.scale.x;
+    worm.scaleY = sprite.scale.y;
+    SpawnWorm(worm, transform, sprite);
+}
+
+void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disSpeed(200, 400);
+    std::uniform_int_distribution<> disX(worm.minimumX, worm.maximumX);
+    std::uniform_int_distribution<> disY(worm.minimumY, worm.maximumY);
+    std::uniform_int_distribution<> disDistance(300, 1500);
+    int edge = rand() % 4;
+
+    int speed = disSpeed(gen);
+
+    switch (edge) {
+    case 0:
+        t.position.x = disX(gen);
+        t.position.y = worm.startingYTop + disDistance(gen);
+        sprite.rotation = 0;
+        worm.speed = { 0, -speed, 0 };
+        break;
+    case 1:
+        t.position.x = worm.startingXRight + disDistance(gen);
+        t.position.y = disY(gen);
+        sprite.rotation = 270;
+        worm.speed = { -speed, 0, 0 };
+        break;
+    case 2:
+        t.position.x = disX(gen);
+        t.position.y = worm.startingYBottom - disDistance(gen);
+        sprite.rotation = 180;
+        worm.speed = { 0, speed, 0 };
+        break;
+    case 3:
+        t.position.x = worm.startingXLeft - disDistance(gen);
+        t.position.y = disY(gen);
+        sprite.rotation = 90;
+        worm.speed = { speed, 0, 0 };
+        break;
     }
 }

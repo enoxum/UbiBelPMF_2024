@@ -12,6 +12,7 @@
 #include "bullet.h"
 #include "boost.h"
 #include "blackboard_manager.h"
+#include "worm.h"
 
 using namespace dagger;
 using namespace esccape;
@@ -683,6 +684,10 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 
 					otherCharacter.health -= 0.01f;
 					otherCharacter.healthSystem.TakeDamage(0.01);
+
+					//if (!otherCharacter.healthSystem.IsAlive())
+					//	otherCollision.size = { 0, 0 };
+
 					printf("Character %d health = %f\n",(int)otherCharacter.id, otherCharacter.healthSystem.GetCurrentHealth());
 				}
 			}
@@ -714,6 +719,7 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 	bool otherIsCharacter = Engine::Registry().has<Character>(collidedWith);
 	bool otherIsBullet = Engine::Registry().has<Bullet>(collidedWith);
 	bool otherIsBoost = Engine::Registry().has<Boost>(collidedWith);
+	bool otherIsWorm = Engine::Registry().has<Worm>(collidedWith);
 
 	
 	Vector2 collisionSides = collision.GetCollisionSides(transform.position, otherCollision, otherTransform.position);
@@ -725,6 +731,19 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 			character.healthSystem.TakeDamage(1.0f);
 			character.healthSystem.TakeDamage(0.05f);
 			Engine::Registry().destroy(collidedWith);
+
+			//if (!character.healthSystem.IsAlive())
+			//	collision.size = { 0, 0 };
+
+			break;
+		}
+
+		if (otherIsWorm) {
+			auto& character = Engine::Registry().get<EsccapeCharacter>(entity1);
+			character.healthSystem.TakeDamage(20.0f);
+			collision.size = { 0, 0 };
+			
+			//Engine::Registry().destroy(collidedWith);
 
 			break;
 		}
