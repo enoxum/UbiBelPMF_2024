@@ -201,7 +201,8 @@ namespace bober_game
 			(*transform).position = Vector3{ 0.0f, 0.0f, 0.0f };
 
 			sprite = &Engine::Registry().emplace<Sprite>(instance);
-			AssignSprite(*sprite, sprite_path_);
+			if (sprite_path != "")
+				AssignSprite(*sprite, sprite_path_);
 
 			animator = &Engine::Registry().emplace<Animator>(instance);
 			if (animation_path_ != "")
@@ -272,13 +273,15 @@ namespace bober_game
 		public Character
 	{
 	public:
+		std::string some_fruit;
+
 		~Enemy()
 		{
 
 		}
 
-		Enemy(int id)
-			: Character(200.0, 40.0, 25.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 32))
+		Enemy(int id, std::string some_fruit)
+			: Character(200.0, 50.0, 100.0, "BoberKuvar:" + some_fruit, "", true, std::pair<int, int>(16, 32))
 		{
 			lootAmount_ = 100.0f;
 			xpDrop_ = 100.0f;

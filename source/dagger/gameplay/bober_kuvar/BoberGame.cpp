@@ -62,6 +62,10 @@ void BoberGame::WorldSetup()
     int n = map->get_n();
     std::vector<std::vector<int>> matrix = map->get_matrix();
 
+    std::vector<std::string> fruits;
+    fruits.insert(fruits.end(), { "apple", "lemon", "orange", "pear", "strawberry", "watermelon" });
+    int n_fruits = fruits.size();
+
     std::vector<Room*> rooms = map->get_rooms();
     int id = 1;
     for (Room* room : rooms) {
@@ -72,7 +76,7 @@ void BoberGame::WorldSetup()
 
         for (size_t i = 0; i < enemyCount; i++)
         {
-            Enemy* enemy = new Enemy(id++);
+            Enemy* enemy = new Enemy(id++, fruits[rand() % n_fruits]);
             enemy->spawn(topLeft, bottomRight, matrix);
 
             roomEnemies[enemy->data_->ID] = enemy;
