@@ -10,6 +10,9 @@ namespace red_snake
         Transform transform;
         Sprite sprite;
         Vector3 speed{ 0, 0, 0 };
+        Vector3 next_position {};
+        Vector3 direction { 0, 0, 0 };
+
 
         bool grow{ false };
         bool alive{ true };
@@ -39,7 +42,8 @@ namespace red_snake
         void WindDown() override;
         void Run() override;
         void AddSegment();
-        //void CreateSnake(float tileSize_, Vector3 pos_);
+        void UpdateSegmentsPositions();
+        void CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_);
         //void CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_);
     };
 }

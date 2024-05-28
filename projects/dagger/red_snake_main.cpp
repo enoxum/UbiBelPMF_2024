@@ -65,34 +65,7 @@ void red_snake::RedSnakeGame::WorldSetup()
     SetUpWorld();
 }
 
-void red_snake::CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_)
-{
-    auto& reg = Engine::Registry();
-    auto entity = reg.create();
 
-    auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "RedSnake:snake");
-    sprite.size = Vector2(1, 1) * tileSize_;
-    //sprite.color = color_;
-
-    auto& transform = reg.emplace<Transform>(entity);
-    
-    transform.position.x = (pos_.x + 0.5f) * tileSize_;
-    transform.position.y = (pos_.y + 0.5f) * tileSize_;
-    transform.position.z = pos_.z;
-
-    auto& snake = reg.emplace<SnakeSegment>(entity);
-    snake.alive = true;
-
-    auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size.x = tileSize_;
-    col.size.y = tileSize_;
-
-    reg.emplace<SnakeHead>(entity);
-
-    auto& controller = reg.emplace<SnakeControllerMapping>(entity);
-    SnakePlayerInputSystem::SetupPlayerInput(controller);
-}
 
 void red_snake::CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_)
 {
@@ -173,7 +146,7 @@ void red_snake::SetUpWorld()
             transform.position.z = zPos;
         }
     }
-
+    /*
     std::cout << "Creating snake..." << std::endl;
     CreateSnake(tileSize, ColorRGBA(0, 1, 0, 1), { width / 2, height / 2, zPos });
 
@@ -182,7 +155,7 @@ void red_snake::SetUpWorld()
     int foodX = (std::rand()) % 24 + 1;
     int foodY = (std::rand()) % 18 + 1;
     CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
-
+    */
    // appleCounterText.spacing = 0.7f;
     //appleCounterText.Set("pixel-font", "Apples eaten: 0", Vector3(10, 250, 10), true);
    /*auto ui = reg.create();

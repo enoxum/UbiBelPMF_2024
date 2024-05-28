@@ -13,7 +13,17 @@ using namespace red_snake;
 
 void RedSnakeSystem::SpinUp()
 {
+    constexpr int height = 20;
+    constexpr int width = 26;
+    constexpr float tileSize = 20.f;
+    float zPos = 1.f;
     snakeSegments.clear();
+    CreateSnake(tileSize, ColorRGBA(0, 1, 0, 1), { width / 2, height / 2, zPos });
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    int foodX = (std::rand()) % 24 + 1;
+    int foodY = (std::rand()) % 18 + 1;
+    CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
+
 }
 
 void RedSnakeSystem::WindDown()
@@ -29,6 +39,7 @@ void RedSnakeSystem::AddSegment()
     auto& transform = reg.emplace<Transform>(entity);
     if (!snakeSegments.empty())
     {
+        
         auto& lastTransform = reg.get<Transform>(snakeSegments.back());
         transform.position = lastTransform.position - Vector3(20.0f, 0, 0); 
     }
@@ -39,7 +50,56 @@ void RedSnakeSystem::AddSegment()
 
     auto& snakeBody = reg.emplace<SnakeBody>(entity);
     snakeSegments.push_back(entity);
+    /*auto& controller = reg.emplace<SnakeControllerMapping>(entity);
+    SnakePlayerInputSystem::SetupPlayerInput(controller);*/
 }
+
+void RedSnakeSystem::UpdateSegmentsPositions()
+{
+    auto& reg = Engine::Registry();
+
+    auto& headSegment = reg.get<SnakeSegment>(snakeSegments[0]);
+    headSegment.next_position = headSegment.transform.position + headSegment.direction * 20.0f;
+    for (size_t i = snakeSegments.size() - 1; i > 0; --i)
+    {
+        auto& segment = reg.get<SnakeSegment>(snakeSegments[i]);
+        auto& prevSegment = reg.get<SnakeSegment>(snakeSegments[i - 1]);
+        segment.next_position = prevSegment.transform.position;
+    }
+
+}
+
+void red_snake::RedSnakeSystem::CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_)
+{
+    auto& reg = Engine::Registry();
+    auto entity = reg.create();
+
+    auto& sprite = reg.emplace<Sprite>(entity);
+    AssignSprite(sprite, "RedSnake:snake");
+    sprite.size = Vector2(1, 1) * tileSize_;
+    //sprite.color = color_;
+
+    auto& transform = reg.emplace<Transform>(entity);
+
+    transform.position.x = (pos_.x + 0.5f) * tileSize_;
+    transform.position.y = (pos_.y + 0.5f) * tileSize_;
+    transform.position.z = pos_.z;
+
+    auto& snake = reg.emplace<SnakeSegment>(entity);
+    snake.alive = true;
+
+    auto& col = reg.emplace<SimpleCollision>(entity);
+    col.size.x = tileSize_;
+    col.size.y = tileSize_;
+
+    reg.emplace<SnakeHead>(entity);
+
+    auto& controller = reg.emplace<SnakeControllerMapping>(entity);
+    SnakePlayerInputSystem::SetupPlayerInput(controller);
+    snakeSegments.push_back(entity);
+}
+
+
 
 Text appleCounterText;
 int count = 0;
@@ -56,6 +116,7 @@ void RedSnakeSystem::Run()
     auto viewCollisions = reg.view<Transform, SimpleCollision>();
     auto view = reg.view<SnakeSegment, Transform, SimpleCollision>();
 
+    //UpdateSegmentsPositions();
 
     for (auto entity : view)
     {
@@ -93,7 +154,7 @@ void RedSnakeSystem::Run()
         }
         else
         {
-            t.position += segment.speed * Engine::DeltaTime() ;
+            t.position += segment.next_position ;
         }
     }
 
