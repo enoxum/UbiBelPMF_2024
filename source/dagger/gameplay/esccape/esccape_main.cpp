@@ -450,7 +450,7 @@ void esccape::SetupWorld()
                 "spritesheets:player_anim:player_idle_front:1",
                 "player:player_idle_front",
                 { 1, 1, 1 }, { 0, 100 }, 0);
-
+            mainChar.character->inputContextReversed = false;
             auto entity = mainChar.getEntity();
             //auto& character = reg.emplace<Character>(entity, mainChar);
             auto& character = reg.emplace<Character>(entity, std::move(mainChar));
@@ -464,7 +464,7 @@ void esccape::SetupWorld()
                 "spritesheets:skeleton:skeleton_idle_front:1",
                 "skeleton:skeleton_idle_front",
                 { 1, 1, 1 }, { -100, 0 }, 1);
-
+            skeletonChar.character->inputContextReversed = false;
             auto entity = skeletonChar.getEntity();
             auto& character = reg.emplace<Character>(entity, skeletonChar);
             //printf("Character %d health = %f healthEnt = %f\n", character.character->id, character.character->health, character.character->healthSystem.GetCurrentHealth());

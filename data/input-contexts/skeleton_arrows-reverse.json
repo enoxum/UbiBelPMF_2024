@@ -1,0 +1,10 @@
+{
+	"context-name": "skeleton-arrows-reverse",
+	"commands": [
+		{ "command-name": "up", "trigger": "KeyDown"},
+		{ "command-name": "down", "trigger": "KeyUp" },
+		{ "command-name": "left", "trigger": "KeyRight" },
+		{ "command-name": "right", "trigger": "KeyLeft"},
+		{ "command-name": "attack", "trigger": "KeyK" }
+	]
+}

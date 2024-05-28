@@ -15,6 +15,7 @@ namespace esccape
         float speed;
         float health;
         Vector2 direction;
+        int id;
     };
 
     class BoostSystem
@@ -26,6 +27,6 @@ namespace esccape
         void Run() override;
     };
 
-    void CreateBoost(Vector2 position_, Vector2 direction, float speed);
+    void CreateBoost(int id, Vector2 position_, Vector2 direction, float speed);
 }
 

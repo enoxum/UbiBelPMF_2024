@@ -5,7 +5,7 @@
 using namespace esccape;
 using namespace dagger;
 
-void esccape::CreateBoost(Vector2 position_, Vector2 direction, float speed)
+void esccape::CreateBoost(int id, Vector2 position_, Vector2 direction, float speed)
 {
 
     auto& reg = Engine::Instance().Registry();
@@ -16,8 +16,16 @@ void esccape::CreateBoost(Vector2 position_, Vector2 direction, float speed)
     boost.speed = speed;
 
     auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "Esccape:waterdrop");
-
+    if(id == 0)
+    {
+        AssignSprite(sprite, "Esccape:waterdrop");
+        boost.id = 0;
+    }
+    else
+    {
+        AssignSprite(sprite, "Esccape:arrows");
+        boost.id = 1;
+    }
     int boostSize = 40;
     float ratio = sprite.size.y / sprite.size.x;
     sprite.size = { boostSize, boostSize * ratio };

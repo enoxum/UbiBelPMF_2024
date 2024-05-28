@@ -19,6 +19,7 @@ void esccape::EnemySystem::Run()
 
         auto now = std::chrono::system_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+        
         if (duration.count() > time + delta)
         {
             time += delta;

@@ -1,0 +1,10 @@
+{
+	"context-name": "ASDWSpaceReverse",
+	"commands": [
+		{ "command-name": "up", "trigger": "KeyS"},
+		{ "command-name": "down", "trigger": "KeyW" },
+		{ "command-name": "left", "trigger": "KeyD" },
+		{ "command-name": "right", "trigger": "KeyA"},
+		{ "command-name": "attack", "trigger": "KeySpace" }
+	]
+}

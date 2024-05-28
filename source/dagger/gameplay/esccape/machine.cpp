@@ -22,12 +22,14 @@ void esccape::MachineSystem::Run()
         int x_rnd = -200 + rand() % 201;
         int y_rnd = rand() % (-201);
 
+        int randId = (std::rand() % 5) < 4 ? 0 : 1;
+
         //printf("******* x_rnd=%d *** y_rnd=%d\n\n\n", x_rnd, y_rnd);
 
         if (duration.count() > time + delta)
         {
             time += delta;
-            CreateBoost(Vector2{ t.position.x, t.position.y + s.size.y / 2.5f }, Vector2{ x_rnd, y_rnd }, 2.f);
+            CreateBoost(randId, Vector2{ t.position.x, t.position.y + s.size.y / 2.5f }, Vector2{ x_rnd, y_rnd }, 2.f);
         }
     }
 }

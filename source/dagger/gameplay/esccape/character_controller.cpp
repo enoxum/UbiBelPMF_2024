@@ -730,12 +730,43 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 		}
 
 		if (otherIsBoost) {
+			auto& boost = Engine::Registry().get<Boost>(collidedWith);
 			auto& character = Engine::Registry().get<EsccapeCharacter>(entity1);
-			character.healthSystem.Heal(2.0f);
-			Engine::Registry().destroy(collidedWith);
-			printf("Character %d health = %f\n", (int)character.id, character.healthSystem.GetCurrentHealth());
+			if (boost.id == 0) {
+				character.healthSystem.Heal(2.0f);
+				Engine::Registry().destroy(collidedWith);
+				printf("Character %d health = %f\n", (int)character.id, character.healthSystem.GetCurrentHealth());
 
-			break;
+				break;
+			}
+			else {
+				String inputContext;
+				auto& input = Engine::Registry().get<InputReceiver>(entity1);
+				if (character.id == 0 && !character.inputContextReversed)
+				{
+					inputContext = "ASDWSpaceReverse";
+					character.inputContextReversed = true;
+				}
+				else if (character.id == 0 && character.inputContextReversed)
+				{
+					inputContext = "ASDWSpace";
+					character.inputContextReversed = false;
+				}
+				else if (character.id == 1 && !character.inputContextReversed)
+				{
+					inputContext = "skeleton-arrows-reverse";
+					character.inputContextReversed = true;
+				}
+				else if (character.id == 1 && character.inputContextReversed)
+				{
+					inputContext = "skeleton-arrows";
+					character.inputContextReversed = false;
+				}
+				input.contexts.pop_back();
+				input.contexts.push_back(inputContext);
+				Engine::Registry().destroy(collidedWith);
+				break;
+			}
 		}
 
 		if (otherIsCharacter)
