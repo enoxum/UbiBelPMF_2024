@@ -59,13 +59,13 @@ void PingPongTools::OnEndOfFrame()
         pacman::SetupWorld();
     }
 
-    if (m_GenerateBall)
+    /*if (m_GenerateBall)
     {
         m_GenerateBall = false;
 
         pacman::CreatePingPongBall(PlayerScoresSystem::GetTileSize(), ColorRGBA(1, 1, 1, 1),
             { (1 - 2 * (rand() % 2)) * (rand()%10 + 4),rand()%10 + 4,0 },   { 0,0,0 });
-    }
+    }*/
 }
 
 #endif //defined(DAGGER_DEBUG)

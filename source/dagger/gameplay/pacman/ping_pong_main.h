@@ -9,14 +9,14 @@ using namespace dagger;
 
 namespace pacman
 {
-    void CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
+    //void CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
     void SetupWorld();
 
     class PacmanGame : public Game
     {
         inline String GetIniFile() override
         {
-            return "pingpong.ini";
+            return "pacman.ini";
         };
 
         void CoreSystemsSetup() override;

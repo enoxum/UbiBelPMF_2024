@@ -47,9 +47,9 @@ void PlayerScoresSystem::Run()
         }
     }
 
-    if (ballOnField == 0)
-    {
-        // TODO: set speed to be random in both directions. Done without if for better performnce 
-        CreatePingPongBall(s_TileSize, ColorRGBA(1, 1, 1, 1), { (rand() % 10 + 4)*((rand() % 2 + 2)%3-1),(rand() % 10 + 4) * ((rand() % 2 + 2) % 3 - 1),0 },   { 0,rand()%(s_FieldHeight / 2),0 });
-    }
+    //if (ballOnField == 0)
+    //{
+    //    // TODO: set speed to be random in both directions. Done without if for better performnce 
+    //    CreatePingPongBall(s_TileSize, ColorRGBA(1, 1, 1, 1), { (rand() % 10 + 4)*((rand() % 2 + 2)%3-1),(rand() % 10 + 4) * ((rand() % 2 + 2) % 3 - 1),0 },   { 0,rand()%(s_FieldHeight / 2),0 });
+    //}
 }

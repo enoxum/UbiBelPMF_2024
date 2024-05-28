@@ -25,26 +25,26 @@ using namespace dagger;
 using namespace pacman;
 
 
-void pacman::CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_)
-{
-    auto& reg = Engine::Registry();
-    auto entity = reg.create();
-    auto& sprite = reg.emplace<Sprite>(entity);
-    AssignSprite(sprite, "PingPong:ball");
-    sprite.size = Vector2(1, 1) * tileSize_;
-
-    sprite.color = color_;
-
-    auto& transform = reg.emplace<Transform>(entity);
-    transform.position = pos_ * tileSize_;
-    transform.position.z = pos_.z;
-    auto& ball = reg.emplace<PingPongBall>(entity);
-    ball.speed = speed_ * tileSize_;
-
-    auto& col = reg.emplace<SimpleCollision>(entity);
-    col.size.x = tileSize_;
-    col.size.y = tileSize_;
-}
+//void pacman::CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_)
+//{
+//    auto& reg = Engine::Registry();
+//    auto entity = reg.create();
+//    auto& sprite = reg.emplace<Sprite>(entity);
+//    AssignSprite(sprite, "PingPong:ball");
+//    sprite.size = Vector2(1, 1) * tileSize_;
+//
+//    sprite.color = color_;
+//
+//    auto& transform = reg.emplace<Transform>(entity);
+//    transform.position = pos_ * tileSize_;
+//    transform.position.z = pos_.z;
+//    auto& ball = reg.emplace<PingPongBall>(entity);
+//    ball.speed = speed_ * tileSize_;
+//
+//    auto& col = reg.emplace<SimpleCollision>(entity);
+//    col.size.x = tileSize_;
+//    col.size.y = tileSize_;
+//}
 
 void PacmanGame::CoreSystemsSetup()
 {
@@ -164,14 +164,13 @@ void pacman::SetupWorld()
         AssignSprite(sprite, "Pacmanart:pacmanright:1");
         sprite.size.x = tileSize;
         sprite.size.y = tileSize;
-        sprite.color.r = 1;
 
         auto& controller = reg.emplace<ControllerMapping>(entity);
 
         auto& mov = reg.emplace<MovementData>(entity);
-        //mov.acceleration = 1000;
+        //mov.acceleration = 1000;//TODO delete acc
         mov.maxSpeed = 1;
-        mov.isFrictionOn = true;
+        mov.isFrictionOn = true;//TODO delete friction
 
         PingPongPlayerInputSystem::SetupPlayerOneInput(controller);
     }
@@ -179,30 +178,30 @@ void pacman::SetupWorld()
     auto* camera = Engine::GetDefaultResource<Camera>();
 
     //ENEMY
-    for(int i = 0; i < 0; i++)
-    {
-        auto entity = reg.create();
-        auto& col = reg.emplace<SimpleCollision>(entity);
-        col.size.x = tileSize;
-        col.size.y = tileSize;
+    //for(int i = 0; i < 3; i++)
+    //{
+    //    auto entity = reg.create();
+    //    auto& col = reg.emplace<SimpleCollision>(entity);
+    //    col.size.x = tileSize;
+    //    col.size.y = tileSize;
 
-        auto& transform = reg.emplace<Transform>(entity);
-        transform.position.x = ((double) rand() / (RAND_MAX)) * camera->size.x;
-        transform.position.y = ((double) rand() / (RAND_MAX)) * camera->size.y;
-        transform.position.z = zPos;
-        
-        auto& sprite = reg.emplace<Sprite>(entity);
-        AssignSprite(sprite, "Pacmanart:ghosts:blinky");
-        
-        sprite.size.x = tileSize;
-        sprite.size.y = tileSize;
-        //
-        auto& mov = reg.emplace<MovementData>(entity);
-        mov.acceleration = 1 + ((double)rand() / (RAND_MAX)) * 3;
-        mov.maxSpeed = 1 + ((double)rand() / (RAND_MAX)) * 6;
-        mov.isFrictionOn = true;
+    //    auto& transform = reg.emplace<Transform>(entity);
+    //    transform.position.x = ((double) rand() / (RAND_MAX)) * camera->size.x;
+    //    transform.position.y = ((double) rand() / (RAND_MAX)) * camera->size.y;
+    //    transform.position.z = zPos;
+    //    
+    //    auto& sprite = reg.emplace<Sprite>(entity);
+    //    AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+    //    
+    //    sprite.size.x = tileSize;
+    //    sprite.size.y = tileSize;
+    //    //
+    //    auto& mov = reg.emplace<MovementData>(entity);
+    //    mov.acceleration = 1 + ((double)rand() / (RAND_MAX)) * 3;
+    //    mov.maxSpeed = 1 + ((double)rand() / (RAND_MAX)) * 6;
+    //    mov.isFrictionOn = true;
 
-        auto& enemy = reg.emplace<EnemyData>(entity);
-    }
+    //    auto& enemy = reg.emplace<EnemyData>(entity);
+    //}
     
 }

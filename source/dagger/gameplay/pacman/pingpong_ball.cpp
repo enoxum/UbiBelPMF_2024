@@ -12,7 +12,7 @@
 using namespace dagger;
 using namespace pacman;
 
-void PingPongBallSystem::Run()
+void pacman::PingPongBallSystem::Run()
 {
     auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<PingPongBall, Transform, SimpleCollision>();
