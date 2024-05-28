@@ -1,3 +1,4 @@
+/*
 #define _USE_MATH_DEFINES
 
 #include "OurMap.h"
@@ -22,6 +23,11 @@ int OurMap::get_n()
 std::vector<std::vector<int>> OurMap::get_matrix()
 {
 	return matrix_;
+}
+
+std::vector<Room*> OurMap::get_rooms()
+{
+	return rooms_;
 }
 
 void OurMap::generateMap()
@@ -327,3 +333,4 @@ void OurMap::print_matrix_in_console(std::vector<std::vector<int>> matrix)
 	}
 	Logger::error("\n");
 }
+*/

@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "core/core.h"
 #include "Room.h"
 #include "Tile.h"
@@ -9,6 +9,7 @@ public:
 	OurMap(int n, int room_size);
 	int get_n();
 	std::vector<std::vector<int>> get_matrix();
+	std::vector<Room*> get_rooms();
 
 private:
 	int n_;
@@ -27,4 +28,5 @@ private:
 	void print_matrix_in_console(std::vector<std::vector<int>> matrix);
 	void fill(int x, int y, int* min_x, int* min_y, int* max_x, int* max_y, std::vector<std::pair<int, int>> *doors_coords);
 };
+*/
 
