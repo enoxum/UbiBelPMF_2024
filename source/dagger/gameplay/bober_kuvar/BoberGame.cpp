@@ -63,18 +63,19 @@ void BoberGame::WorldSetup()
     std::vector<std::vector<int>> matrix = map->get_matrix();
 
     std::vector<Room*> rooms = map->get_rooms();
+    int id = 1;
     for (Room* room : rooms) {
-        std::vector<Enemy*> roomEnemies;
+        std::unordered_map<int, Enemy*> roomEnemies;
         int enemyCount = room->getEnemyCount();
         std::pair<int, int> topLeft = room->getTopLeft();
         std::pair<int, int> bottomRight = room->getBottomRight();
 
         for (size_t i = 0; i < enemyCount; i++)
         {
-            Enemy* enemy = new Enemy();
+            Enemy* enemy = new Enemy(id++);
             enemy->spawn(topLeft, bottomRight, matrix);
 
-            roomEnemies.push_back(enemy);
+            roomEnemies[enemy->data_->ID] = enemy;
         }
 
         room->setRoomEnemies(roomEnemies);

@@ -57,6 +57,18 @@ namespace bober_game
 	struct ReloadEvent 
 	{
 	};
+
+	struct DamageEventEnemy
+	{
+		int ID;
+		double damage;
+	};
+
+	struct DamageEventPlayer
+	{
+		double damage;
+	};
+
 	struct TileSystem
 	{
 	};
@@ -90,6 +102,7 @@ namespace bober_game
 		int index;
 		bool firstTime = true;
 		float speed;
+		double damage;
 		Vector2 dir{ 0,0 };
 	};
 	
@@ -110,7 +123,10 @@ namespace bober_game
 	{
 		int ID;
 		bool focusOnPlayer;
+		bool wasHit;
+		bool firstHit;
 		float visionDistance;
+		double damage;
 		Vector3 target{ 0, 0, 0 };
 	};
 
@@ -204,14 +220,18 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Character::Character(double hp, double speed, double strength, const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size)
+		Character(double hp, double speed, double strength, const std::string& sprite_path, const std::string& animation_path, bool collidable, std::pair<int, int> collision_size)
 			: OurEntity(sprite_path, animation_path, collidable, collision_size), hp_(hp), speed_(speed), strength_(strength)
 		{
 			collidable_ = collidable;
 			collision_size_ = collision_size;
 		}
-		virtual void Character::spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&)
+		virtual void spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&)
 		{
+		}
+		virtual bool takeDamage(double damage)
+		{
+			return false;
 		}
 	private:
 		virtual void die()
@@ -233,8 +253,13 @@ namespace bober_game
 		public Character
 	{
 	public:
-		Enemy()
-			: Character(200.0, 40.0, 10.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 32))
+		~Enemy()
+		{
+
+		}
+
+		Enemy(int id)
+			: Character(200.0, 40.0, 100.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 32))
 		{
 			lootAmount_ = 100.0f;
 			xpDrop_ = 100.0f;
@@ -244,12 +269,19 @@ namespace bober_game
 			movement_->speed = speed_;
 
 			data_ = &Engine::Instance().Registry().emplace<EnemyData>(instance);
+			data_->ID = id;
 			data_->focusOnPlayer = false;
+			data_->wasHit = false;
+			data_->firstHit = false;
+			data_->damage = strength_;
 			data_->visionDistance = 100.f;
 
 			patrol_ = &Engine::Instance().Registry().emplace<Patrol>(instance);
 			patrol_->currentWaypointIndex = 0;
 			patrol_->forward = true;
+
+			dmgEvent_ = &Engine::Registry().emplace<DamageEventEnemy>(instance);
+			dmgEvent_->ID = data_->ID;
 		}
 		void spawn(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix) override
 		{
@@ -277,13 +309,27 @@ namespace bober_game
 
 			generatePath(topLeft, bottomRight, matrix);
 		}
+
+		bool takeDamage(double damage) override
+		{
+			hp_ -= damage;
+			if (hp_ <= 0.0)
+			{
+				die();
+				return true;
+			}
+			return false;
+		}
+
+		EnemyData* data_;
+		DamageEventEnemy* dmgEvent_;
+
 	private:
 		double xpDrop_;
 		double lootAmount_;
 		Vector3 initialPosition_;
 		int numOfWaypoints_;
 		MovementData* movement_;
-		EnemyData* data_;
 		Patrol* patrol_;
 
 		void generatePath(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix)
@@ -318,7 +364,7 @@ namespace bober_game
 		}
 		void die() override
 		{
-
+			delete this;
 		}
 		void collision() override
 		{
@@ -343,6 +389,10 @@ namespace bober_game
 			movement_->speed = speed_;
 
 			Engine::Registry().emplace<common::CameraFollowFocus>(instance);
+
+			dmg_ = &Engine::Instance().Registry().emplace<DamageEventPlayer>(instance);
+
+			Engine::Dispatcher().sink<DamageEventPlayer>().connect<&Player::takeDamage>(this);
 		}
 		void spawn(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix) override
 		{
@@ -367,6 +417,13 @@ namespace bober_game
 			this->move(Vector3{ randX * 64, -randY * 64, 0.0 });
 		}
 
+		void takeDamage(DamageEventPlayer dmg)
+		{
+			hp_ -= dmg.damage;
+			if (hp_ <= 0.0)
+				die();
+		}
+
 		void levelUp()
 		{
 			level_++;
@@ -376,10 +433,15 @@ namespace bober_game
 			return level_;
 		}
 		std::vector<Weapon*> weapons;
+		DamageEventPlayer* dmg_;
+
 	private:
 		void die() override
 		{
-
+			for (auto weapon : weapons)
+				delete weapon;
+			delete this;
+			exit(1);
 		}
 		void collision() override
 		{
@@ -396,6 +458,10 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
+		~Weapon()
+		{
+
+		}
 		Weapon(const std::string& sprite_path, double damage) : OurEntity(sprite_path, "", false, std::make_pair(0, 0)), damage_(damage)
 		{
 
@@ -432,10 +498,11 @@ namespace bober_game
 		public OurEntity
 	{
 	public:
-		Bullet(float speed) : OurEntity("pizzaSlice", "", true, std::make_pair(2,2)), speed_(speed)
+		Bullet(float speed, double damage) : OurEntity("pizzaSlice", "", true, std::make_pair(2,2)), speed_(speed), damage_(damage)
 		{
 			bullet_system = &Engine::Instance().Registry().emplace<BulletSystem>(instance);
 			bullet_system->speed = speed;
+			bullet_system->damage = damage;
 		}
 		~Bullet()
 		{
@@ -444,6 +511,7 @@ namespace bober_game
 		BulletSystem* bullet_system;
 	private:
 		float speed_;
+		double damage_;
 	};
 
 	//Ranged
@@ -463,7 +531,7 @@ namespace bober_game
 		void shoot(ShootEvent shoot_)
 		{
 			if (currentAmmo_ != 0) {
-				Bullet* bullet = new Bullet(shoot_.speed);
+				Bullet* bullet = new Bullet(shoot_.speed, 50.0);
 				bullet->bullet_system->index = (++numberOfBullets_) % 100;
 				PlayerController::bullets[bullet->bullet_system->index]=bullet;
 				Vector2 scale(1, 1);
@@ -535,11 +603,11 @@ namespace bober_game
 		{
 			return enemyCount_;
 		}
-		std::vector<Enemy*> getRoomEnemies()
+		std::unordered_map<int, Enemy*> getRoomEnemies()
 		{
 			return roomEnemies_;
 		}
-		void setRoomEnemies(std::vector<Enemy*> roomEnemies)
+		void setRoomEnemies(std::unordered_map<int, Enemy*> roomEnemies)
 		{
 			roomEnemies_ = roomEnemies;
 		}
@@ -550,7 +618,7 @@ namespace bober_game
 		std::vector<std::pair<int, int>> doors_coords_;
 
 		int enemyCount_;
-		std::vector<Enemy*> roomEnemies_;
+		std::unordered_map<int, Enemy*> roomEnemies_;
 		int roomType_; // za sada int
 	};
 
@@ -565,6 +633,8 @@ namespace bober_game
 			matrix_ = std::vector<std::vector<int>>(n_, std::vector<int>(n_, 0));
 			tile_matrix_ = std::vector<std::vector<Tile*>>(n_, std::vector<Tile*>(n_, 0));
 			generateMap();
+
+			Engine::Dispatcher().sink<DamageEventEnemy>().connect<&OurMap::findById>(this);
 		}
 		int get_n()
 		{
@@ -578,6 +648,29 @@ namespace bober_game
 		{
 			return rooms_;
 		}
+		void findById(DamageEventEnemy dmg)
+		{
+			for (Room* room : rooms_)
+			{
+				std::unordered_map<int, Enemy*> roomEnemies = room->getRoomEnemies();
+				bool hasDied;
+				for (auto elem : roomEnemies)
+				{
+					if (elem.first == dmg.ID)
+					{
+						hasDied = elem.second->takeDamage(dmg.damage);
+						if (hasDied)
+						{
+							roomEnemies.erase(dmg.ID);
+							break;
+						}
+					}
+				}
+				if(hasDied)
+					room->setRoomEnemies(roomEnemies);
+			}
+		}
+
 	private:
 		int n_;
 		int room_size_;

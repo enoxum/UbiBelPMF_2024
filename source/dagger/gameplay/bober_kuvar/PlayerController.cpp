@@ -3,6 +3,7 @@
 #include "Ranged.h"
 #include "Melee.h"
 #include "Player.h"
+#include "OurMap.h"
 
 #include "core/engine.h"
 #include "core/game/transforms.h"
@@ -141,8 +142,8 @@ void PlayerController::Run()
     bool colidedWithBullet = false;
   
     auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
-    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData>();
-    auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer>();
+    auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision, DamageEventEnemy>();
     auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
     auto viewWalls = Engine::Registry().view<TileSystem, SimpleCollision>();
     for (auto entity : view)
@@ -177,7 +178,13 @@ void PlayerController::Run()
             for (auto enemy : enemyView)
             {
                 if (col.colidedWith == enemy)
+                {
                     colidedWithEnemy = true;
+                    auto& dmg = view.get<DamageEventPlayer>(entity);
+                    auto& enemyData = enemyView.get<EnemyData>(enemy);
+                    dmg.damage = enemyData.damage;
+                    Engine::Dispatcher().trigger<DamageEventPlayer>(dmg);
+                }
             }
             for (auto bullet : viewBullet)
             {
@@ -199,8 +206,6 @@ void PlayerController::Run()
                     if (std::abs(collisionSides.y) > 0)
                         t.position.y -= collisionSides.y * Engine::DeltaTime();
                 } while (col.IsCollided(t.position, collision, transform.position));
-
-                //t.position = { playerPos, 0.0 };
             }
         }
 
@@ -276,10 +281,22 @@ void PlayerController::Run()
             if (Engine::Registry().valid(col.colidedWith)) {
                 for (auto enemy : enemyView) {
                     if (col.colidedWith == enemy) {
-                        //Uradi damage
+                        auto& e = enemyView.get<EnemyData>(enemy);
+                        auto& mov = enemyView.get<MovementData>(enemy);
+                        auto& dmg = enemyView.get<DamageEventEnemy>(enemy);
+                        dmg.damage = b.damage;
+
+                        if (!e.firstHit)
+                        {
+                            mov.speed *= 2;
+                            e.firstHit = true;
+                        }
+                        e.wasHit = true;
+                        e.focusOnPlayer = true;
                         int idx = b.index;
                         delete bullets[b.index];
                         bullets.erase(idx);
+                        Engine::Dispatcher().trigger<DamageEventEnemy>(dmg);
                         continue;
                     }
                 }
@@ -315,14 +332,17 @@ void PlayerController::Run()
         auto& patrol = enemyView.get<Patrol>(entity);
         auto& col = enemyView.get<SimpleCollision>(entity);
 
-        float distance = sqrt(pow(t.position.x - playerPosition.x, 2) + pow(t.position.y - playerPosition.y, 2));
-        if (distance < enemy.visionDistance)
+        if (!enemy.wasHit)
         {
-            enemy.focusOnPlayer = true;
-            enemy.visionDistance += 0.01;
+            float distance = sqrt(pow(t.position.x - playerPosition.x, 2) + pow(t.position.y - playerPosition.y, 2));
+            if (distance < enemy.visionDistance)
+            {
+                enemy.focusOnPlayer = true;
+                enemy.visionDistance += 0.01;
+            }
+            else if (distance > 1.5 * enemy.visionDistance)
+                enemy.focusOnPlayer = false;
         }
-        else if (distance > 1.5 * enemy.visionDistance)
-            enemy.focusOnPlayer = false;
 
         if (!enemy.focusOnPlayer)
         {
