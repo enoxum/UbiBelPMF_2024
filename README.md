@@ -5,7 +5,7 @@ The goal of this simple 2D game is to collect 240 ECTS/ESPB as fast as possible.
 If player's health drops below -100 or if the number of ECTS/ESPB is below 0 the game ends with a failure. <br>
 Otherwise, the current best completion time is presented. <br>
 
-[Demo video]()
+[Demo video](https://youtu.be/szyQd7_3XbI)
 
 ## Falling entities
 
@@ -22,6 +22,20 @@ The second type is auxilary lifestyle entities which can be divided into: <br>
 - Negative : They decrease the value of health
 
 ## Screenshots
+<p float="left" align="center">
+  <img src="data/screenshots/sc_menu.png" width="40%" height"400"/>
+  <img src="data/screenshots/sc_1.png" width="40%" height"400"/>
+  <img src="data/screenshots/sc_win.png" width="40%" height"400"/>
+  <img src="data/screenshots/sc_game_over.png" width="40%" height"400"/>
+</p>
+
+## Authors
+[Vukašin Marković](https://github.com/sntntn)  <br>
+[Marko Nikitović](https://github.com/shotinform)  <br>
+[Stefan Jevtić](https://github.com/StefanJevtic63)  <br>
+[Anja Cvetković](https://github.com/AnjaCvetkovic25)  <br>
+[Andjelija Vasiljević](https://github.com/skiiszn)      <br>
+
 
 # Dagger
 
