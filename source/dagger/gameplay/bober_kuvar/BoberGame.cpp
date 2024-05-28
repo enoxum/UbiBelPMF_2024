@@ -35,6 +35,7 @@ void BoberGame::GameplaySystemsSetup()
     engine.AddSystem<PlayerController>();
     engine.AddSystem<CameraFollowSystem>();
     engine.AddSystem<SimpleCollisionsSystem>();
+    engine.AddSystem<Health>();
 }
 
 void BoberGame::SetCamera()

@@ -1,5 +1,9 @@
 #pragma once
 #include "OurEntity.h"
+#include "Health.h"
+
+
+using namespace health_system;
 
 class Character :
     public OurEntity
@@ -10,8 +14,14 @@ private:
     virtual void spawn();
     virtual void die();
     virtual void collision();
+    void createHealth();
 
-    double hp_;
+
+    Entity healthBarEntity;
+    Entity backgroundEntity;
+    Entity fillEntity;
+    HealthComponent health;
+    
     double speed_;
     double strength_;
     bool collidable_;
