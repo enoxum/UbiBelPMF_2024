@@ -20,7 +20,7 @@ bool left, right, up, down = false;
 int mvR, mvL, mvU, mvB = 1;
 
 
-void pacman::PingPongPlayerInputSystem::SpinUp()
+void PingPongPlayerInputSystem::SpinUp()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().connect<&PingPongPlayerInputSystem::OnKeyboardEvent>(this);
     Engine::Dispatcher().sink<ToolMenuRender>().connect<&PingPongPlayerInputSystem::RenderToolMenu>(this);

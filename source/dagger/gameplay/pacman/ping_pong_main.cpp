@@ -24,6 +24,33 @@
 using namespace dagger;
 using namespace pacman;
 
+enum class CellType {
+    Empty,
+    Wall,
+    Pellet,
+    GhostHouse
+};
+
+struct Maze {
+    std::vector<std::vector<CellType>> grid;
+};
+
+Maze createPacmanMaze() {
+    Maze maze;
+    maze.grid = {
+        {CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall},
+        {CellType::Wall, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Wall},
+        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Pellet, CellType::Wall},
+        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::GhostHouse, CellType::Wall, CellType::Pellet, CellType::Wall},
+        {CellType::Wall, CellType::Pellet, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Pellet, CellType::Wall},
+        {CellType::Wall, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Pellet, CellType::Wall},
+        {CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall, CellType::Wall}
+    };
+    return maze;
+}
+
+//global for now, change later for optimization
+Maze g_pacmanMaze;
 
 //void pacman::CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_)
 //{
@@ -46,7 +73,7 @@ using namespace pacman;
 //    col.size.y = tileSize_;
 //}
 
-void PacmanGame::CoreSystemsSetup()
+void pacman::PacmanGame::CoreSystemsSetup()
 {
     auto& engine = Engine::Instance();
 
@@ -64,7 +91,7 @@ void PacmanGame::CoreSystemsSetup()
 #endif //!defined(NDEBUG)
 }
 
-void PacmanGame::GameplaySystemsSetup()
+void pacman::PacmanGame::GameplaySystemsSetup()
 {
     auto& engine = Engine::Instance();
 
@@ -77,7 +104,7 @@ void PacmanGame::GameplaySystemsSetup()
 #endif //defined(DAGGER_DEBUG)
 }
 
-void PacmanGame::WorldSetup()
+void pacman::PacmanGame::WorldSetup()
 {
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 600;
@@ -89,9 +116,10 @@ void PacmanGame::WorldSetup()
     camera->position = { 0, 0, 0 };
     camera->Update();
 
+    g_pacmanMaze = createPacmanMaze();
+
     SetupWorld();
 }
-
 void pacman::SetupWorld()
 {
     Vector2 scale(1, 1);
@@ -107,6 +135,57 @@ void pacman::SetupWorld()
     float zPos = 1.f;
 
     constexpr float Space = 0.001f;
+    /*
+    //TODO: usaglasiti height/width sa grid.size
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 7; j++)
+        {
+            auto entity = reg.create();
+            auto& sprite = reg.emplace<Sprite>(entity);
+            sprite.size = scale * tileSize;
+
+            auto& col = reg.emplace<SimpleCollision>(entity);
+            col.size.x = tileSize;
+            col.size.y = tileSize;
+
+            switch (g_pacmanMaze.grid[i][j]) 
+            {
+                case CellType::Empty:
+                    AssignSprite(sprite, "EmptyWhitePixel");
+                    sprite.color.r = 0.0f;
+                    sprite.color.g = 0.0f;
+                    sprite.color.b = 0.0f;
+                    break;
+                case CellType::Wall:
+                    AssignSprite(sprite, "EmptyWhitePixel");
+                    sprite.color.r = 0.2f;
+                    sprite.color.g = 0.2f;
+                    sprite.color.b = 0.2f;
+                    break;
+                case CellType::Pellet:
+                    AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
+                    sprite.color.r = 0.4f;
+                    sprite.color.g = 0.4f;
+                    sprite.color.b = 0.4f;
+                    break;
+                case CellType::GhostHouse:
+                    AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
+                    sprite.color.r = 0.64f;
+                    sprite.color.g = 0.6f;
+                    sprite.color.b = 0.6f;
+                    break;
+            }
+
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
+            transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
+            transform.position.z = zPos;
+        }
+    }*/
+
+
+    
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
