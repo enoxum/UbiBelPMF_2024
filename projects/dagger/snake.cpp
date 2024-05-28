@@ -3,6 +3,7 @@
 #include "core/engine.h"
 #include "core/game/transforms.h"
 #include "core/graphics/sprite.h"
+#include "core/graphics/text.h"
 #include "gameplay/common/simple_collisions.h"
 #include <iostream>
 #include "red_snake_main.h"
@@ -40,12 +41,21 @@ void RedSnakeSystem::AddSegment()
     snakeSegments.push_back(entity);
 }
 
+Text appleCounterText;
+int count = 0;
+
+void UpdateCounter(int applesEaten) {
+    appleCounterText.spacing = 0.7f;
+    appleCounterText.Set("pixel-font", "Apples eaten: " + std::to_string(applesEaten), Vector3(10, 250, 0), true);
+}
+
 
 void RedSnakeSystem::Run()
 {
     auto& reg = Engine::Registry();
     auto viewCollisions = reg.view<Transform, SimpleCollision>();
     auto view = reg.view<SnakeSegment, Transform, SimpleCollision>();
+
 
     for (auto entity : view)
     {
@@ -68,6 +78,10 @@ void RedSnakeSystem::Run()
                     int foodX = std::rand() % 24 + 1;
                     int foodY = std::rand() % 18 + 1;
                     CreateFood(20.0f, ColorRGBA(1, 0, 0, 1), { foodX, foodY, 1.0f });
+                    count++;
+                    UpdateCounter(count);
+
+                    
                 }
                 else if (reg.has<SnakeSegment>(col.colidedWith))
                 {

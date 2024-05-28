@@ -12,6 +12,7 @@
 #include "core/graphics/textures.h"
 #include "core/graphics/animations.h"
 #include "core/graphics/gui.h"
+#include "core/graphics/text.h"
 #include "tools/diagnostics.h"
 
 #include "gameplay/common/simple_collisions.h"
@@ -23,6 +24,7 @@
 
 using namespace red_snake;
 float RandomFloat(float min, float max);
+//Text appleCounterText;
 
 void red_snake::RedSnakeGame::CoreSystemsSetup()
 {
@@ -180,6 +182,13 @@ void red_snake::SetUpWorld()
     int foodX = (std::rand()) % 24 + 1;
     int foodY = (std::rand()) % 18 + 1;
     CreateFood(tileSize, ColorRGBA(1, 0, 0, 1), { foodX, foodY, zPos });
+
+   // appleCounterText.spacing = 0.7f;
+    //appleCounterText.Set("pixel-font", "Apples eaten: 0", Vector3(10, 250, 10), true);
+   /*auto ui = reg.create();
+    auto& text = reg.emplace<Text>(ui);
+    text.spacing = 0.6f;
+    text.Set("pixel-font", "hello world", Vector3(10, 250, 0), true);*/ 
 }
 float RandomFloat(float min, float max)
 {
