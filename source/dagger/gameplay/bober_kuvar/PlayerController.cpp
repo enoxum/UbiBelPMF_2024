@@ -17,6 +17,7 @@
 using namespace bober_game;
 
 std::unordered_map<int,Bullet*> PlayerController::bullets;
+int timeout = 1000;
 
 void PlayerController::SpinUp()
 {
@@ -161,18 +162,21 @@ void PlayerController::Run()
 
         playerPosition = t.position;
 
-        if (ctrl.input == Vector2{0.0f, 0.0f})
-            break;
-
         double normalized = 1 / sqrt(ctrl.input.x * ctrl.input.x + ctrl.input.y * ctrl.input.y);
 
-        double move_x = normalized * ctrl.input.x * mov.speed * Engine::DeltaTime();
-        double move_y = normalized * ctrl.input.y * mov.speed * Engine::DeltaTime();
+        if (ctrl.input != Vector2{ 0.0f, 0.0f })
+        {
+            double move_x = normalized * ctrl.input.x * mov.speed * Engine::DeltaTime();
+            double move_y = normalized * ctrl.input.y * mov.speed * Engine::DeltaTime();
 
-        t.position.x += move_x;
-        t.position.y += move_y;
-      
-        playerPosition = t.position;
+            t.position.x += move_x;
+            t.position.y += move_y;
+
+            playerPosition = t.position;
+        }
+
+        if (timeout > 0)
+            timeout--;
 
         if (col.colided) {
             for (auto enemy : enemyView)
@@ -180,10 +184,13 @@ void PlayerController::Run()
                 if (col.colidedWith == enemy)
                 {
                     colidedWithEnemy = true;
-                    auto& dmg = view.get<DamageEventPlayer>(entity);
-                    auto& enemyData = enemyView.get<EnemyData>(enemy);
-                    dmg.damage = enemyData.damage;
-                    Engine::Dispatcher().trigger<DamageEventPlayer>(dmg);
+                    if (timeout <= 0)
+                    {
+                        auto& dmg = view.get<DamageEventPlayer>(entity);
+                        auto& enemyData = enemyView.get<EnemyData>(enemy);
+                        dmg.damage = enemyData.damage;
+                        Engine::Dispatcher().trigger<DamageEventPlayer>(dmg);
+                    }
                 }
             }
             for (auto bullet : viewBullet)

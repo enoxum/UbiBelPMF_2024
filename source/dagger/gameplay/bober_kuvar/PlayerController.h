@@ -610,6 +610,7 @@ namespace bober_game
 		void setRoomEnemies(std::unordered_map<int, Enemy*> roomEnemies)
 		{
 			roomEnemies_ = roomEnemies;
+			enemyCount_ = roomEnemies_.size();
 		}
 	private:
 		int id_;
@@ -666,8 +667,11 @@ namespace bober_game
 						}
 					}
 				}
-				if(hasDied)
+				if (hasDied)
+				{
 					room->setRoomEnemies(roomEnemies);
+					checkGameEnding();
+				}
 			}
 		}
 
@@ -678,6 +682,17 @@ namespace bober_game
 		std::vector<std::vector<int>> matrix_;
 		std::vector<Room*> rooms_;
 		std::vector<std::vector<Tile*>> tile_matrix_;
+
+		void checkGameEnding()
+		{
+			for (Room* room : rooms_)
+			{
+				if (room->getEnemyCount() != 0) {
+					return;
+				}
+			}
+			exit(1);
+		}
 
 		void generateMap() 
 		{
