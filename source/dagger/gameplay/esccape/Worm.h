@@ -28,11 +28,12 @@ namespace esccape
         int spawnEdge;
         int scaleX;
         int scaleY;
+        int level;
     };
 
     int generateSpawnPoint(int edge, Worm& worm);
-    void setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite);
-    void SpawnWorm(Worm& worm, Transform& t, Sprite& sprite);
+    void setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite, SimpleCollision& collision);
+    void SpawnWorm(Worm& worm, Transform& t, Sprite& sprite, SimpleCollision& collision);
     void CreateWorm(int zPos, int screenWidth, int screenHeight);
     void CreateNWorms(int n, int zPos, int screenWidth, int screenHeight);
 

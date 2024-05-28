@@ -19,26 +19,30 @@ void esccape::WormSystem::Run()
         if (worm.spawnEdge == 0 && t.position.y < -worm.startingYTop - 10) {
             int randomEdge = rand() % 4;
             int pos = generateSpawnPoint(randomEdge, worm);
-            setPosition(randomEdge, pos, t, worm, sprite);
+            setPosition(randomEdge, pos, t, worm, sprite, col);
             worm.spawnEdge = randomEdge;
+            worm.level++;
         }
         else if (worm.spawnEdge == 1 && t.position.x < -worm.startingXRight - 10) {
             int randomEdge = rand() % 4;
             int pos = generateSpawnPoint(randomEdge, worm);
-            setPosition(randomEdge, pos, t, worm, sprite);
+            setPosition(randomEdge, pos, t, worm, sprite, col);
             worm.spawnEdge = randomEdge;
+            worm.level++;
         }
         else if (worm.spawnEdge == 2 && t.position.y > -worm.startingYBottom + 10) {
             int randomEdge = rand() % 4;
             int pos = generateSpawnPoint(randomEdge, worm);
-            setPosition(randomEdge, pos, t, worm, sprite);
+            setPosition(randomEdge, pos, t, worm, sprite, col);
             worm.spawnEdge = randomEdge;
+            worm.level++;
         }
         else if (worm.spawnEdge == 3 && t.position.x > -worm.startingXLeft + 10) {
             int randomEdge = rand() % 4;
             int pos = generateSpawnPoint(randomEdge, worm);
-            setPosition(randomEdge, pos, t, worm, sprite);
+            setPosition(randomEdge, pos, t, worm, sprite, col);
             worm.spawnEdge = randomEdge;
+            worm.level++;
         }
 
         t.position += (worm.speed * Engine::DeltaTime());
@@ -72,36 +76,40 @@ int esccape::generateSpawnPoint(int edge, Worm& worm) {
     return -1;
 }
 
-void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite) {
+void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& sprite, SimpleCollision& collision) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> disDistance(300, 1500);
-    std::uniform_int_distribution<> disSpeed(200, 400);
+    std::uniform_int_distribution<> disDistance(400, 1200);
+    std::uniform_int_distribution<> disSpeed(150, 250);
     int speed = disSpeed(gen);
     switch (edge) {
         case 0:
             t.position.x = pos;
             t.position.y = worm.startingYTop + disDistance(gen);
             sprite.rotation = 0;
-            worm.speed = { 0, -speed, 0 };
+            collision.size = { sprite.size.x, sprite.size.y };
+            worm.speed = { 0, -(speed + worm.level * 25), 0 };
             break;
         case 1:
             t.position.x = worm.startingXRight + disDistance(gen);
             t.position.y = pos;
             sprite.rotation = 270;
-            worm.speed = { -speed, 0, 0 };
+            collision.size = { sprite.size.y, sprite.size.x };
+            worm.speed = { -(speed + worm.level * 25), 0, 0 };
             break;
         case 2:
             t.position.x = pos;
             t.position.y = worm.startingYBottom - disDistance(gen);
             sprite.rotation = 180;
-            worm.speed = { 0, speed, 0 };
+            collision.size = { sprite.size.x, sprite.size.y };
+            worm.speed = { 0, speed + worm.level * 25, 0 };
             break;
         case 3:
             t.position.x = worm.startingXLeft - disDistance(gen);
             t.position.y = pos;
             sprite.rotation = 90;
-            worm.speed = { speed, 0, 0 };
+            collision.size = { sprite.size.y, sprite.size.x };
+            worm.speed = { speed + worm.level * 25, 0, 0 };
             break;
     }
 }
@@ -125,7 +133,6 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     auto& transform = reg.emplace<Transform>(entity);
 
     auto& collision = reg.emplace<SimpleCollision>(entity);
-    collision.size = sprite.size;
 
     worm.startingYTop = screenHeight / 2 + 50;
     worm.startingXRight = screenWidth / 2 + 30;
@@ -135,19 +142,21 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     worm.maximumX = 350;
     worm.minimumY = -250;
     worm.maximumY = 250;
+    worm.level = 0;
 
     worm.scaleX = sprite.scale.x;
     worm.scaleY = sprite.scale.y;
-    SpawnWorm(worm, transform, sprite);
+    
+    SpawnWorm(worm, transform, sprite, collision);
 }
 
-void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite) {
+void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite, SimpleCollision& collision) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> disSpeed(200, 400);
+    std::uniform_int_distribution<> disSpeed(150, 250);
     std::uniform_int_distribution<> disX(worm.minimumX, worm.maximumX);
     std::uniform_int_distribution<> disY(worm.minimumY, worm.maximumY);
-    std::uniform_int_distribution<> disDistance(300, 1500);
+    std::uniform_int_distribution<> disDistance(400, 1200);
     int edge = rand() % 4;
 
     int speed = disSpeed(gen);
@@ -157,24 +166,28 @@ void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite) {
         t.position.x = disX(gen);
         t.position.y = worm.startingYTop + disDistance(gen);
         sprite.rotation = 0;
+        collision.size = { sprite.size.x, sprite.size.y };
         worm.speed = { 0, -speed, 0 };
         break;
     case 1:
         t.position.x = worm.startingXRight + disDistance(gen);
         t.position.y = disY(gen);
         sprite.rotation = 270;
+        collision.size = { sprite.size.y, sprite.size.x };
         worm.speed = { -speed, 0, 0 };
         break;
     case 2:
         t.position.x = disX(gen);
         t.position.y = worm.startingYBottom - disDistance(gen);
         sprite.rotation = 180;
+        collision.size = { sprite.size.x, sprite.size.y };
         worm.speed = { 0, speed, 0 };
         break;
     case 3:
         t.position.x = worm.startingXLeft - disDistance(gen);
         t.position.y = disY(gen);
         sprite.rotation = 90;
+        collision.size = { sprite.size.y, sprite.size.x };
         worm.speed = { speed, 0, 0 };
         break;
     }
