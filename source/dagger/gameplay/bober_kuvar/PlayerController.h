@@ -243,7 +243,6 @@ namespace bober_game
 		{
 			collidable_ = collidable;
 			collision_size_ = collision_size;
-			createHealth();
 		}
 		virtual void spawn(const std::pair<int, int>&, const std::pair<int, int>&, const std::vector<std::vector<int>>&)
 		{
@@ -259,48 +258,7 @@ namespace bober_game
 		virtual void collision()
 		{
 		}
-		void createHealth()
-		{
-			auto& engine = Engine::Instance();
-			auto& reg = engine.Registry();
-
-			healthBar = &Engine::Registry().emplace<HealthBar>(instance);
-			healthBar->width = 100;
-			healthBar->height = 15;
-			healthBar->borderThickness = 5;
-			healthBar->backColor = { 0.f, 0.f, 0.f, 1.f };
-			healthBar->fillColor = { 0.1f, 0.9f, 0.1f, 1.f };
-
-			backgroundEntity = reg.create();
-			auto& bgSprite = reg.get_or_emplace<Sprite>(backgroundEntity);
-			auto& bgTransform = reg.get_or_emplace<Transform>(backgroundEntity);
-			bgTransform.position = transform->position;
-
-			AssignSprite(bgSprite, "EmptyWhitePixel");
-			bgSprite.size = { healthBar->width + healthBar->borderThickness, healthBar->height + healthBar->borderThickness };
-			bgSprite.color = healthBar->backColor;
-
-			fillEntity = reg.create();
-			auto& fillSprite = reg.get_or_emplace<Sprite>(fillEntity);
-			auto& fillTransform = reg.get_or_emplace<Transform>(fillEntity);
-			fillTransform.position = transform->position;
-
-			AssignSprite(fillSprite, "EmptyWhitePixel");
-			fillSprite.size = { healthBar->width, healthBar->height };
-			fillSprite.color = healthBar->fillColor;
-
-			healthBar->backgroundEntity = backgroundEntity;
-			healthBar->fillEntity = fillEntity;
-			
-			health = &reg.emplace<HealthComponent>(instance);
-			health->maxHealth = hp_;
-			health->currentHealth = hp_;
-
-		}
-		HealthBar* healthBar;
-		Entity backgroundEntity;
-		Entity fillEntity;
-		HealthComponent* health;
+		
 	protected:
 		double hp_;
 		double speed_;
@@ -320,7 +278,7 @@ namespace bober_game
 		}
 
 		Enemy(int id)
-			: Character(200.0, 40.0, 10.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 32))
+			: Character(200.0, 40.0, 25.0, "souls_like_knight_character:IDLE:idle1", "souls_like_knight_character:IDLE", true, std::pair<int, int>(16, 32))
 		{
 			lootAmount_ = 100.0f;
 			xpDrop_ = 100.0f;
@@ -439,7 +397,7 @@ namespace bober_game
 	{
 	public:
 		Player()
-			: Character(10000.0, 100.0, 10.0, "BoberKuvar:beaver-SWEN", "", true, std::pair<int, int>(16, 32)), xp_(0), level_(1)
+			: Character(100.0, 100.0, 10.0, "BoberKuvar:beaver-SWEN", "", true, std::pair<int, int>(16, 32)), xp_(0), level_(1)
 		{
 			controller_ = &Engine::Instance().Registry().emplace<ControllerMapping>(instance);
 			PlayerController::SetupPlayerInput(*controller_);
@@ -454,6 +412,7 @@ namespace bober_game
 			dmg_ = &Engine::Instance().Registry().emplace<DamageEventPlayer>(instance);
 
 			Engine::Dispatcher().sink<DamageEventPlayer>().connect<&Player::takeDamage>(this);
+			createHealth();
 		}
 		void spawn(const std::pair<int, int>& topLeft, const std::pair<int, int>& bottomRight, const std::vector<std::vector<int>>& matrix) override
 		{
@@ -482,7 +441,7 @@ namespace bober_game
 		{
 			hp_ -= dmg.damage;
 			if (hp_ <= 0.0)
-				die();
+					die();
 		}
 
 		void levelUp()
@@ -496,6 +455,10 @@ namespace bober_game
 
 		std::vector<Weapon*> weapons;
 		DamageEventPlayer* dmg_;
+		HealthBar* healthBar;
+		Entity backgroundEntity;
+		Entity fillEntity;
+		HealthComponent* health;
 
 	private:
 		void die() override
@@ -509,6 +472,46 @@ namespace bober_game
 		{
 
 		}
+
+		void createHealth()
+		{
+			auto& engine = Engine::Instance();
+			auto& reg = engine.Registry();
+
+			healthBar = &Engine::Registry().emplace<HealthBar>(instance);
+			healthBar->width = 35;
+			healthBar->height = 5;
+			healthBar->borderThickness = 1.5;
+			healthBar->backColor = { 0.f, 0.f, 0.f, 1.f };
+			healthBar->fillColor = { 0.1f, 0.9f, 0.1f, 1.f };
+
+			backgroundEntity = reg.create();
+			auto& bgSprite = reg.get_or_emplace<Sprite>(backgroundEntity);
+			auto& bgTransform = reg.get_or_emplace<Transform>(backgroundEntity);
+			bgTransform.position = transform->position;
+
+			AssignSprite(bgSprite, "EmptyWhitePixel");
+			bgSprite.size = { healthBar->width + healthBar->borderThickness, healthBar->height + healthBar->borderThickness };
+			bgSprite.color = healthBar->backColor;
+
+			fillEntity = reg.create();
+			auto& fillSprite = reg.get_or_emplace<Sprite>(fillEntity);
+			auto& fillTransform = reg.get_or_emplace<Transform>(fillEntity);
+			fillTransform.position = transform->position;
+
+			AssignSprite(fillSprite, "EmptyWhitePixel");
+			fillSprite.size = { healthBar->width, healthBar->height };
+			fillSprite.color = healthBar->fillColor;
+
+			healthBar->backgroundEntity = backgroundEntity;
+			healthBar->fillEntity = fillEntity;
+
+			health = &reg.emplace<HealthComponent>(instance);
+			health->maxHealth = hp_;
+			health->currentHealth = hp_;
+
+		}
+
 		double xp_;
 		int level_;
 		ControllerMapping* controller_;

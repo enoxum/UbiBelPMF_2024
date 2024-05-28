@@ -17,7 +17,7 @@
 using namespace bober_game;
 
 std::unordered_map<int,Bullet*> PlayerController::bullets;
-int timeout = 1000;
+int timeout = 500;
 
 void PlayerController::SpinUp()
 {
@@ -138,14 +138,14 @@ void PlayerController::Run()
     bool focusRanged=true;
     double cos_, sin_;
     Vector2 dir{ 0,0 };
-    Vector3 playerPosition;
+    Vector3 playerPosition = { 0.0, 0.0, 0.0};
     bool colidedWithEnemy = false;
     bool colidedWithBullet = false;
-    Float32 currentHealthRatio = 0.0f;
-  
+    Float32 currentHealthRatioPlayer = 0.0f;
+
     //auto viewHealthBar = Engine::Registry().view<HealthBar>();
     auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
-    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer,HealthComponent,HealthBar>();
+    auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer, HealthComponent, HealthBar>();
     auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision, DamageEventEnemy>();
     auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
     auto viewWalls = Engine::Registry().view<TileSystem, SimpleCollision>();
@@ -162,6 +162,7 @@ void PlayerController::Run()
         }
         auto& mov = view.get<MovementData>(entity);
         auto& col = view.get<SimpleCollision>(entity);
+        auto& healthComponent = view.get<HealthComponent>(entity);
 
         playerPosition = t.position;
 
@@ -191,7 +192,8 @@ void PlayerController::Run()
                     {
                         auto& dmg = view.get<DamageEventPlayer>(entity);
                         auto& enemyData = enemyView.get<EnemyData>(enemy);
-                        dmg.damage = enemyData.damage;
+                        dmg.damage = enemyData.damage * Engine::DeltaTime();
+                        healthComponent.currentHealth -= enemyData.damage * Engine::DeltaTime();
                         Engine::Dispatcher().trigger<DamageEventPlayer>(dmg);
                     }
                 }
@@ -218,6 +220,7 @@ void PlayerController::Run()
                 } while (col.IsCollided(t.position, collision, transform.position));
             }
         }
+        currentHealthRatioPlayer = healthComponent.currentHealth / (Float32)healthComponent.maxHealth;
 
         colidedWithEnemy = false;
         colidedWithBullet = false;
@@ -285,8 +288,7 @@ void PlayerController::Run()
         auto& s = viewBullet.get<Sprite>(entity);
         auto& b = viewBullet.get<BulletSystem>(entity);
         auto& col = viewBullet.get<SimpleCollision>(entity);
-        //Privremeni TimeToLive sistem za metke.
-        //if ((--b.ttl == 0) {
+
         if (col.colided) {
             if (Engine::Registry().valid(col.colidedWith)) {
                 for (auto enemy : enemyView) {
@@ -294,6 +296,7 @@ void PlayerController::Run()
                         auto& e = enemyView.get<EnemyData>(enemy);
                         auto& mov = enemyView.get<MovementData>(enemy);
                         auto& dmg = enemyView.get<DamageEventEnemy>(enemy);
+
                         dmg.damage = b.damage;
 
                         if (!e.firstHit)
@@ -433,12 +436,6 @@ void PlayerController::Run()
         colidedWithEnemy = false;
         col.colided = false;
     }
-    //calculate current player health ratio
-    for (auto entity : view)
-    {
-        auto& healthComponent = view.get<HealthComponent>(entity);
-        currentHealthRatio = healthComponent.currentHealth / (Float32)healthComponent.maxHealth;
-    }
     
     //Get health bars
     for (auto entity : view)
@@ -446,11 +443,16 @@ void PlayerController::Run()
         auto& healthBar = view.get<HealthBar>(entity);
 
         auto& fillSprite = Engine::Registry().get<Sprite>(healthBar.fillEntity);
+        auto& backgroundTransform = Engine::Registry().get<Transform>(healthBar.backgroundEntity);
+        auto& fillTransform = Engine::Registry().get<Transform>(healthBar.fillEntity);
 
-        Float32 fillWidth = std::clamp(currentHealthRatio, 0.f, 1.f) * healthBar.width; // calculate new width
+        Float32 fillWidth = std::clamp(currentHealthRatioPlayer, 0.f, 1.f) * healthBar.width; // calculate new width
         bool changed = fillSprite.size.x != fillWidth; //check if width actually changed
         Float32 oldWidth = fillSprite.size.x; //save oldwidth
         fillSprite.size = { fillWidth, healthBar.height };
+
+        backgroundTransform.position = playerPosition + Vector3{ 0, -23, 0 };
+        fillTransform.position = playerPosition + Vector3{ 0, -23, 0 };
 
         if (changed)
         {
