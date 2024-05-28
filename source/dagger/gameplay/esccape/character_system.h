@@ -9,9 +9,18 @@ namespace esccape
         : public System
     {
     public:
+        bool m_Restart = false;
+        int m_winnerID;
+
         String SystemName() override {
             return "Character System";
         }
+        void SpinUp();
+        void WindDown();
+
         void Run() override;
+
+    private:
+        void OnEndOfFrame();
     };
 }

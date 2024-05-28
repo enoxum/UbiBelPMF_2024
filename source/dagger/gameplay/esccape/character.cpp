@@ -17,102 +17,48 @@ Character::Character(Entity entity, const std::string& input_, const std::string
 {
     auto& reg = Engine::Registry();
 
-    // Get or create components
-    auto& sprite = reg.get_or_emplace<Sprite>(entity);
-    auto& animator = reg.get_or_emplace<Animator>(entity);
-    auto& input = reg.get_or_emplace<InputReceiver>(entity);
-    auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
-    auto& transform = reg.get_or_emplace<Transform>(entity);
-    auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
+    sprite = &reg.get_or_emplace<Sprite>(entity);
+    animator = &reg.get_or_emplace<Animator>(entity);
+    input = &reg.get_or_emplace<InputReceiver>(entity);
+    character = &reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
+    transform = &reg.get_or_emplace<Transform>(entity);
+    collision = &reg.get_or_emplace<SimpleCollision>(entity);
+
+    printf("okk \n");
 
     // Initialize sprite properties
-    float ratio = sprite.size.x / sprite.size.y; // Corrected the calculation here
+    float ratio = sprite->size.x / sprite->size.y;
     float size = 50;
 
-    sprite.size = { size, size * ratio };
-    sprite.scale = { 3, 3 };
-    sprite.position = { position_, 0.0f };
-    sprite.color = { color_, 1.0f };
+    sprite->size = { size, size * ratio };
+    sprite->scale = { 3, 3 };
+    sprite->position = { position_, 0.0f };
+    sprite->color = { color_, 1.0f };
 
-    // Initialize transform and collision properties
-    transform.position = { position_, 0.0f };
-    collision.size.x = sprite.size.x;
-    collision.size.y = sprite.size.y;
+    transform->position = { position_, 0.0f };
+    collision->size.x = sprite->size.x;
+    collision->size.y = sprite->size.y;
+    
+    character->speed = 100;
+    character->id = id;
+    character->healthSystem.SetCurrentHealth(10);
+    character->healthSystem.SetMaxHealth(10);
+    character->healthSystem.SetCharacterID(id);
+    
 
-    // Initialize character properties
-    character.speed = 100;
-    character.id = id;
-    //character.healthSystem = HealthSystem();
     ATTACH_TO_FSM(CharacterControllerFSM, entity);
 
-    // Assign sprite and play animation
-    AssignSprite(sprite, spritesheet_);
-    AnimatorPlay(animator, animation_);
+    AssignSprite(*sprite, spritesheet_);
+    AnimatorPlay(*animator, animation_);
 
-    // Assign input contexts if provided
     if (!input_.empty())
     {
-        input.contexts.push_back(input_);
+        input->contexts.push_back(input_);
     }
 }
 
 
-Character Character::Get(Entity entity)
-{
-    auto& reg = Engine::Registry();
-    auto& sprite = reg.get_or_emplace<Sprite>(entity);
-    auto& anim = reg.get_or_emplace<Animator>(entity);
-    auto& input = reg.get_or_emplace<InputReceiver>(entity);
-    auto& character = reg.get_or_emplace<esccape::EsccapeCharacter>(entity);
-    auto& transform = reg.get_or_emplace<Transform>(entity);
-    auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
-
-    return Character(entity, &sprite, &anim, &input, &character, &transform, &collision);
-}
-
-Character Character::Create(
-    const std::string& input_,
-    const std::string& spritesheet_,
-    const std::string& animation_,
-    const ColorRGB& color_,
-    const Vector2& position_,
-    int id
-)
-{
-    auto& reg = Engine::Registry();
-    auto entity = reg.create();
-
-
-    auto chr = Character::Get(entity);
-
-    float ratio = chr.sprite->size.y / chr.sprite->size.y;
-    float size = 50;
-
-    chr.sprite->size = { size, size * ratio };
-
-    chr.sprite->scale = { 3, 3 };
-    chr.sprite->position = { position_, 0.0f };
-    chr.sprite->color = { color_, 1.0f };
-    chr.transform->position = { position_, 0.0f };
-    chr.collision->size.x = chr.sprite->size.x;
-    chr.collision->size.y = chr.sprite->size.y;
-    chr.character->speed = 100;
-    chr.character->id = id;
-    chr.character->healthSystem.SetCurrentHealth(10);
-    chr.character->healthSystem.SetMaxHealth(10);
-    chr.character->healthSystem.SetCharacterID(id);
-    ATTACH_TO_FSM(CharacterControllerFSM, entity);
-
-    AssignSprite(*chr.sprite, spritesheet_);
-    AnimatorPlay(*chr.animator, animation_);
-
-    if (!input_.empty())
-    {
-        chr.input->contexts.push_back(input_);
-    }
-
-
-    return chr;
+Character::~Character() {
 }
 
 Entity Character::getEntity() const

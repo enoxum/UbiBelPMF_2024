@@ -255,7 +255,7 @@ void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
 
 void esccape::CreateObstacles(int zPos)
 {
-    int numberOfRocks = rand() % 2 + 1;
+    int numberOfRocks = rand() % 4 + 1;
     printf("%d", numberOfRocks);
 
     for (int i = 0; i < numberOfRocks; i++)
@@ -268,17 +268,17 @@ void esccape::CreateObstacles(int zPos)
         float ratio = sprite.size.y / sprite.size.x;
         sprite.size = { rockSize, rockSize * ratio };
 
+        int minY = -250, maxY = 150;
+        int minX = -250, maxX = 250;
+        
         auto& transform = reg.emplace<Transform>(entity);
-
-        int minY = -300, maxY = 150;
-        int minX = -350, maxX = 180;
         transform.position.x = rand() % (maxX - minX + 1) + minX;
         transform.position.y = rand() % (maxY - minY + 1) + minY;
         transform.position.z = zPos;
 
-        auto& col = reg.emplace<SimpleCollision>(entity);
+        /*auto& col = reg.emplace<SimpleCollision>(entity);
         col.size.x = rockSize;
-        col.size.y = rockSize * ratio;
+        col.size.y = rockSize*ratio;*/
     }
 }
 
@@ -355,10 +355,14 @@ void esccape::SpawnWorm(Worm& worm, Transform& t, Sprite& sprite) {
 
 void esccape::SetupWorld()
 {
-    Vector2 scale(1, 1);
-
     auto& engine = Engine::Instance();
     auto& reg = engine.Registry();
+
+    reg.clear();
+    Engine::Dispatcher().clear();
+
+
+    constexpr Vector2 scale(1, 1);
 
     // field
     constexpr int screenWidth = 800;
@@ -378,7 +382,7 @@ void esccape::SetupWorld()
 
     zPos -= 1.f;
 
-    
+
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
     CreateEnemy(zPos, screenWidth, screenHeight);
@@ -386,7 +390,7 @@ void esccape::SetupWorld()
 
     //CreateWorm(zPos, screenWidth, screenHeight);
     //CreateWorm(zPos, screenWidth, screenHeight);
-    //CreateObstacles(zPos);
+    CreateObstacles(zPos);
 
     // collisions
     {
@@ -442,34 +446,33 @@ void esccape::SetupWorld()
         }
     }
 
-
     // main character
     {
         {
-            auto mainChar = Character::Create("ASDWSpace",
+            auto entity = reg.create();
+            Character mainChar(entity, "ASDWSpace",
                 "spritesheets:player_anim:player_idle_front:1",
                 "player:player_idle_front",
-                { 1, 1, 1 }, { 0, 100 }, 0);
+                { 1, 1, 1 }, { -300, 0 }, 0);
             mainChar.character->inputContextReversed = false;
-            auto entity = mainChar.getEntity();
-            //auto& character = reg.emplace<Character>(entity, mainChar);
-            auto& character = reg.emplace<Character>(entity, std::move(mainChar));
+            reg.emplace<Character>(entity, std::move(mainChar));
+         
         }
     }
 
     // skeleton character
+
     {
         {
-            auto skeletonChar = Character::Create("skeleton-arrows",
+            auto entity = reg.create();
+            Character skeletonChar(entity, "skeleton-arrows",
                 "spritesheets:skeleton:skeleton_idle_front:1",
                 "skeleton:skeleton_idle_front",
-                { 1, 1, 1 }, { -100, 0 }, 1);
-            skeletonChar.character->inputContextReversed = false;
-            auto entity = skeletonChar.getEntity();
-            auto& character = reg.emplace<Character>(entity, skeletonChar);
-            //printf("Character %d health = %f healthEnt = %f\n", character.character->id, character.character->health, character.character->healthSystem.GetCurrentHealth());
+                { 1, 1, 1 }, { 300, 0 }, 1);
+            reg.emplace<Character>(entity, std::move(skeletonChar));
         }
     }
+
     
     CreateHealthBar(screenWidth, screenHeight, 0);
     CreateHealthBar(screenWidth, screenHeight, 1);

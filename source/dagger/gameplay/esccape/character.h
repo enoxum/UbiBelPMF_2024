@@ -20,17 +20,7 @@ namespace esccape
     public:
         Character(Entity entity, Sprite* sprite, Animator* animator, InputReceiver* input, esccape::EsccapeCharacter* character, Transform* transform, SimpleCollision* collision);
         Character(Entity entity, const std::string& input_, const std::string& spritesheet_, const std::string& animation_, const ColorRGB& color_, const Vector2& position_, int id);
-        
-        static Character Get(Entity entity);
-
-        static Character Create(
-            const std::string& input_ = "",
-            const std::string& spritesheet_ = "",
-            const std::string& animation_ = "",
-            const ColorRGB& color_ = { 1, 1, 1 },
-            const Vector2& position_ = { 0, 0 },
-            int id = 0
-        );
+        ~Character();
 
         Entity getEntity() const;
         Sprite* getSprite();
@@ -43,7 +33,7 @@ namespace esccape
         esccape::EsccapeCharacter* character;
 
     private:
-        Entity entity;
+        Entity entity = entt::null;
         Sprite* sprite;
         Animator* animator;
         InputReceiver* input;
