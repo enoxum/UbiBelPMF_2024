@@ -44,7 +44,7 @@ void BoberGame::SetCamera()
     camera->mode = ECameraMode::FixedResolution;
     camera->size = { 800, 600 };
     //put it on 3 to simulate how the game will look
-    camera->zoom = 1;
+    camera->zoom = 2;
     camera->position = { 0, 0, 0 };
     camera->Update();
 }

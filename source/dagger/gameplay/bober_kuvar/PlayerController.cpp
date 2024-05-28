@@ -115,7 +115,7 @@ void PlayerController::OnMouseEvent(MouseEvent input_)
         r.isMouseBtnPressed = isMousePressed;
         //Event za kreiranje bullet-a
         if (r.isMouseBtnPressed && r.isActive) {
-            s.speed = 225.f;
+            s.speed = 250.f;
             s.position = r.position;
             Engine::Dispatcher().trigger<ShootEvent>(s);//prosledjujemo s
         }

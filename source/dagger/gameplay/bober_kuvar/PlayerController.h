@@ -469,7 +469,7 @@ namespace bober_game
 			for (auto weapon : weapons)
 				delete weapon;
 			delete this;
-			exit(1);
+			exit(0);
 		}
 		void collision() override
 		{
@@ -653,7 +653,7 @@ namespace bober_game
 			top_left_ = top_left;
 			bottom_right_ = bottom_right;
 			doors_coords_ = doors_coords;
-			enemyCount_ = 2;
+			enemyCount_ = 1;
 		}
 		std::pair<int, int> getTopLeft()
 		{
@@ -702,6 +702,7 @@ namespace bober_game
 			matrix_ = std::vector<std::vector<int>>(n_, std::vector<int>(n_, 0));
 			tile_matrix_ = std::vector<std::vector<Tile*>>(n_, std::vector<Tile*>(n_, 0));
 			generateMap();
+			total_enemy_count_ = get_total_enemy_count();
 
 			Engine::Dispatcher().sink<DamageEventEnemy>().connect<&OurMap::findById>(this);
 		}
@@ -717,12 +718,19 @@ namespace bober_game
 		{
 			return rooms_;
 		}
+		int get_total_enemy_count() {
+			int total_enemy_count = 0;
+			for (int i = 0; i < rooms_.size(); i++)
+				total_enemy_count += rooms_[i]->getEnemyCount();
+
+			return total_enemy_count;
+		}
 		void findById(DamageEventEnemy dmg)
 		{
 			for (Room* room : rooms_)
 			{
 				std::unordered_map<int, Enemy*> roomEnemies = room->getRoomEnemies();
-				bool hasDied;
+				bool hasDied = false;
 				for (auto elem : roomEnemies)
 				{
 					if (elem.first == dmg.ID)
@@ -731,21 +739,20 @@ namespace bober_game
 						if (hasDied)
 						{
 							roomEnemies.erase(dmg.ID);
+							total_enemy_count_--;
+
 							break;
 						}
 					}
 				}
-				if (hasDied)
-				{
-					room->setRoomEnemies(roomEnemies);
-					checkGameEnding();
-				}
 			}
+			checkGameEnding();
 		}
 
 	private:
 		int n_;
 		int room_size_;
+		int total_enemy_count_;
 		std::vector<std::pair<int, int>> all_doors_coords_;
 		std::vector<std::vector<int>> matrix_;
 		std::vector<Room*> rooms_;
@@ -753,13 +760,8 @@ namespace bober_game
 
 		void checkGameEnding()
 		{
-			for (Room* room : rooms_)
-			{
-				if (room->getEnemyCount() != 0) {
-					return;
-				}
-			}
-			exit(1);
+			if (total_enemy_count_ <= 0)
+				exit(0);
 		}
 
 		void generateMap() 
