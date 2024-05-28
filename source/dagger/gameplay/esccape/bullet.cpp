@@ -18,7 +18,7 @@ void esccape::CreateBullet(Vector2 position_, Vector2 direction, float speed)
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:bullet-sprite");
 
-    int bulletSize = 35;
+    int bulletSize = 25;
     float ratio = sprite.size.y / sprite.size.x;
     sprite.size = { bulletSize, bulletSize * ratio };
 

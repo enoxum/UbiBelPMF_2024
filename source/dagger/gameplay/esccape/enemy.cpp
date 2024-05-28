@@ -23,7 +23,7 @@ void esccape::EnemySystem::Run()
         if (duration.count() > time + delta)
         {
             time += delta;
-            CreateBullet(Vector2{t.position.x, t.position.y + s.size.y / 2.5f}, Vector2{ 1, 0 }, 350.f);
+            CreateBullet(Vector2{t.position.x, t.position.y + s.size.y / 2.5f - 5.f}, Vector2{ 1, 0 }, 500.f);
         }
     }
 }

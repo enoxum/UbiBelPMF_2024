@@ -80,7 +80,7 @@ void esccape::setPosition(int edge, int pos, Transform& t, Worm& worm, Sprite& s
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> disDistance(400, 1200);
-    std::uniform_int_distribution<> disSpeed(150, 250);
+    std::uniform_int_distribution<> disSpeed(5, 10);
     int speed = disSpeed(gen);
     switch (edge) {
         case 0:
@@ -124,7 +124,7 @@ void esccape::CreateWorm(int zPos, int screenWidth, int screenHeight) {
     auto entity = reg.create();
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:crv");
-    int wormSize = 50;
+    int wormSize = 35;
     float ratio = sprite.size.y / sprite.size.x;
     sprite.size = { wormSize, wormSize * ratio };
 

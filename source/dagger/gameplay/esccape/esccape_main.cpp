@@ -215,7 +215,7 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     auto& sprite = reg.emplace<Sprite>(entity);
     AssignSprite(sprite, "Esccape:masina");
     float ratio = sprite.size.y / sprite.size.x;    
-    float machineSize = 300;              
+    float machineSize = 250;              
     sprite.size = { machineSize, machineSize * ratio };
 
     auto& enemy = reg.emplace<Machine>(entity);
@@ -231,7 +231,7 @@ void esccape::CreateMachineRandom(int screenWidth, int screenHeight, int zPos, i
     col.size.y = machineSize * ratio;
 }
 
-void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
+void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight, Vector2 position) {
     auto& reg = Engine::Registry();
     auto entity = reg.create();
 
@@ -244,8 +244,8 @@ void esccape::CreateEnemy(int zPos, int screenWidth, int screenHeight) {
     auto& enemy = reg.emplace<Enemy>(entity);
 
     auto& transform = reg.emplace<Transform>(entity);
-    transform.position.x = -300;
-    transform.position.y = 150;
+    transform.position.x = position.x;
+    transform.position.y = position.y;
     transform.position.z = zPos;
 
     auto& collision = reg.get_or_emplace<SimpleCollision>(entity);
@@ -314,7 +314,8 @@ void esccape::SetupWorld()
 
     CreateMachineRandom(screenWidth, screenHeight, zPos, 3);
     CreateNWorms(4, zPos, screenWidth, screenHeight);
-    CreateEnemy(zPos, screenWidth, screenHeight);
+    CreateEnemy(zPos, screenWidth, screenHeight, { -300, 150 });
+    CreateEnemy(zPos, screenWidth, screenHeight, { -300, -175 });
 
 
     //CreateWorm(zPos, screenWidth, screenHeight);

@@ -813,10 +813,10 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 
 		if (std::abs(collisionSides.x) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
 			
-			transform.position.x -= transform.position.x < 0 ? -1 : 1;
+			transform.position.x -= transform.position.x < 0 ? -3 : 3;
 		}
 		if (std::abs(collisionSides.y) > 0 && collision.IsCollided(transform.position, otherCollision, otherTransform.position)) {
-			transform.position.y -= transform.position.y < 0 ? -1 : 1;
+			transform.position.y -= transform.position.y < 0 ? -3 : 3;
 		}
 	}
 
