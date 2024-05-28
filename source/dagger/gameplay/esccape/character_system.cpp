@@ -4,6 +4,9 @@
 
 #include "esccape_main.h"
 
+#include <chrono>
+#include <thread>
+
 using namespace dagger;
 using namespace esccape;
 
@@ -61,6 +64,8 @@ void esccape::CharacterSystem::OnEndOfFrame()
         auto& sprite = Engine::Registry().get_or_emplace<Sprite>(ui1);
         sprite.size = { 800, 600};
         sprite.position = { 0, 0, 0 };
+        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Adjust the sleep duration as needed
+
         
         if(m_winnerID == 1)
             AssignSprite(sprite, "Esccape:game_over1");
