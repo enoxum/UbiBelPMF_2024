@@ -33,7 +33,7 @@ namespace red_snake
 
     class RedSnakeSystem : public System
     {
-        std::vector<entt::entity> snakeSegments;
+        
 
     public:
         inline String SystemName() { return "Red Snake System"; }
@@ -45,5 +45,6 @@ namespace red_snake
         void UpdateSegmentsPositions();
         void CreateSnake(float tileSize_, ColorRGBA color_, Vector3 pos_);
         //void CreateFood(float tileSize_, ColorRGBA color_, Vector3 pos_);
+        std::vector<entt::entity> snakeSegments;
     };
 }

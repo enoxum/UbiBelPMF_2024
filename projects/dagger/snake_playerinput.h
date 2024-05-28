@@ -39,6 +39,8 @@ namespace red_snake
             s_SnakeSpeed = speed_;
         }
 
+
+
     private:
         void OnKeyboardEvent(KeyboardEvent kEvent_);
         static Float32 s_SnakeSpeed;

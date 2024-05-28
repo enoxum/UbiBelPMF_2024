@@ -1,4 +1,4 @@
-#include "snake.h"
+﻿#include "snake.h"
 #include "snake_playerinput.h"
 #include "core/engine.h"
 #include "core/game/transforms.h"
@@ -41,7 +41,7 @@ void RedSnakeSystem::AddSegment()
     {
         
         auto& lastTransform = reg.get<Transform>(snakeSegments.back());
-        transform.position = lastTransform.position - Vector3(20.0f, 0, 0); 
+        transform.position = lastTransform.position; 
     }
 
     auto& sprite = reg.emplace<Sprite>(entity);
@@ -116,48 +116,65 @@ void RedSnakeSystem::Run()
     auto viewCollisions = reg.view<Transform, SimpleCollision>();
     auto view = reg.view<SnakeSegment, Transform, SimpleCollision>();
 
-    //UpdateSegmentsPositions();
+    const float segmentSpacing = 20.0f;  // Fiksno rastojanje između segmenata
+    std::vector<Vector3> previousPositions(snakeSegments.size());
 
+    // Skladišti trenutne pozicije segmenata
+    for (size_t i = 0; i < snakeSegments.size(); ++i)
+    {
+        auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
+        previousPositions[i] = segmentTransform.position;
+    }
+
+    // Pomeranje glave na osnovu unosa
     for (auto entity : view)
     {
         auto& t = view.get<Transform>(entity);
         auto& segment = view.get<SnakeSegment>(entity);
         auto& col = view.get<SimpleCollision>(entity);
 
-        if (col.colided)
+        if (reg.has<SnakeHead>(entity))
         {
-            if (reg.valid(col.colidedWith))
+            // Procesiraj kretanje glave
+            Vector3 direction = segment.direction * segmentSpacing;
+            t.position += direction;
+
+            if (col.colided)
             {
-                SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
-                Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
-
-                if (reg.has<Food>(col.colidedWith))
+                if (reg.valid(col.colidedWith))
                 {
-                    segment.grow = true;
-                    reg.destroy(col.colidedWith);  // Uni�ti hranu
-                    std::srand(static_cast<unsigned>(std::time(nullptr)));
-                    int foodX = std::rand() % 24 + 1;
-                    int foodY = std::rand() % 18 + 1;
-                    CreateFood(20.0f, ColorRGBA(1, 0, 0, 1), { foodX, foodY, 1.0f });
-                    count++;
-                    UpdateCounter(count);
+                    SimpleCollision& collision = viewCollisions.get<SimpleCollision>(col.colidedWith);
+                    Transform& transform = viewCollisions.get<Transform>(col.colidedWith);
 
-                    
-                }
-                else if (reg.has<SnakeSegment>(col.colidedWith))
-                {
-                    segment.alive = false;
-                }
+                    if (reg.has<Food>(col.colidedWith))
+                    {
+                        segment.grow = true;
+                        reg.destroy(col.colidedWith);
+                        int foodX = std::rand() % 24 + 1;
+                        int foodY = std::rand() % 18 + 1;
+                        CreateFood(segmentSpacing, ColorRGBA(1, 0, 0, 1), { foodX, foodY, 1.0f });
+                        count++;
+                        UpdateCounter(count);
+                    }
+                    else if (reg.has<SnakeSegment>(col.colidedWith))
+                    {
+                        segment.alive = false;
+                    }
 
-                col.colided = false;
+                    col.colided = false;
+                }
             }
-        }
-        else
-        {
-            t.position += segment.next_position ;
         }
     }
 
+    // Ažuriranje pozicija segmenata tela
+    for (size_t i = snakeSegments.size() - 1; i > 0; --i)
+    {
+        auto& segmentTransform = reg.get<Transform>(snakeSegments[i]);
+        segmentTransform.position = previousPositions[i - 1];
+    }
+
+    // Obradi rast segmenta
     for (auto entity : view)
     {
         auto& segment = view.get<SnakeSegment>(entity);
@@ -168,3 +185,4 @@ void RedSnakeSystem::Run()
         }
     }
 }
+

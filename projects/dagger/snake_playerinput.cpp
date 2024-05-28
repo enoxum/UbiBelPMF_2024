@@ -70,10 +70,10 @@ void SnakePlayerInputSystem::Run()
         auto& ctrl = view.get<SnakeControllerMapping>(entity);
 
         Vector3 direction{ ctrl.input.x, ctrl.input.y, 0 };
-        
 
-        if (t.position.x >= (26 / 2 + 0.5f) * 20.f  + 5 ||
-            t.position.x <= -(26 / 2 + 0.5f) * 20.f -5 ||
+
+        if (t.position.x >= (26 / 2 + 0.5f) * 20.f + 5 ||
+            t.position.x <= -(26 / 2 + 0.5f) * 20.f - 5 ||
             t.position.y >= (20 / 2 + 0.5f) * 20.f + 5 ||
             t.position.y <= -(20 / 2 + 0.5f) * 20.f - 5
             ) {
@@ -87,7 +87,7 @@ void SnakePlayerInputSystem::Run()
             }
         }
 
-        
-        t.position += direction * SnakePlayerInputSystem::s_SnakeSpeed * 30.0f * Engine::DeltaTime(); 
+
+        t.position += direction * SnakePlayerInputSystem::s_SnakeSpeed * 30.0f * Engine::DeltaTime();
     }
 }
