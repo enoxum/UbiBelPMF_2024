@@ -15,8 +15,8 @@ namespace esccape
 
     class HealthSystem {
     public:
-        HealthSystem(); // Constructor
-        ~HealthSystem(); // Destructor
+        HealthSystem();
+        ~HealthSystem();
 
         void SetMaxHealth(float maxHealth);
         float GetMaxHealth() const;

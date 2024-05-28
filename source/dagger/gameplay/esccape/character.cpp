@@ -24,9 +24,7 @@ Character::Character(Entity entity, const std::string& input_, const std::string
     transform = &reg.get_or_emplace<Transform>(entity);
     collision = &reg.get_or_emplace<SimpleCollision>(entity);
 
-    printf("okk \n");
 
-    // Initialize sprite properties
     float ratio = sprite->size.x / sprite->size.y;
     float size = 50;
 

@@ -9,7 +9,6 @@ using namespace dagger;
 
 void esccape::MachineSystem::Run()
 {
-    //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, Machine, Sprite>();
 
     for (auto entity : view)
@@ -37,7 +36,6 @@ void esccape::MachineSystem::Run()
         else {
             randId = 3; 
         }
-        //printf("rand = %d\n", randId);
 
         if (duration.count() > time + delta)
         {

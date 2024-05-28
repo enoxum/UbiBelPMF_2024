@@ -9,7 +9,6 @@ using namespace dagger;
 
 void esccape::EnemySystem::Run()
 {
-    //auto viewCollisions = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, Enemy, Sprite>();
     
     for (auto entity : view) 

@@ -37,7 +37,7 @@ Vector2 BlackboardManager::GetCollisionPosition(Entity entity) {
     }
     else {
         // Return a default position or handle the absence of collision data
-        return Vector2(0.0f, 0.0f);  // For example, assuming (0, 0) as default position
+        return Vector2(0.0f, 0.0f);
     }
 }
 

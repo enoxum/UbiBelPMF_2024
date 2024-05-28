@@ -362,7 +362,6 @@ void CharacterControllerFSM::Running_Up::Run(CharacterControllerFSM::StateCompon
 	auto& sprite = Engine::Registry().get<Sprite>(state_.entity);
 	auto& transform = Engine::Registry().get<Transform>(state_.entity);
 	auto& character = Engine::Registry().get<EsccapeCharacter>(state_.entity);
-	auto& characterEntity = Engine::Registry().get<Character>(state_.entity);
 
 	if (EPSILON_ZERO(input.Get("up")))
 	{
@@ -625,7 +624,7 @@ void CharacterControllerFSM::Death::Run(CharacterControllerFSM::StateComponent& 
 	{
 		character.attackCooldown--;
 	}
-	//AnimatorStop(animator);
+
 }
 
 void CharacterControllerFSM::Death::Exit(CharacterControllerFSM::StateComponent& state_)
@@ -685,8 +684,6 @@ std::pair<Entity, Entity> CheckCollisionsFSM(CharacterControllerFSM::StateCompon
 					otherCharacter.health -= 0.01f;
 					otherCharacter.healthSystem.TakeDamage(0.01);
 
-					//if (!otherCharacter.healthSystem.IsAlive())
-					//	otherCollision.size = { 0, 0 };
 
 					printf("Character %d health = %f\n",(int)otherCharacter.id, otherCharacter.healthSystem.GetCurrentHealth());
 				}
@@ -732,9 +729,6 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 			character.healthSystem.TakeDamage(0.05f);
 			Engine::Registry().destroy(collidedWith);
 
-			//if (!character.healthSystem.IsAlive())
-			//	collision.size = { 0, 0 };
-
 			break;
 		}
 
@@ -743,7 +737,6 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 			character.healthSystem.TakeDamage(20.0f);
 			collision.size = { 0, 0 };
 			
-			//Engine::Registry().destroy(collidedWith);
 
 			break;
 		}
@@ -783,20 +776,21 @@ void ResolveCollision(Entity entity1, Entity collidedWith, BlackboardManager bbM
 				}
 				input.contexts.pop_back();
 				input.contexts.push_back(inputContext);
+				printf("Character %d controls switched!\n", character.id);
 				Engine::Registry().destroy(collidedWith);
 				break;
 			}
 			else if(boost.id == 2){
-				printf("speed b4 = %f\n", character.speed);
+
 				character.speed *= 1.1;
-				printf("speed after = %f\n", character.speed);
+				printf("Character %d speed changed: %f\n", character.id, character.speed);
 				Engine::Registry().destroy(collidedWith);
 				break;
 			}
 			else if (boost.id == 3) {
-				printf("speed b4 = %f\n", character.speed);
+
 				character.speed *= 0.9;
-				printf("speed after = %f\n", character.speed);
+				printf("Character %d speed changed: %f\n", character.id, character.speed);
 				Engine::Registry().destroy(collidedWith);
 				break;
 			}

@@ -21,7 +21,7 @@ namespace esccape
         : public System
     {
     public:
-        inline String SystemName() { return "Enemy System"; }
+        inline String SystemName() { return "Shooting System"; }
 
         void Run() override;
     };

@@ -276,9 +276,6 @@ void esccape::CreateObstacles(int zPos)
         transform.position.y = rand() % (maxY - minY + 1) + minY;
         transform.position.z = zPos;
 
-        /*auto& col = reg.emplace<SimpleCollision>(entity);
-        col.size.x = rockSize;
-        col.size.y = rockSize*ratio;*/
     }
 }
 
@@ -318,8 +315,6 @@ void esccape::SetupWorld()
     CreateEnemy(zPos, screenWidth, screenHeight, { -300, -175 });
 
 
-    //CreateWorm(zPos, screenWidth, screenHeight);
-    //CreateWorm(zPos, screenWidth, screenHeight);
     CreateObstacles(zPos);
 
     // collisions
@@ -386,7 +381,6 @@ void esccape::SetupWorld()
                 { 1, 1, 1 }, { -300, 0 }, 0);
             mainChar.character->speed = 100.f;
             mainChar.character->inputContextReversed = false;
-            printf("mainspeed main = %f\n", mainChar.character->speed);
             reg.emplace<Character>(entity, std::move(mainChar));
          
         }
@@ -403,7 +397,6 @@ void esccape::SetupWorld()
                 { 1, 1, 1 }, { 300, 0 }, 1);
             skeletonChar.character->speed = 100.f;
             skeletonChar.character->inputContextReversed = false;
-            printf("skeletonspeed main = %f\n\n", skeletonChar.character->speed);
             reg.emplace<Character>(entity, std::move(skeletonChar));
         }
     }

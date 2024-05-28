@@ -36,13 +36,11 @@ void CharacterSystem::Run()
 
         if (entityA != entt::null && entityB != entt::null)
         {
-            //printf("Collision detected between entity %d and entity %d\n", static_cast<int>(entityA), static_cast<int>(entityB));
             ResolveCollision(entityA, entityB, bbManager);
         }
 
         auto& chr = Engine::Registry().get<EsccapeCharacter>(entity);
 
-        //printf("HEALTH: %f    IS_ALIVE: %d \n", chr.healthSystem.GetCurrentHealth(), chr.healthSystem.IsAlive());
         if (chr.healthSystem.IsAlive() == false) {
             m_Restart = true;
             m_winnerID = (chr.id == 1) ? 0 : 1;
@@ -64,7 +62,7 @@ void esccape::CharacterSystem::OnEndOfFrame()
         auto& sprite = Engine::Registry().get_or_emplace<Sprite>(ui1);
         sprite.size = { 800, 600};
         sprite.position = { 0, 0, 0 };
-        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Adjust the sleep duration as needed
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         
         if(m_winnerID == 1)
@@ -72,8 +70,5 @@ void esccape::CharacterSystem::OnEndOfFrame()
         if (m_winnerID == 0)
             AssignSprite(sprite, "Esccape:game_over0");
 
-
-        // FIX: ne radi restartovanjeee :(((
-        //esccape::SetupWorld();
     }
 }
