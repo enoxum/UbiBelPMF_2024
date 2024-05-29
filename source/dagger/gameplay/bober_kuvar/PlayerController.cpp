@@ -146,7 +146,7 @@ void PlayerController::Run()
     //auto viewHealthBar = Engine::Registry().view<HealthBar>();
     auto otherViews = Engine::Registry().view<Transform, SimpleCollision>();
     auto view = Engine::Registry().view<Transform, ControllerMapping, SimpleCollision, MovementData, DamageEventPlayer, HealthComponent, HealthBar>();
-    auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision, DamageEventEnemy>();
+    auto enemyView = Engine::Registry().view<Transform, EnemyData, MovementData, Patrol, SimpleCollision,DamageEventEnemy>();
     auto viewBullet = Engine::Registry().view<Transform, Sprite, BulletSystem, SimpleCollision>();
     auto viewWalls = Engine::Registry().view<TileSystem, SimpleCollision>();
     
@@ -155,10 +155,10 @@ void PlayerController::Run()
         auto& t = view.get<Transform>(entity);
         auto& ctrl = view.get<ControllerMapping>(entity);
         if (ctrl.index) {
-            focusRanged = true;
+            focusRanged = false;
         }
         else {
-            focusRanged = false;
+            focusRanged = true;
         }
         auto& mov = view.get<MovementData>(entity);
         auto& col = view.get<SimpleCollision>(entity);
@@ -221,7 +221,6 @@ void PlayerController::Run()
             }
         }
         currentHealthRatioPlayer = healthComponent.currentHealth / (Float32)healthComponent.maxHealth;
-
         colidedWithEnemy = false;
         colidedWithBullet = false;
         col.colided = false;
@@ -296,9 +295,7 @@ void PlayerController::Run()
                         auto& e = enemyView.get<EnemyData>(enemy);
                         auto& mov = enemyView.get<MovementData>(enemy);
                         auto& dmg = enemyView.get<DamageEventEnemy>(enemy);
-
                         dmg.damage = b.damage;
-
                         if (!e.firstHit)
                         {
                             mov.speed *= 2;
@@ -450,7 +447,6 @@ void PlayerController::Run()
         bool changed = fillSprite.size.x != fillWidth; //check if width actually changed
         Float32 oldWidth = fillSprite.size.x; //save oldwidth
         fillSprite.size = { fillWidth, healthBar.height };
-
         backgroundTransform.position = playerPosition + Vector3{ 0, -23, 0 };
         fillTransform.position = playerPosition + Vector3{ 0, -23, 0 };
 

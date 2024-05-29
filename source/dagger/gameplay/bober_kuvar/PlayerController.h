@@ -653,7 +653,7 @@ namespace bober_game
 			top_left_ = top_left;
 			bottom_right_ = bottom_right;
 			doors_coords_ = doors_coords;
-			enemyCount_ = 1;
+			enemyCount_ = 2;
 		}
 		std::pair<int, int> getTopLeft()
 		{

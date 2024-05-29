@@ -101,17 +101,6 @@ void BoberGame::WorldSetup()
         (*cursor->sprite).size = scale * tileSize;
         reg.emplace<Cursor>(cursor->instance);
     }
-    Melee* sword = new Melee();
-    //Melee
-    {
-        Vector2 scale(1, 1);
-        constexpr float tileSize = 20.f;
-        //AssignSprite(*sword->sprite, "pizzaSlice");
-        (*sword->sprite).size = scale * tileSize;
-        reg.remove<Animator>(sword->instance);
-
-        bober->weapons.push_back(sword);
-    }
 
     Ranged* gun = new Ranged(8,8,2.0);
     //Ranged
@@ -125,4 +114,16 @@ void BoberGame::WorldSetup()
         bober->weapons.push_back(gun);
     }
     SetCamera();
+
+    Melee* sword = new Melee();
+    //Melee
+    {
+        Vector2 scale(1, 1);
+        constexpr float tileSize = 20.f;
+        //AssignSprite(*sword->sprite, "pizzaSlice");
+        (*sword->sprite).size = scale * tileSize;
+        reg.remove<Animator>(sword->instance);
+
+        bober->weapons.push_back(sword);
+    }
 }
