@@ -129,56 +129,7 @@ void pacman::SetupWorld()
 
     constexpr float Space = 0.001f;
     
-    //TODO: usaglasiti height/width sa grid.size
-    //for (int i = 0; i < 7; i++)
-    //{
-    //    for (int j = 0; j < 7; j++)
-    //    {
-    //        auto entity = reg.create();
-    //        auto& sprite = reg.emplace<Sprite>(entity);
-    //        sprite.size = scale * tileSize;
-
-    //        auto& col = reg.emplace<SimpleCollision>(entity);
-    //        col.size.x = tileSize;
-    //        col.size.y = tileSize;
-
-    //        switch (g_pacmanMaze.grid[i][j]) 
-    //        {
-    //            case CellType::Empty:
-    //                AssignSprite(sprite, "EmptyWhitePixel");
-    //                sprite.color.r = 0.0f;
-    //                sprite.color.g = 0.0f;
-    //                sprite.color.b = 0.0f;
-    //                break;
-    //            case CellType::Wall:
-    //                AssignSprite(sprite, "EmptyWhitePixel");
-    //                sprite.color.r = 0.2f;
-    //                sprite.color.g = 0.2f;
-    //                sprite.color.b = 0.2f;
-    //                break;
-    //            case CellType::Pellet:
-    //                AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
-    //                sprite.color.r = 0.4f;
-    //                sprite.color.g = 0.4f;
-    //                sprite.color.b = 0.4f;
-    //                break;
-    //            case CellType::GhostHouse:
-    //                AssignSprite(sprite, "EmptyWhitePixel"); // TODO: change sprites, del colors
-    //                sprite.color.r = 0.64f;
-    //                sprite.color.g = 0.6f;
-    //                sprite.color.b = 0.6f;
-    //                break;
-    //        }
-
-    //        auto& transform = reg.emplace<Transform>(entity);
-    //        transform.position.x = (0.5f + j + j * Space - static_cast<float>(width * (1 + Space)) / 2.f) * tileSize;
-    //        transform.position.y = (0.5f + i + i * Space - static_cast<float>(height * (1 + Space)) / 2.f) * tileSize;
-    //        transform.position.z = zPos;
-    //    }
-    //}
-
-
-    
+        
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -254,32 +205,86 @@ void pacman::SetupWorld()
     }
 
     auto* camera = Engine::GetDefaultResource<Camera>();
-
-    //ENEMY
-    //for(int i = 0; i < 3; i++)
-    //{
-    //    auto entity = reg.create();
-    //    auto& col = reg.emplace<SimpleCollision>(entity);
-    //    col.size.x = tileSize;
-    //    col.size.y = tileSize;
-
-    //    auto& transform = reg.emplace<Transform>(entity);
-    //    transform.position.x = ((double) rand() / (RAND_MAX)) * camera->size.x;
-    //    transform.position.y = ((double) rand() / (RAND_MAX)) * camera->size.y;
-    //    transform.position.z = zPos;
-    //    
-    //    auto& sprite = reg.emplace<Sprite>(entity);
-    //    AssignSprite(sprite, "Pacmanart:ghosts:blinky");
-    //    
-    //    sprite.size.x = tileSize;
-    //    sprite.size.y = tileSize;
-    //    //
-    //    auto& mov = reg.emplace<MovementData>(entity);
-    //    mov.acceleration = 1 + ((double)rand() / (RAND_MAX)) * 3;
-    //    mov.maxSpeed = 1 + ((double)rand() / (RAND_MAX)) * 6;
-    //    mov.isFrictionOn = true;
-
-    //    auto& enemy = reg.emplace<EnemyData>(entity);
-    //}
     
+    
+    //enemy
+    for (int i = 0; i < 1; i++)
+    {
+        auto entity = reg.create();
+        auto& col = reg.emplace<SimpleCollision>(entity);
+        col.size.x = tileSize;
+        col.size.y = tileSize;
+        
+        auto& enemy = reg.emplace<EnemyData>(entity);
+        enemy.ID = i;
+
+        if (i == 0) { 
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = 200;
+            transform.position.y = 170;
+            transform.position.z = zPos;
+
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+            sprite.size.x = tileSize;
+            sprite.size.y = tileSize;
+        }
+        if (i == 1) {
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = -200;
+            transform.position.y = 170;
+            transform.position.z = zPos;
+
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+            sprite.size.x = tileSize;
+            sprite.size.y = tileSize;
+        }
+        if (i == 2) {
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = 200;
+            transform.position.y = 170;
+            transform.position.z = zPos;
+
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+            sprite.size.x = tileSize;
+            sprite.size.y = tileSize;
+        }
+        if (i == 3) {
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = -200;
+            transform.position.y = -170;
+            transform.position.z = zPos;
+
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+            sprite.size.x = tileSize;
+            sprite.size.y = tileSize;
+        }
+        if (i == 4) {
+            auto& transform = reg.emplace<Transform>(entity);
+            transform.position.x = 200;
+            transform.position.y = -170;
+            transform.position.z = zPos;
+
+            auto& sprite = reg.emplace<Sprite>(entity);
+            AssignSprite(sprite, "Pacmanart:ghosts:blinky");
+            sprite.size.x = tileSize;
+            sprite.size.y = tileSize;
+        }
+
+        
+
+        //auto& controller = reg.emplace<ControllerMapping>(entity);
+
+        auto& mov = reg.emplace<MovementData>(entity);
+        mov.maxSpeed = 1;
+        mov.isFrictionOn = true;
+
+        
+
+        //PingPongPlayerInputSystem::SetupPlayerOneInput(controller);
+    }
+
 }

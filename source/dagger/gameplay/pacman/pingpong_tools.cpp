@@ -10,7 +10,7 @@
 using namespace dagger;
 using namespace pacman;
 
-void pacman::PingPongTools::SpinUp()
+void PingPongTools::SpinUp()
 {
     Engine::Dispatcher().sink<NextFrame>().connect<&PingPongTools::OnEndOfFrame>(this);
 
@@ -45,7 +45,7 @@ void PingPongTools::RenderToolMenu()
     }
 }
 
-void pacman::PingPongTools::Run()
+void PingPongTools::Run()
 {
 }
 

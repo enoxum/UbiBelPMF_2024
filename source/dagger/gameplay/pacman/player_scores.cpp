@@ -12,7 +12,7 @@ int PlayerScoresSystem::s_FieldWidth = 20;
 int PlayerScoresSystem::s_FieldHeight = 10;
 Float32 PlayerScoresSystem::s_TileSize = 1.f;
 
-void pacman::PlayerScoresSystem::Run()
+void PlayerScoresSystem::Run()
 {
     auto view = Engine::Registry().view<PingPongBall, Transform>();
 
