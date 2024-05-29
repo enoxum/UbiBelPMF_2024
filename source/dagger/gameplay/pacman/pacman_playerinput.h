@@ -31,7 +31,7 @@ namespace pacman
         Vector2 input{ 0, 0 };
     };
 
-    class PingPongPlayerInputSystem
+    class PacmanPlayerInputSystem
         : public System
     {
         static Float32 s_BoarderUp;
@@ -42,7 +42,7 @@ namespace pacman
         static Float32 s_PlayerSpeed;
 
     public:
-        inline String SystemName() { return "PingPong Player Input System"; }
+        inline String SystemName() { return "Pacman Player Input System"; }
 
         void SpinUp() override;
         void WindDown() override;

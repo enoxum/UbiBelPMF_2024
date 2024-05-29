@@ -1,4 +1,4 @@
-#include "ping_pong_main.h"
+#include "gameplay/pacman/paman_main.h"
 
 #include "core/core.h"
 #include "core/engine.h"
@@ -13,12 +13,8 @@
 #include "core/graphics/animations.h"
 #include "core/graphics/gui.h"
 #include "tools/diagnostics.h"
-
 #include "gameplay/common/simple_collisions.h"
-#include "gameplay/pacman/pingpong_ball.h"
-#include "gameplay/pacman/player_scores.h"
-#include "gameplay/pacman/pingpong_playerinput.h"
-#include "gameplay/pacman/pingpong_tools.h"
+#include "gameplay/pacman/pacman_playerinput.h"
 
 
 using namespace dagger;
@@ -89,11 +85,9 @@ void pacman::PacmanGame::GameplaySystemsSetup()
     auto& engine = Engine::Instance();
 
     engine.AddPausableSystem<SimpleCollisionsSystem>();
-    engine.AddPausableSystem<PingPongBallSystem>();
-    engine.AddPausableSystem<PingPongPlayerInputSystem>();
-    engine.AddPausableSystem<PlayerScoresSystem>();
+    engine.AddPausableSystem<PacmanPlayerInputSystem>();
 #if defined(DAGGER_DEBUG)
-    engine.AddPausableSystem<PingPongTools>();
+ 
 #endif //defined(DAGGER_DEBUG)
 }
 
@@ -175,8 +169,8 @@ void pacman::SetupWorld()
 
     // player controller setup
     const Float32 playerSize = tileSize * ((height - 2) * (1 + Space) * 0.33f);
-    PingPongPlayerInputSystem::SetupPlayerBoarders(playerSize, -playerSize);
-    PingPongPlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;
+    PacmanPlayerInputSystem::SetupPlayerBoarders(playerSize, -playerSize);
+    PacmanPlayerInputSystem::s_PlayerSpeed = tileSize * 14.f;
     //1st player
     {
         auto entity = reg.create();
@@ -201,7 +195,7 @@ void pacman::SetupWorld()
         mov.maxSpeed = 1;
         mov.isFrictionOn = true;//TODO delete friction
 
-        PingPongPlayerInputSystem::SetupPlayerOneInput(controller);
+        PacmanPlayerInputSystem::SetupPlayerOneInput(controller);
     }
 
     auto* camera = Engine::GetDefaultResource<Camera>();
@@ -274,17 +268,12 @@ void pacman::SetupWorld()
             sprite.size.y = tileSize;
         }
 
-        
-
-        //auto& controller = reg.emplace<ControllerMapping>(entity);
 
         auto& mov = reg.emplace<MovementData>(entity);
         mov.maxSpeed = 1;
         mov.isFrictionOn = true;
 
         
-
-        //PingPongPlayerInputSystem::SetupPlayerOneInput(controller);
     }
 
 }

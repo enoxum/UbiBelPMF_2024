@@ -1,5 +1,4 @@
-#include "pingpong_playerinput.h"
-
+#include "gameplay/pacman/pacman_playerinput.h"
 #include "gameplay/common/simple_collisions.h"
 
 #include "core/graphics/sprite.h"
@@ -12,9 +11,9 @@
 using namespace dagger;
 using namespace pacman;
 
-Float32 PingPongPlayerInputSystem::s_BoarderUp = 25;
-Float32 PingPongPlayerInputSystem::s_BoarderDown = -25;
-Float32 PingPongPlayerInputSystem::s_PlayerSpeed = 1.f;
+Float32 PacmanPlayerInputSystem::s_BoarderUp = 25;
+Float32 PacmanPlayerInputSystem::s_BoarderDown = -25;
+Float32 PacmanPlayerInputSystem::s_PlayerSpeed = 1.f;
 
 bool left, right, up, down = false;
 int mvR, mvL, mvU, mvB = 1;
@@ -24,23 +23,23 @@ char directions[] = {'U', 'D', 'L', 'R'};
 int randIndex = rand() % 4;
 
 
-void pacman::PingPongPlayerInputSystem::SpinUp()
+void pacman::PacmanPlayerInputSystem::SpinUp()
 {
-    Engine::Dispatcher().sink<KeyboardEvent>().connect<&PingPongPlayerInputSystem::OnKeyboardEvent>(this);
-    Engine::Dispatcher().sink<ToolMenuRender>().connect<&PingPongPlayerInputSystem::RenderToolMenu>(this);
+    Engine::Dispatcher().sink<KeyboardEvent>().connect<&PacmanPlayerInputSystem::OnKeyboardEvent>(this);
+    Engine::Dispatcher().sink<ToolMenuRender>().connect<&PacmanPlayerInputSystem::RenderToolMenu>(this);
 
-    Engine::Dispatcher().sink<GUIRender>().connect<&PingPongPlayerInputSystem::RenderToolWindow>(this);
+    Engine::Dispatcher().sink<GUIRender>().connect<&PacmanPlayerInputSystem::RenderToolWindow>(this);
 }
 
-void pacman::PingPongPlayerInputSystem::WindDown()
+void pacman::PacmanPlayerInputSystem::WindDown()
 {
-    Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PingPongPlayerInputSystem::OnKeyboardEvent>(this);
-    Engine::Dispatcher().sink<ToolMenuRender>().disconnect<&PingPongPlayerInputSystem::RenderToolMenu>(this);
+    Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PacmanPlayerInputSystem::OnKeyboardEvent>(this);
+    Engine::Dispatcher().sink<ToolMenuRender>().disconnect<&PacmanPlayerInputSystem::RenderToolMenu>(this);
 
-    Engine::Dispatcher().sink<GUIRender>().disconnect<&PingPongPlayerInputSystem::RenderToolWindow>(this);
+    Engine::Dispatcher().sink<GUIRender>().disconnect<&PacmanPlayerInputSystem::RenderToolWindow>(this);
 }
 
-void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
+void pacman::PacmanPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 {
     Engine::Registry().view<ControllerMapping>().each([&](ControllerMapping& ctrl_)
     {
@@ -101,7 +100,7 @@ void PingPongPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 
 
 #if !defined(NDEBUG)
-void PingPongPlayerInputSystem::RenderToolMenu()
+void pacman::PacmanPlayerInputSystem::RenderToolMenu()
 {
     if (ImGui::BeginMenu("Nas test"))
     {
@@ -113,7 +112,7 @@ void PingPongPlayerInputSystem::RenderToolMenu()
     }
 }
 
-void PingPongPlayerInputSystem::RenderToolWindow()
+void pacman::PacmanPlayerInputSystem::RenderToolWindow()
 {
     ImGui::Begin("Nas prozor");
 
@@ -141,7 +140,7 @@ void PingPongPlayerInputSystem::RenderToolWindow()
 
 #endif //!defined(NDEBUG)
 
-void pacman::PingPongPlayerInputSystem::Run()
+void pacman::PacmanPlayerInputSystem::Run()
 {
     Vector3 playerPosition{ 0, 0, 0 };
 

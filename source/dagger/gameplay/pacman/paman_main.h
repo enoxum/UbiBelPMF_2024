@@ -9,7 +9,6 @@ using namespace dagger;
 
 namespace pacman
 {
-    //void CreatePingPongBall(float tileSize_, ColorRGBA color_, Vector3 speed_, Vector3 pos_);
     void SetupWorld();
    
 

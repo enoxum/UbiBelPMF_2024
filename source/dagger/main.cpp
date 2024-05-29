@@ -6,7 +6,7 @@
 #include "gameplay/team_game/team_game_main.h"
 #include "gameplay/tiles_example/tiles_example_main.h"
 #include "gameplay/editor/editor_main.h"
-#include "gameplay/pacman/ping_pong_main.h"
+#include "gameplay/pacman/paman_main.h"
 
 int main(int argc_, char** argv_)
 {
