@@ -4,7 +4,7 @@
 #include "core/game/transforms.h"
 #include "gameplay/common/simple_collisions.h"
 #include "gameplay/pacman/pingpong_ball.h"
-#include "gameplay/pacman/ping_pong_main.h"
+#include "gameplay/pacman/pacman_main.h"
 
 using namespace pacman;
 

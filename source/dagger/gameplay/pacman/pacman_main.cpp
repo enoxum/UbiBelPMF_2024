@@ -1,4 +1,4 @@
-#include "gameplay/pacman/paman_main.h"
+#include "gameplay/pacman/pacman_main.h"
 
 #include "core/core.h"
 #include "core/engine.h"
@@ -75,7 +75,6 @@ void pacman::PacmanGame::CoreSystemsSetup()
     engine.AddPausableSystem<AnimationSystem>();
 #if !defined(NDEBUG)
     engine.AddSystem<DiagnosticSystem>();
-    engine.AddSystem<GUISystem>();
     engine.AddSystem<ToolMenuSystem>();
 #endif //!defined(NDEBUG)
 }

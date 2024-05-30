@@ -48,10 +48,7 @@ namespace pacman
         void WindDown() override;
         void Run() override;
 
-#if !defined(NDEBUG)
-        void RenderToolMenu();
-        void RenderToolWindow();
-#endif //!defined(NDEBUG)
+
 
         static void SetupPlayerOneInput(ControllerMapping& controllerMapping_)
         {

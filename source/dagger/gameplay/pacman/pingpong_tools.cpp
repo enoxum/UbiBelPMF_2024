@@ -4,7 +4,7 @@
 
 #include "core/engine.h"
 
-#include "gameplay/pacman/ping_pong_main.h"
+#include "gameplay/pacman/pacman_main.h"
 #include "gameplay/pacman/player_scores.h"
 
 using namespace dagger;

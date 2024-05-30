@@ -4,7 +4,7 @@
 #include "core/graphics/sprite.h"
 #include "core/engine.h"
 #include "core/game/transforms.h"
-#include <imgui.h>
+
 #include <tools/toolmenu.h>
 #include<vector>
 
@@ -26,17 +26,13 @@ int randIndex = rand() % 4;
 void pacman::PacmanPlayerInputSystem::SpinUp()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().connect<&PacmanPlayerInputSystem::OnKeyboardEvent>(this);
-    Engine::Dispatcher().sink<ToolMenuRender>().connect<&PacmanPlayerInputSystem::RenderToolMenu>(this);
-
-    Engine::Dispatcher().sink<GUIRender>().connect<&PacmanPlayerInputSystem::RenderToolWindow>(this);
+   
 }
 
 void pacman::PacmanPlayerInputSystem::WindDown()
 {
     Engine::Dispatcher().sink<KeyboardEvent>().disconnect<&PacmanPlayerInputSystem::OnKeyboardEvent>(this);
-    Engine::Dispatcher().sink<ToolMenuRender>().disconnect<&PacmanPlayerInputSystem::RenderToolMenu>(this);
-
-    Engine::Dispatcher().sink<GUIRender>().disconnect<&PacmanPlayerInputSystem::RenderToolWindow>(this);
+   
 }
 
 void pacman::PacmanPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
@@ -99,46 +95,6 @@ void pacman::PacmanPlayerInputSystem::OnKeyboardEvent(KeyboardEvent kEvent_)
 }
 
 
-#if !defined(NDEBUG)
-void pacman::PacmanPlayerInputSystem::RenderToolMenu()
-{
-    if (ImGui::BeginMenu("Nas test"))
-    {
-        if (ImGui::MenuItem("Pause"))
-        {
-            dagger::Engine::ToggleSystemsPause(true);
-        }
-        ImGui::EndMenu();
-    }
-}
-
-void pacman::PacmanPlayerInputSystem::RenderToolWindow()
-{
-    ImGui::Begin("Nas prozor");
-
-    int i = 0;
-
-    auto view = Engine::Registry().view<Transform>();
-    for (auto entity : view)
-    {
-        ImGui::PushID(i);
-
-        auto& t = view.get<Transform>(entity);
-
-        int pos[]{ t.position.x, t.position.y };
-        ImGui::SliderInt2("Pixel Size", pos, -10000.0f, 10000.0f, "%f", 1);
-
-        t.position.x = pos[0];
-        t.position.y = pos[1];
-
-        i++;
-        ImGui::PopID();
-    }
-
-    ImGui::End();
-}
-
-#endif //!defined(NDEBUG)
 
 void pacman::PacmanPlayerInputSystem::Run()
 {
