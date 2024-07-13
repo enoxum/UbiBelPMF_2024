@@ -59,6 +59,7 @@ class ParticleSystem
 
 public:
     static void SetupParticleSystem(Entity entity_, const ParticleSpawnerSettings& settings_);
+    static void UpdateParticleSpawnerSettings(Entity entity, const ParticleSpawnerSettings& newSettings);
 
 private:
     void OnEndOfFrame();

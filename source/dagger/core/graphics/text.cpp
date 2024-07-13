@@ -47,6 +47,7 @@ void Text::Set(String font_, String message_, Vector3 pos_, Bool ui_)
 
 		if (ui_) sprite.UseAsUI();
 		sprite.position = { positionX - xOffsetDueToAlign, position.y, position.z };
+		sprite.scale = Text::scale;
 		AssignSprite(sprite, spritesheet);
 
 		positionX += (int)(spritesheet->frame.size.x * spacing);

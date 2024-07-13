@@ -19,8 +19,8 @@ void RacingCarSystem::Run()
     auto view = Engine::Registry().view<Transform, RacingCar>();
     for (auto entity : view)
     {
-        auto &t = view.get<Transform>(entity);
-        auto &car = view.get<RacingCar>(entity);
+        auto& t = view.get<Transform>(entity);
+        auto& car = view.get<RacingCar>(entity);
 
         t.position.y -= car.speed * Engine::DeltaTime();
 

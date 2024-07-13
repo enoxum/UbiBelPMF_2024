@@ -1,0 +1,16 @@
+{
+	"animation-name": "AcademicLife:RUN_LEFT",
+	"animation-length-ms": 500,
+	"animation-frames": 
+	[
+		{ "texture-name": "AcademicLife:RUN_LEFT:run1", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run2", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run3", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run4", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run5", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run6", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run7", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run8", "relative-length": 1 },
+		{ "texture-name": "AcademicLife:RUN_LEFT:run8", "relative-length": 1 }
+	]
+}
