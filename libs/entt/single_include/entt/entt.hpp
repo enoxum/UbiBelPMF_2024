@@ -10704,7 +10704,7 @@ class basic_continuous_loader {
     auto update(int, Container &container)
     -> decltype(typename Container::mapped_type{}, void()) {
         // map like container
-        Container other;
+        Container other{};
 
         for(auto &&pair: container) {
             using first_type = std::remove_const_t<typename std::decay_t<decltype(pair)>::first_type>;
